@@ -1,0 +1,34 @@
+﻿{
+  "name": "reshot",
+  "preferGlobal": true,
+  "version": "0.0.1",
+  "author": "aintgoin2goa",
+  "description": "creates responsive screenshots using phantomjs",
+  "bin": {
+    "reshot": "./bin/reshot"
+  },
+  "main": "./src/main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aintgoin2goa/reshot.git"
+  },
+  "keywords": [
+    "screenshot",
+    "responsive",
+    "phantomjs"
+  ],
+  "dependencies" : {
+	"node-phantom" : "~0.2",
+	"rimraf" : "~2.2"
+  },
+  "analyze": false,
+  "devDependencies": {
+	"chai" : "~1.8"
+  },
+  "bundledDependencies": [
+  ],  
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.8"
+  }
+}
