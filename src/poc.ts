@@ -56,7 +56,7 @@ function nextSize() {
    
 }
 
-function takeScreenshot(err, size) {
+function takeScreenshot(err) {
     handleError(err);
     var filename = destination + generateFilename(url, currentSize);
     page.render(filename, afterScreenshot);

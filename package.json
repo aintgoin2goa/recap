@@ -24,7 +24,9 @@
   },
   "analyze": false,
   "devDependencies": {
-	"chai" : "~1.8"
+	"chai" : "~1.8",
+	"sinon" : "~1.7",
+	"sinon-chai" : "2.4"
   },
   "bundledDependencies": [
   ],  

@@ -1,0 +1,1 @@
+//@ sourceMappingURL=IScreenshotAdapter.js.map
