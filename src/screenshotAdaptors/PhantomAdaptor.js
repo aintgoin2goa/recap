@@ -16,6 +16,7 @@ var PhantomAdaptor = (function () {
                 dfd.reject(err);
                 return;
             }
+            _this.phantom = phantom;
             _this.OnCreate(phantom, dfd);
         });
         return dfd.promise;
@@ -23,6 +24,7 @@ var PhantomAdaptor = (function () {
 
     PhantomAdaptor.prototype.setViewPortSize = function (width, height) {
         var dfd = Q.defer();
+        console.log("setViewPortSize");
         this.page.set("viewportSize", { width: width, height: height }, function (err) {
             if (err) {
                 dfd.reject(err);
@@ -35,17 +37,38 @@ var PhantomAdaptor = (function () {
 
     PhantomAdaptor.prototype.open = function (url) {
         var dfd = Q.defer();
-
+        this.page.open(url, function (err, status) {
+            if (err) {
+                dfd.reject(err);
+            } else {
+                dfd.resolve(status);
+            }
+        });
         return dfd.promise;
     };
 
     PhantomAdaptor.prototype.capture = function (filename) {
         var dfd = Q.defer();
-
+        this.page.render(filename, function (err) {
+            if (err) {
+                dfd.reject(err);
+            } else {
+                dfd.resolve(true);
+            }
+        });
         return dfd.promise;
     };
 
     PhantomAdaptor.prototype.close = function () {
+        var _this = this;
+        var dfd = Q.defer();
+        this.page.close(function () {
+            _this.phantom.exit(function () {
+                console.log("Phantom exited");
+                dfd.resolve(true);
+            });
+        });
+        return dfd.promise;
     };
 
     PhantomAdaptor.prototype.OnCreate = function (phantom, dfd) {
@@ -72,10 +95,13 @@ var PhantomAdaptor = (function () {
     PhantomAdaptor.prototype.OnExit = function () {
         console.log("Phantom exited");
     };
+
+    PhantomAdaptor.prototype.OnPageClose = function () {
+    };
     return PhantomAdaptor;
 })();
 
 
 module.exports = PhantomAdaptor;
 
-//@ sourceMappingURL=PhantomAdaptor.js.map
+//# sourceMappingURL=PhantomAdaptor.js.map

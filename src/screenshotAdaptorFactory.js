@@ -14,4 +14,4 @@ var ScreenshotAdaptorFactory = (function () {
 
 module.exports = ScreenshotAdaptorFactory;
 
-//@ sourceMappingURL=screenshotAdaptorFactory.js.map
+//# sourceMappingURL=screenshotAdaptorFactory.js.map

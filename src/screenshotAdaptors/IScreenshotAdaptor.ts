@@ -2,14 +2,14 @@
 
 interface IScreenshotAdaptor{
 
-    init(): Qpromise;
+    init(): Q.IPromise<any>;
 
-    open(url: string): Qpromise;
+    open(url: string): Q.IPromise<any>;
 
-    setViewPortSize(width: number, height: number): Qpromise;
+    setViewPortSize(width: number, height: number): Q.IPromise<any>;
 
-    capture(filename: string): Qpromise;
+    capture(filename: string): Q.IPromise<any>;
 
-    close(): void;    
+    close(): Q.IPromise<any>;    
 
 }

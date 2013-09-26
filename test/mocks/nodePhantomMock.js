@@ -1,50 +1,54 @@
 ﻿
-var sinon = require("sinon");
-
-var page = {
-    open: function(url, callback){
-        callback(null);
-    },
-    close: function(callback){
-        callback()
-    },
-    render: function(filename, callback){
-        callback(null);
-    },
-    set: function(property, value, callback){
-        callback(null);
-    }
-}
-
-var MockPage = sinon.mock(page);
-
-var handlers = {};
-
-var phantom = {
-    createPage: function (callback) {
-        callback(null, MockPage);
-    },
-    exit: function (callback) {
-        callback();
-    },
-    on: function (event, callback) {
-        if (!handlers[event]) {
-            handlers[event] = [];
+exports.getMockPage = function () {
+    return  {
+        open: function(url, callback){
+            setTimeout(function () {
+                callback(null, "success");
+            }, 0);
+        },
+        close: function(callback){
+            setTimeout(function () {
+                callback(null);
+            }, 0);
+        },
+        render: function(filename, callback){
+            setTimeout(function () {
+                callback(null);
+            }, 0);
+        },
+        set: function(property, value, callback){
+            setTimeout(function () {
+                callback(null);
+            }, 0);
         }
-        handlers[event].push(callback);
     }
-}
+};
 
-var MockPhantom = sinon.mock(phantom);
-
-var phantomModule = {
-    create: function (callback) {
-        callback(MockPhantom);
+exports.getMockPhantom = function(mockPage){
+    return  {
+        createPage: function (callback) {
+            setTimeout(function () {
+                callback(null, mockPage);
+            }, 0);
+        },
+        exit: function (callback) {
+            setTimeout(function () {
+                callback(null);
+            }, 0);
+        },
+        on: function (event, callback) {
+        }
     }
-}
+};
 
-module.exports = {
-    MockPhantomModule: phantomModule,
-    MockPhantom: MockPhantom,
-    MockPage: MockPage
-}
+exports.getMockPhantomModule = function(mockPhantom){
+
+    return {
+        create: function (callback) {
+            setTimeout(function () {
+                callback(null, mockPhantom);
+            }, 0);
+        }
+    }
+
+};
