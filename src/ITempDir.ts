@@ -8,6 +8,8 @@ interface ITempDir {
 
     remove(): void;
 
+    listFiles(): string[];
+
 }
 
 interface ITempDirRecord {

@@ -64,6 +64,10 @@ class TempDir implements ITempDir {
         return dfd.promise;
     }
 
+    public listFiles(): string[] {
+        return fs.readdirSync(this.dir);
+    }
+
     private createTempDir(): string {
         var i = 1;
         var filename = this.dirBase + i.toString();

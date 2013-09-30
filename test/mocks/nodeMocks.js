@@ -2,6 +2,7 @@
 
     var existing = [];
     var fileCount = 0;
+    var mockStream = exports.getMockStream();
 
     return {
 
@@ -16,6 +17,10 @@
 
         setFileCount: function(c){
             fileCount = c;
+        },
+
+        setMockstream: function(s){
+            mockStream = s;
         },
 
         existsSync : function(filename){
@@ -40,9 +45,51 @@
             setTimeout(function () {
                 cb(null);
             }, 0);
+        },
+
+        createWriteStream: function(){
+            return mockStream;
+        },
+
+        createReadStream: function(){
+            return mockStream;
+        },
+
+        unlink: function (file, cb) {
+            setTimeout(function () {
+                cb(null);
+            }, 0);
         }
+    }
+}
 
+exports.getMockStream = (function () {
 
+    var Stream = function () {
+        this.handlers = {};
     }
 
-}
+    Stream.prototype.on = function (ev, cb) {
+        if (!this.handlers[ev]) {
+            this.handlers[ev] = [];
+        }
+        this.handlers[ev].push(cb);
+    }
+
+    Stream.prototype.pipe = function () { }
+
+    Stream.prototype.fire = function(ev){
+        if(!this.handlers[ev]){
+            return;
+        }
+
+        this.handlers[ev].forEach(function (func) {
+            func.call();
+        });
+    }
+
+    return function () {
+        return new Stream();
+    }
+
+}());

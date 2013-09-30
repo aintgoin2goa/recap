@@ -55,6 +55,10 @@ var TempDir = (function () {
         return dfd.promise;
     };
 
+    TempDir.prototype.listFiles = function () {
+        return fs.readdirSync(this.dir);
+    };
+
     TempDir.prototype.createTempDir = function () {
         var i = 1;
         var filename = this.dirBase + i.toString();
