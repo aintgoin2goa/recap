@@ -7,6 +7,5 @@
 	"widths" : [
 		320, 640, 1024, 1900
 	],
-	"dest" : "../dest/",
-	"tempFolder" : "../temp/"
+	"dest" : "../dest/"
 }

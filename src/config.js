@@ -6,7 +6,6 @@ var path = require("path");
 var Config = (function () {
     function Config() {
         this.dest = "../dest/";
-        this.tempFolder = "../temp/";
     }
     return Config;
 })();
@@ -15,7 +14,15 @@ exports.Config = Config;
 function loadFromFilePath(pth) {
     pth = path.normalize(pth);
     var file = fs.readFileSync(pth, { encoding: "utf8" });
-    return JSON.parse(file);
+    var contents;
+    try  {
+        return JSON.parse(file);
+    } catch (e) {
+        console.error("JSON Parse Error", e);
+        setTimeout(function () {
+            process.exit(1);
+        }, 10);
+    }
 }
 
 function load(cfg) {
@@ -27,9 +34,6 @@ function load(cfg) {
     config.widths = cfg.widths;
     if (cfg.dest) {
         config.dest = cfg.dest;
-    }
-    if (cfg.tempFolder) {
-        config.tempFolder = cfg.tempFolder;
     }
     return config;
 }

@@ -24,9 +24,9 @@ var PhantomAdaptor = (function () {
 
     PhantomAdaptor.prototype.setViewPortSize = function (width, height) {
         var dfd = Q.defer();
-        console.log("setViewPortSize");
         this.page.set("viewportSize", { width: width, height: height }, function (err) {
             if (err) {
+                console.error("ERROR", err);
                 dfd.reject(err);
             } else {
                 dfd.resolve(true);
@@ -51,6 +51,7 @@ var PhantomAdaptor = (function () {
         var dfd = Q.defer();
         this.page.render(filename, function (err) {
             if (err) {
+                console.error("ERROR", err);
                 dfd.reject(err);
             } else {
                 dfd.resolve(true);

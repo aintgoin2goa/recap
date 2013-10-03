@@ -1,5 +1,7 @@
 /// <reference path="IDestDir.ts" />
 
+
+
 import path = require("path");
 
 class DestDir implements IDestDir {

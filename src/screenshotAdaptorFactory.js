@@ -1,6 +1,4 @@
 /// <reference path="screenshotAdaptors/IScreenshotAdaptor.ts" />
-var PhantomAdaptor = require("./screenshotAdaptors/PhantomAdaptor");
-
 var ScreenshotAdaptorFactory = (function () {
     function ScreenshotAdaptorFactory(adtp) {
         this.Adaptor = adtp;

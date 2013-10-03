@@ -1,103 +1,125 @@
+/// <reference path="./IConfig.ts" />
+/// <reference path="./ITempDir.ts" />
+/// <reference path="./IDestDir.ts" />
+/// <reference path=./ScreenshotAdaptors/IScreenshotAdaptor.ts" />
+/// <reference path="transports/ITransport.ts" />
 /// <reference path="d/node.d.ts" />
-/// <reference path="d/node-phantom.d.ts" />
-/// <reference path="d/rimraf.d.ts" />
-var phantom = require("node-phantom");
-var rimraf = require("rimraf");
+/// <reference path="d/Q.d.ts" />
+var Q = require("q");
 
-var urls = [
-    "http://nissan.co.th/",
-    "http://www.footlocker.eu/ns/kdi/gb/en/index.html",
-    "http://www.audiusa.com/"
-];
+var PhantomAdaptor = require("./screenshotAdaptors/PhantomAdaptor");
+var ScreenshotAdaptorFactory = require("./screenshotAdaptorFactory");
+var Config = require("./config");
+var TempDir = require("./tempDir");
+var DestDir = require("./DestDir");
+var transport = require("./transportFactory");
 
-var sizesToCheck = [1900, 1024, 640, 320];
-
+var cnfg;
+var factory;
+var adaptor;
+var tempDir;
+var destDir;
+var urls;
 var url;
-var sizes;
-var dest = "../dest/";
-var ph;
-var page;
-var currentSize;
-var destination = "../dest/";
+var widths;
 
-function handleError(err) {
-    if (!err) {
-        return;
-    }
-    console.error("ERROR", err);
+function init(config) {
+    cnfg = Config.load(config);
+    console.log("config loaded", cnfg);
+    factory = new ScreenshotAdaptorFactory(PhantomAdaptor);
+    adaptor = factory.getNew();
+    tempDir = new TempDir();
+    takeScreenshots();
+}
+
+function fail() {
+    console.error("Something went wrong");
     process.exit(1);
 }
 
-function generateFilename(url, size) {
-    var name = url.replace(/^[a-z]{3,5}:/, '').replace(/\//g, '');
-    return name + "_" + size.toString() + ".png";
-}
-
-function nextUrl() {
-    if (urls.length) {
+function takeScreenshots() {
+    urls = cnfg.urls;
+    widths = cnfg.widths.slice(0);
+    adaptor.init().then(function () {
+        console.log("Beginning...");
         url = urls.shift();
-        sizes = sizesToCheck.slice(0);
-        nextSize();
-    } else {
-        finish();
+        takeNextScreenshot();
+    }, function () {
+        console.error("Failed to initalize adaptor");
+    });
+}
+
+function takeNextScreenshot() {
+    var width;
+    console.log("Next");
+    tempDir.saveRecords();
+
+    if (urls.length == 0 && widths.length == 0) {
+        copyFiles();
     }
+
+    if (widths.length == 0) {
+        widths = cnfg.widths.slice(0);
+        url = urls.shift();
+    }
+
+    width = widths.shift();
+    console.log("Next screenshot: " + url + " width: " + width);
+    takeScreenshot(url, width).then(takeNextScreenshot, fail);
 }
 
-function nextSize() {
-    currentSize = sizes.shift();
-    console.log("change size to " + currentSize);
-    page.set("viewportSize", { width: currentSize, height: currentSize }, function () {
-        page.open(url, takeScreenshot);
-        console.log("opening " + url);
+function takeScreenshot(url, width) {
+    var dfd = Q.defer();
+    var filename = tempDir.createRecord(url, width);
+    adaptor.open(url).then(function () {
+        console.log("Set Viewport", width);
+        return adaptor.setViewPortSize(width, width);
+    }, function () {
+        dfd.reject(false);
+    }).then(function () {
+        console.log("Capture ScreenShot");
+        return adaptor.capture(filename);
+    }, function () {
+        dfd.reject(false);
+    }).then(function () {
+        console.log("Captured");
+        dfd.resolve(true);
+    }, function () {
+        dfd.reject(false);
     });
+    return dfd.promise;
 }
 
-function takeScreenshot(err, size) {
-    handleError(err);
-    var filename = destination + generateFilename(url, currentSize);
-    page.render(filename, afterScreenshot);
-    console.log("rendering to " + filename);
-}
+function copyFiles() {
+    console.log("all screenshots taken, now to save files to " + cnfg.dest);
+    try  {
+        destDir = new DestDir(cnfg.dest);
+    } catch (e) {
+        console.error(e);
+    }
 
-function afterScreenshot(err) {
-    handleError(err);
-    console.log("rendered");
-    setTimeout(function () {
-        if (!sizes.length) {
-            nextUrl();
-        } else {
-            nextSize();
-        }
-    }, 1000);
-}
-
-function start(err, p) {
-    handleError(err);
-    console.log("created page");
-    page = p;
-    rimraf(destination, function () {
-        console.log("Cleaned destination directory");
-        nextUrl();
-    });
+    console.log("Copy files to " + destDir.uri);
+    transport(tempDir).to(destDir).then(finish, fail);
 }
 
 function finish() {
-    console.log("All done");
-    process.exit();
+    tempDir.remove();
+    console.log("Done.  Your files can be found in " + destDir.uri);
+    process.exit(0);
 }
 
-phantom.create(function (err, p) {
-    handleError(err);
-
-    console.log("Created phantom instance");
-
-    ph = p;
-
-    ph.createPage(start);
-
-    ph.on("exit", function () {
-        process.exit(1);
+function parseArgs() {
+    return process.argv.filter(function (arg) {
+        return (arg.indexOf("node") < 0 && arg[0] !== "-" && __filename.indexOf(arg) < 0);
     });
-});
+}
 
-//@ sourceMappingURL=main.js.map
+if (require.main === module) {
+    var args = parseArgs();
+    var config = args[0];
+    init(config);
+} else {
+    exports.run = init;
+}
+
+//# sourceMappingURL=main.js.map

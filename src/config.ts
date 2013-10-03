@@ -13,15 +13,22 @@ import path = require("path");
 
         public dest: string = "../dest/";
 
-        public tempFolder: string = "../temp/";
-
     }
 
     function loadFromFilePath(pth: string): Object
     {
         pth = path.normalize(pth);
         var file = fs.readFileSync(pth, { encoding: "utf8" });
-        return JSON.parse(file);
+        var contents;
+        try {
+            return JSON.parse(file);
+        } catch (e) {
+            console.error("JSON Parse Error", e);
+            setTimeout(function () {
+                process.exit(1);
+            }, 10);
+            
+        }       
     }
     
     export function load(cfg: string): IConfig
@@ -36,9 +43,6 @@ import path = require("path");
         config.widths = cfg.widths;
         if (cfg.dest) {
             config.dest = cfg.dest;
-        }
-        if (cfg.tempFolder) {
-            config.tempFolder = cfg.tempFolder;
         }
         return config;
     } 

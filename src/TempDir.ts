@@ -36,8 +36,8 @@ class TempDir implements ITempDir {
     }
 
     public saveRecords(): void {
-        var data = JSON.stringify(this.records);
-        fs.writeFile(data, { encoding: 'utf8' });
+        var data = JSON.stringify(this.records, null, 2);
+        fs.writeFile(this.dir + path.sep + "data.json", data, { encoding: 'utf8' });
     }
 
     public remove(): Q.IPromise<any> {

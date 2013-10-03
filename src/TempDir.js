@@ -26,8 +26,8 @@ var TempDir = (function () {
     };
 
     TempDir.prototype.saveRecords = function () {
-        var data = JSON.stringify(this.records);
-        fs.writeFile(data, { encoding: 'utf8' });
+        var data = JSON.stringify(this.records, null, 2);
+        fs.writeFile(this.dir + path.sep + "data.json", data, { encoding: 'utf8' });
     };
 
     TempDir.prototype.remove = function () {
@@ -75,4 +75,4 @@ var TempDir = (function () {
 
 module.exports = TempDir;
 
-//# sourceMappingURL=TempDir.js.map
+//# sourceMappingURL=tempDir.js.map

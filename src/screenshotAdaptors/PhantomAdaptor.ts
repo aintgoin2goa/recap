@@ -30,9 +30,9 @@ class PhantomAdaptor implements IScreenshotAdaptor{
     public setViewPortSize(width: number, height: number): Q.IPromise<any>
     {
         var dfd: Q.Deferred<any> = Q.defer();
-        console.log("setViewPortSize");
         this.page.set("viewportSize", { width: width, height: height }, function (err) {
             if (err) {
+                console.error("ERROR", err);
                 dfd.reject(err);
             } else {
                 dfd.resolve(true);
@@ -59,6 +59,7 @@ class PhantomAdaptor implements IScreenshotAdaptor{
         var dfd: Q.Deferred<any> = Q.defer();
         this.page.render(filename, (err) => {
             if (err) {
+                console.error("ERROR", err);
                 dfd.reject(err);
             } else {
                 dfd.resolve(true);

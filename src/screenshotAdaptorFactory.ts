@@ -1,8 +1,5 @@
 /// <reference path="screenshotAdaptors/IScreenshotAdaptor.ts" />
 
-import PhantomAdaptor = require("screenshotAdaptors/PhantomAdaptor");
-
-
 class ScreenshotAdaptorFactory<T>{
 
     private Adaptor;

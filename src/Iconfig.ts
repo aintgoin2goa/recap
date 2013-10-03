@@ -6,6 +6,4 @@ interface IConfig{
 
     dest: string;
 
-    tempFolder: string;
-
 }
