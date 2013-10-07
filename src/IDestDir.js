@@ -1,5 +1,2 @@
-var DestinationType;
-(function (DestinationType) {
-    DestinationType[DestinationType["FileSystem"] = 0] = "FileSystem";
-})(DestinationType || (DestinationType = {}));
+/// <reference path="IDestinationType.ts" />
 //# sourceMappingURL=IDestDir.js.map

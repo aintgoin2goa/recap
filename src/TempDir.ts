@@ -8,9 +8,9 @@ import Q = require('q');
 
 class TempDir implements ITempDir {
 
-    private records: ITempDirRecord[];
+    public dir: string;
 
-    private dir: string;
+    private records: ITempDirRecord[];
 
     private dirBase = "temp";
 
@@ -23,8 +23,8 @@ class TempDir implements ITempDir {
     }
 
     public createRecord(url: string, width: number): string {
-        var filename = url.replace(/(http|https):/, '').replace(/\//g, '');
-        filename = this.dir + path.sep + filename + "_" + width.toString() + this.extension;
+        var filename = url.replace(/(http|https):\/\//, '').replace(/\//g, '_');
+        filename = filename + "_" + width.toString() + this.extension;
         var record: ITempDirRecord = {
             filename: filename,
             url: url,
@@ -32,7 +32,7 @@ class TempDir implements ITempDir {
             date : new Date()
         }
         this.records.push(record);
-        return filename;
+        return this.dir + path.sep + filename;
     }
 
     public saveRecords(): void {
@@ -65,7 +65,9 @@ class TempDir implements ITempDir {
     }
 
     public listFiles(): string[] {
-        return fs.readdirSync(this.dir);
+        return fs.readdirSync(this.dir).map( (file) => {
+            return this.dir + path.sep + file;
+        });
     }
 
     private createTempDir(): string {

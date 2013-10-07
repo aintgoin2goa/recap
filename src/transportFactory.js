@@ -2,8 +2,10 @@
 /// <reference path="IDestDir.ts" />
 /// <reference path="transports/ITransport.ts" />
 /// <reference path="transports/FileSystemTransport.ts" />
+/// <reference path="IDestinationType.ts" />
 /// <reference path="d/Q.d.ts" />
 var FileSystemTransport = require("./transports/FileSystemTransport");
+var DestinationType = require("./DestinationType");
 
 function resolveTransport(type) {
     switch (type) {

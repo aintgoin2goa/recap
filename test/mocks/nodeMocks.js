@@ -3,6 +3,7 @@
     var existing = [];
     var fileCount = 0;
     var mockStream = exports.getMockStream();
+    var files = [];
 
     return {
 
@@ -22,6 +23,10 @@
         setMockstream: function(s){
             mockStream = s;
         },
+
+        setDirFiles: function(fls){
+            files = fls;
+        },  
 
         existsSync : function(filename){
             return existing.indexOf(filename) > -1;
@@ -59,6 +64,10 @@
             setTimeout(function () {
                 cb(null);
             }, 0);
+        },
+
+        readdirSync: function () {
+            return files;
         }
     }
 }

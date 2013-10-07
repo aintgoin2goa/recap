@@ -39,8 +39,9 @@ var FileSystemTransport = (function () {
         var dfd = Q.defer();
         var source = fs.createReadStream(file);
         var destination = fs.createWriteStream(this.to.getFilename(file));
-
-        source.on("error", function () {
+        console.log("Copy " + file + " to " + this.to.getFilename(file));
+        source.on("error", function (err) {
+            console.error(err);
             dfd.reject(false);
         });
 
@@ -49,7 +50,8 @@ var FileSystemTransport = (function () {
             dfd.reject(false);
         });
 
-        destination.on("done", function () {
+        destination.on("finish", function () {
+            console.log("Finished piping " + file);
             dfd.resolve(true);
         });
 

@@ -46,8 +46,7 @@ describe("TempDir", function () {
 		tempDir.saveRecords();
 
 		expect(fsMock.writeFile).toHaveBeenCalled();
-
-		var arg = JSON.parse(fsMock.writeFile.mostRecentCall.args[0])[0];
+		var arg = JSON.parse(fsMock.writeFile.mostRecentCall.args[1])[0];
 
 		expect(arg.filename).toBe(filename);
 		expect(arg.width).toBe(600);
@@ -74,6 +73,16 @@ describe("TempDir", function () {
 			expect(fsMock.rmdir).not.toHaveBeenCalled();
 			done();
 		});
+	});
+
+	it("Will return an array of files", function () {
+	    var files = ["file1.jpg", "file2.jpg", "file3.jpg"];
+       
+	    fsMock.setDirFiles(files);
+	    var tempDir = new TempDir();
+	    var expected = files.map(function (file) { return tempDir.dir + path.sep + file; });
+	    var result = tempDir.listFiles();
+	    expect(result).toEqual(expected);
 	});
 
 });

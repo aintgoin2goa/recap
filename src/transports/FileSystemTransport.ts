@@ -49,8 +49,9 @@ class FileSystemTransport implements ITransport {
         var dfd: Q.Deferred<boolean> = Q.defer();
         var source = fs.createReadStream(file);
         var destination = fs.createWriteStream(this.to.getFilename(file));
-
-        source.on("error", function () {
+        console.log("Copy " + file + " to " + this.to.getFilename(file));
+        source.on("error", function (err) {
+            console.error(err);
             dfd.reject(false);
         });
 
@@ -59,7 +60,8 @@ class FileSystemTransport implements ITransport {
             dfd.reject(false);
         });
 
-        destination.on("done", function () {
+        destination.on("finish", function () {
+            console.log("Finished piping " + file);
             dfd.resolve(true);
         });
 

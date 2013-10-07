@@ -13,8 +13,8 @@ var TempDir = (function () {
         this.records = [];
     }
     TempDir.prototype.createRecord = function (url, width) {
-        var filename = url.replace(/(http|https):/, '').replace(/\//g, '');
-        filename = this.dir + path.sep + filename + "_" + width.toString() + this.extension;
+        var filename = url.replace(/(http|https):\/\//, '').replace(/\//g, '_');
+        filename = filename + "_" + width.toString() + this.extension;
         var record = {
             filename: filename,
             url: url,
@@ -22,7 +22,7 @@ var TempDir = (function () {
             date: new Date()
         };
         this.records.push(record);
-        return filename;
+        return this.dir + path.sep + filename;
     };
 
     TempDir.prototype.saveRecords = function () {
@@ -56,7 +56,10 @@ var TempDir = (function () {
     };
 
     TempDir.prototype.listFiles = function () {
-        return fs.readdirSync(this.dir);
+        var _this = this;
+        return fs.readdirSync(this.dir).map(function (file) {
+            return _this.dir + path.sep + file;
+        });
     };
 
     TempDir.prototype.createTempDir = function () {

@@ -1,8 +1,8 @@
 /// <reference path="IDestDir.ts" />
-
-
+/// <reference path="IDestinationType.ts" />
 
 import path = require("path");
+var DestinationType: DestinationType = require("./DestinationType");
 
 class DestDir implements IDestDir {
 

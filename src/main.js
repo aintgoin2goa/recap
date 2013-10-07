@@ -33,7 +33,7 @@ function init(config) {
 }
 
 function fail() {
-    console.error("Something went wrong");
+    console.error("Something went wrong", arguments);
     process.exit(1);
 }
 
@@ -56,6 +56,7 @@ function takeNextScreenshot() {
 
     if (urls.length == 0 && widths.length == 0) {
         copyFiles();
+        return;
     }
 
     if (widths.length == 0) {
@@ -91,7 +92,7 @@ function takeScreenshot(url, width) {
 }
 
 function copyFiles() {
-    console.log("all screenshots taken, now to save files to " + cnfg.dest);
+    console.log("all screenshots taken, save files to " + cnfg.dest);
     try  {
         destDir = new DestDir(cnfg.dest);
     } catch (e) {

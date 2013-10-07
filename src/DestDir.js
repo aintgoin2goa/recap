@@ -1,5 +1,7 @@
 /// <reference path="IDestDir.ts" />
+/// <reference path="IDestinationType.ts" />
 var path = require("path");
+var DestinationType = require("./DestinationType");
 
 var DestDir = (function () {
     function DestDir(uri) {

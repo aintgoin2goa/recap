@@ -1,8 +1,4 @@
-
-
-enum DestinationType {
-    FileSystem
-}
+/// <reference path="IDestinationType.ts" />   
 
 interface IDestDir {
 
@@ -13,3 +9,4 @@ interface IDestDir {
     getFilename(tempFile: string): string;
 
 }
+
