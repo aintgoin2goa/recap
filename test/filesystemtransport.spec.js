@@ -17,7 +17,7 @@ describe("FileSystemTransport", function () {
         streamMock = nodeMocks.getMockStream();
         streamMock.pipe = function () {
             setTimeout(function () {
-                streamMock.fire("done");
+                streamMock.fire("finish");
             }, 500);
         }
         fsMock = nodeMocks.getFSMock();
@@ -31,6 +31,8 @@ describe("FileSystemTransport", function () {
     });
 
     it("Can save a file stored in the temp directory to another place on the same filesystem", function (done) {
+    
+        debugger
        var from = "file.jpg", to = "file2.jpg";
         TempDirMock.listFiles = function () {
             return [from];
@@ -43,6 +45,7 @@ describe("FileSystemTransport", function () {
 
         .then(
             function () {
+                debugger;
                 expect(fsMock.createReadStream).toHaveBeenCalledWith(from);
                 expect(fsMock.createWriteStream).toHaveBeenCalledWith(to);
                 done();

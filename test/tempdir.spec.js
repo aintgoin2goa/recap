@@ -41,7 +41,7 @@ describe("TempDir", function () {
 	it("Can save records to a json file in the directory", function () {
 		spyOn(fsMock, "writeFile");
 		var tempDir = new TempDir();
-		var filename = tempDir.createRecord(url, 600);
+		var filename = tempDir.createRecord(url, 600).replace(tempDir.dir + path.sep, "");
 
 		tempDir.saveRecords();
 

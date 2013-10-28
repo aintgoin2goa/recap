@@ -27,22 +27,13 @@ class FileSystemTransport implements ITransport {
         }
         var file = this.files.shift();
         this.copyFile(file)
-        .then(
-        () => {
-            fs.unlink(file, (err) => {
-                if (err) {
-                    console.error(err);
-                    dfd.reject(false);
-                } else {
-                    this.nextFile(dfd);
-                }
-            });
-        },
-        () => {
-
+            .then(
+            () => {
+                this.nextFile(dfd);
+            },
+            () => {
                 dfd.reject(false);
-            }
-        );
+        });
     }
 
     private copyFile(file: string): Q.IPromise<boolean> {
