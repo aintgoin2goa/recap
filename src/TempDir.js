@@ -4,6 +4,7 @@
 var fs = require("fs");
 var path = require("path");
 var Q = require('q');
+var rimraf = require("rimraf");
 
 var TempDir = (function () {
     function TempDir() {
@@ -31,26 +32,13 @@ var TempDir = (function () {
     };
 
     TempDir.prototype.remove = function () {
-        var _this = this;
         var dfd = Q.defer();
-        fs.readdir(this.dir, function (err, files) {
+        rimraf(this.dir, function (err) {
             if (err) {
                 dfd.reject(err);
-                return;
+            } else {
+                dfd.resolve(true);
             }
-
-            if (files.length) {
-                dfd.reject(null);
-                return;
-            }
-
-            fs.rmdir(_this.dir, function (err) {
-                if (err) {
-                    dfd.reject(err);
-                } else {
-                    dfd.resolve(true);
-                }
-            });
         });
         return dfd.promise;
     };

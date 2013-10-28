@@ -1,4 +1,5 @@
 /// <reference path="d/node.d.ts" />
+/// <reference path = "d/Q.d.ts" />
 
 interface ITempDir {
 
@@ -6,7 +7,7 @@ interface ITempDir {
 
     saveRecords(): void;
 
-    remove(): void;
+    remove(): Q.IPromise<any>;
 
     listFiles(): string[];
 

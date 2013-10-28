@@ -5,7 +5,7 @@
   "author": "aintgoin2goa",
   "description": "creates responsive screenshots using phantomjs",
   "bin": {
-    "reshot": "./bin/reshot"
+    "reshot": "./bin/reshot.js"
   },
   "main": "./src/main.js",
   "repository": {

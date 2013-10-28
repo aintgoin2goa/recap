@@ -117,9 +117,10 @@ function copyFiles() {
 }
 
 function finish() {
-    tempDir.remove();
-    console.log("Done.  Your files can be found in " + destDir.uri);
-    process.exit(0);
+    tempDir.remove().then(function () {
+        console.log("Done.  Your files can be found in " + destDir.uri);
+        process.exit(0);
+    });
 }
 
 function parseArgs(): string[] {

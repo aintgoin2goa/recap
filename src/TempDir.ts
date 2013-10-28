@@ -5,6 +5,7 @@
 import fs = require("fs");
 import path = require("path");
 import Q = require('q');
+var rimraf = require("rimraf");
 
 class TempDir implements ITempDir {
 
@@ -42,24 +43,12 @@ class TempDir implements ITempDir {
 
     public remove(): Q.IPromise<any> {
         var dfd: Q.Deferred<any> = Q.defer();
-        fs.readdir(this.dir, (err, files) => {
+        rimraf(this.dir, function (err) {
             if (err) {
                 dfd.reject(err);
-                return;
+            } else {
+                dfd.resolve(true);
             }
-
-            if (files.length) {
-                dfd.reject(null);
-                return;
-            }
-
-            fs.rmdir(this.dir, function (err) {
-                if (err) {
-                    dfd.reject(err);
-                } else {
-                    dfd.resolve(true);
-                }
-            });
         });
         return dfd.promise;
     }

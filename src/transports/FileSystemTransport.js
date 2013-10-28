@@ -22,14 +22,7 @@ var FileSystemTransport = (function () {
         }
         var file = this.files.shift();
         this.copyFile(file).then(function () {
-            fs.unlink(file, function (err) {
-                if (err) {
-                    console.error(err);
-                    dfd.reject(false);
-                } else {
-                    _this.nextFile(dfd);
-                }
-            });
+            _this.nextFile(dfd);
         }, function () {
             dfd.reject(false);
         });
