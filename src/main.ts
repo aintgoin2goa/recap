@@ -1,6 +1,5 @@
 /// <reference path="./IConfig.ts" />
 /// <reference path="./ITempDir.ts" />
-/// <reference path="./IDestDir.ts" />
 /// <reference path=./ScreenshotAdaptors/IScreenshotAdaptor.ts" />
 /// <reference path="transports/ITransport.ts" />
 /// <reference path="d/node.d.ts" />
@@ -12,14 +11,14 @@ import PhantomAdaptor = require("screenshotAdaptors/PhantomAdaptor");
 import ScreenshotAdaptorFactory = require("./screenshotAdaptorFactory");
 import Config = require("./config");
 import TempDir = require("./tempDir");
-import DestDir = require("./DestDir");
+import DestinationResolver = require("destinations/DestinationResolver");
 import transport = require("transportFactory");
 
 var cnfg: IConfig;
 var factory: ScreenshotAdaptorFactory<PhantomAdaptor>;
 var adaptor: IScreenshotAdaptor;
 var tempDir: ITempDir; 
-var destDir: IDestDir;
+var destination: IDestination;
 var urls: string[];
 var url: string;
 var widths: number[];
@@ -107,18 +106,19 @@ function takeScreenshot(url: string, width: number): Q.IPromise<boolean> {
 function copyFiles() {
     console.log("all screenshots taken, save files to " + cnfg.dest);
     try {
-        destDir = new DestDir(cnfg.dest);
+        destination = DestinationResolver.DestinationResolver.resolve(cnfg.dest);
     } catch (e) {
         console.error(e);
+        process.exit(1);
     }
     
-    console.log("Copy files to " + destDir.uri);
-    transport(tempDir).to(destDir).then(finish, fail);
+    console.log("Copy files to " + destination.uri);
+    transport(tempDir).to(destination).then(finish, fail);
 }
 
 function finish() {
     tempDir.remove().then(function () {
-        console.log("Done.  Your files can be found in " + destDir.uri);
+        console.log("Done.  Your files can be found in " + destination.uri);
         process.exit(0);
     });
 }

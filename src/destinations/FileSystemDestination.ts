@@ -1,10 +1,11 @@
-/// <reference path="IDestDir.ts" />
+/// <reference path="IDestination.ts" />
 /// <reference path="IDestinationType.ts" />
 
 import path = require("path");
+import fs = require("fs");
 var DestinationType: DestinationType = require("./DestinationType");
 
-class DestDir implements IDestDir {
+class FileSystemDestination implements IDestination {
 
     public uri: string;
 
@@ -13,6 +14,9 @@ class DestDir implements IDestDir {
     constructor(uri: string) {
         this.uri = uri;
         this.type = this.getType(uri);
+        if (!fs.existsSync(uri)) {
+            fs.mkdirSync(uri);
+        }
     }
 
     getFilename(tempName: string): string {
@@ -27,4 +31,4 @@ class DestDir implements IDestDir {
 
 }
 
-export = DestDir;
+export = FileSystemDestination;

@@ -9,7 +9,7 @@ class FileSystemTransport implements ITransport {
 
     public from: ITempDir;
 
-    public to: IDestDir;
+    public to: IFileSystemDestination;
 
     private files: string[];
 

@@ -1,12 +1,10 @@
 /// <reference path="IDestinationType.ts" />   
 
-interface IDestDir {
+interface IDestination {
 
     uri: string;
 
     type: DestinationType;
-
-    getFilename(tempFile: string): string;
 
 }
 

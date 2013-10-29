@@ -1,6 +1,5 @@
 /// <reference path="./IConfig.ts" />
 /// <reference path="./ITempDir.ts" />
-/// <reference path="./IDestDir.ts" />
 /// <reference path=./ScreenshotAdaptors/IScreenshotAdaptor.ts" />
 /// <reference path="transports/ITransport.ts" />
 /// <reference path="d/node.d.ts" />
@@ -11,14 +10,14 @@ var PhantomAdaptor = require("./screenshotAdaptors/PhantomAdaptor");
 var ScreenshotAdaptorFactory = require("./screenshotAdaptorFactory");
 var Config = require("./config");
 var TempDir = require("./tempDir");
-var DestDir = require("./DestDir");
+var DestinationResolver = require("./destinations/DestinationResolver");
 var transport = require("./transportFactory");
 
 var cnfg;
 var factory;
 var adaptor;
 var tempDir;
-var destDir;
+var destination;
 var urls;
 var url;
 var widths;
@@ -94,18 +93,19 @@ function takeScreenshot(url, width) {
 function copyFiles() {
     console.log("all screenshots taken, save files to " + cnfg.dest);
     try  {
-        destDir = new DestDir(cnfg.dest);
+        destination = DestinationResolver.DestinationResolver.resolve(cnfg.dest);
     } catch (e) {
         console.error(e);
+        process.exit(1);
     }
 
-    console.log("Copy files to " + destDir.uri);
-    transport(tempDir).to(destDir).then(finish, fail);
+    console.log("Copy files to " + destination.uri);
+    transport(tempDir).to(destination).then(finish, fail);
 }
 
 function finish() {
     tempDir.remove().then(function () {
-        console.log("Done.  Your files can be found in " + destDir.uri);
+        console.log("Done.  Your files can be found in " + destination.uri);
         process.exit(0);
     });
 }
