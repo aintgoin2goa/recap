@@ -4,11 +4,12 @@ interface NP_ViewPortSize{
 }
 
 interface NP_Page{
-    open(url: string, callback: (err: any, status: string) => void ): void;
-    close(callback: () => void ): void;
+    open(url: string, callback: (err: any, status: string) => void): void;
+    close(callback: () => void): void;
     viewportSize: NP_ViewPortSize;
-    render(filename: string, callback: (err: any) => void ): void;
-    set(property: string, value: any, callback: (err: any) => void ): void;
+    render(filename: string, callback: (err: any) => void): void;
+    set(property: string, value: any, callback: (err: any) => void): void;
+    onLoadFinished: () => void;
 }
 interface NP_Phantom{
     createPage(callback: (err: any, page: NP_Page) => void ): void;

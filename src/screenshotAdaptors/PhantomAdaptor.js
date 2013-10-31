@@ -41,7 +41,9 @@ var PhantomAdaptor = (function () {
             if (err) {
                 dfd.reject(err);
             } else {
-                dfd.resolve(status);
+                setTimeout(function () {
+                    dfd.resolve(status);
+                }, 10);
             }
         });
         return dfd.promise;
