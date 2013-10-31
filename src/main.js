@@ -12,6 +12,7 @@ var Config = require("./config");
 var TempDir = require("./tempDir");
 var DestinationResolver = require("./destinations/DestinationResolver");
 var transport = require("./transportFactory");
+var ConfigGenerator = require("./ConfigGenerator");
 
 var cnfg;
 var factory;
@@ -29,6 +30,14 @@ function init(config) {
     adaptor = factory.getNew();
     tempDir = new TempDir();
     takeScreenshots();
+}
+
+function generateConfig() {
+    ConfigGenerator.generate().then(function (result) {
+        if (result) {
+            init(result);
+        }
+    });
 }
 
 function fail() {
@@ -116,12 +125,7 @@ function parseArgs() {
     });
 }
 
-if (require.main === module) {
-    var args = parseArgs();
-    var config = args[0];
-    init(config);
-} else {
-    exports.run = init;
-}
+exports.run = init;
+exports.generateConfig = generateConfig;
 
 //# sourceMappingURL=main.js.map

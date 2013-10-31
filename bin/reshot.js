@@ -1,12 +1,15 @@
 ﻿#! /usr/bin/env node
+    
+    var argv= require("optimist").argv;
+    var args = argv._
+    var main = require("../src/main");
 
-function parseArgs() {
-    return process.argv.filter(function (arg) {
-        return (arg.indexOf("node") < 0 && arg[0] !== "-" && __filename.indexOf(arg) < 0);
-    });
-}
+    if(args.length){
+        var config = args._[0];
+        main.run(config);
+    }else{
+        main.generateConfig();
+    }
 
-var args = parseArgs();
-var config = args[0];
 
-require("../src/main.js").run(config);
+    

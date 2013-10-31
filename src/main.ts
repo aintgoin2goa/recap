@@ -13,6 +13,7 @@ import Config = require("./config");
 import TempDir = require("./tempDir");
 import DestinationResolver = require("destinations/DestinationResolver");
 import transport = require("transportFactory");
+import ConfigGenerator = require("./ConfigGenerator");
 
 var cnfg: IConfig;
 var factory: ScreenshotAdaptorFactory<PhantomAdaptor>;
@@ -31,6 +32,14 @@ function init(config: Object): void {
     adaptor = factory.getNew();
     tempDir = new TempDir();  
     takeScreenshots();  
+}
+
+function generateConfig(): void {
+    ConfigGenerator.generate().then(function (result) {
+        if (result) {
+            init(result);
+        }
+    });
 }
 
 function fail() {
@@ -129,12 +138,9 @@ function parseArgs(): string[] {
     });
 }
 
-if (require.main === module) {
-    var args = parseArgs();
-    var config = args[0];
-    init(config);
-} else {
-    exports.run = init;
-}
+
+exports.run = init;
+exports.generateConfig = generateConfig;
+
 
   

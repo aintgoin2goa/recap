@@ -21,7 +21,8 @@
 	"node-phantom" : "~0.2",
 	"rimraf" : "~2.2",
 	"q" : "~0.9",
-	"commander" : "~2.0"
+	"prompt" : "~0.2",
+	"optimist" : "~0.6"
   },
   "analyze": false,
   "devDependencies": {
