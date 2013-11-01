@@ -3,6 +3,7 @@
 /// <reference path="../d/Q.d.ts" />
 /// <reference path="IScreenshotAdaptor.ts" />
 var nodePhantom = require("node-phantom");
+var console = require("../Console");
 var Q = require("Q");
 
 var PhantomAdaptor = (function () {

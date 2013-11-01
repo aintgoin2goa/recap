@@ -1,15 +1,37 @@
 ﻿#! /usr/bin/env node
     
-    var argv= require("optimist").argv;
-    var args = argv._
-    var main = require("../src/main");
+var argv= require("optimist")
+    .options('v', {
+    alias : "version",
+    default : false
+})
+    .options('V', {
+    alias : "verbose",
+    default : false
+})
+.argv;
+    
+var package = require("../package.json");
+if(argv.v){
+    process.stdout.write(package.version);
+    process.stdout.write("\n");
+    process.exit(0);
+}
+    
+var console = require("../src/Console");
+console.setConfig("verbose", argv.V);
 
-    if(args.length){
-        var config = args._[0];
-        main.run(config);
-    }else{
-        main.generateConfig();
-    }
+var args = argv._
+    
+var main = require("../src/main");
+
+
+if(args.length){
+    var config = args[0];
+    main.run(config);
+}else{
+    main.generateConfig();
+}
 
 
     

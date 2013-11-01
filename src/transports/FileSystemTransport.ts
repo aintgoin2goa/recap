@@ -4,6 +4,7 @@
 
 import fs = require("fs");
 import Q = require("q");
+var console: IConsole = require("../Console");
 
 class FileSystemTransport implements ITransport {
 

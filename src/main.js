@@ -13,6 +13,7 @@ var TempDir = require("./tempDir");
 var DestinationResolver = require("./destinations/DestinationResolver");
 var transport = require("./transportFactory");
 var ConfigGenerator = require("./ConfigGenerator");
+var console = require("./Console");
 
 var cnfg;
 var factory;
@@ -73,7 +74,7 @@ function takeNextScreenshot() {
     }
 
     width = widths.shift();
-    console.log("Next screenshot: " + url + " width: " + width);
+    console.warn("Next screenshot: " + url + " width: " + width);
     takeScreenshot(url, width).then(takeNextScreenshot, fail);
 }
 
@@ -114,7 +115,7 @@ function copyFiles() {
 
 function finish() {
     tempDir.remove().then(function () {
-        console.log("Done.  Your files can be found in " + destination.uri);
+        console.success("Done.  Your files can be found in " + destination.uri);
         process.exit(0);
     });
 }

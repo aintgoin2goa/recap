@@ -14,6 +14,7 @@ import TempDir = require("./tempDir");
 import DestinationResolver = require("destinations/DestinationResolver");
 import transport = require("transportFactory");
 import ConfigGenerator = require("./ConfigGenerator");
+var console: IConsole = require("./Console");
 
 var cnfg: IConfig;
 var factory: ScreenshotAdaptorFactory<PhantomAdaptor>;
@@ -78,7 +79,7 @@ function takeNextScreenshot(): void {
     }
 
     width = widths.shift();
-    console.log("Next screenshot: " + url + " width: " + width);
+    console.warn("Next screenshot: " + url + " width: " + width);
     takeScreenshot(url, width).then(takeNextScreenshot, fail); 
 }
 
@@ -127,7 +128,7 @@ function copyFiles() {
 
 function finish() {
     tempDir.remove().then(function () {
-        console.log("Done.  Your files can be found in " + destination.uri);
+        console.success("Done.  Your files can be found in " + destination.uri);
         process.exit(0);
     });
 }

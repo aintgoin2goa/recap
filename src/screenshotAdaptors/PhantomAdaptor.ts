@@ -5,6 +5,7 @@
 /// <reference path="IScreenshotAdaptor.ts" />
 
 import nodePhantom = require("node-phantom");
+var console: IConsole = require("../Console");
 var Q = require("Q");
 
 class PhantomAdaptor implements IScreenshotAdaptor{

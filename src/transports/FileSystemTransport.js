@@ -3,6 +3,7 @@
 /// <reference path="../d/node.d.ts" />
 var fs = require("fs");
 var Q = require("q");
+var console = require("../Console");
 
 var FileSystemTransport = (function () {
     function FileSystemTransport() {
