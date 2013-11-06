@@ -24,7 +24,8 @@
 	"q" : "~0.9",
 	"prompt" : "~0.2",
 	"optimist" : "~0.6",
-	"colors" : "~0.6"
+	"colors" : "~0.6",
+	"fs-ext" : "0.3.1"
   },
   "analyze": false,
   "devDependencies": {

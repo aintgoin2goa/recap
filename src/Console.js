@@ -5,7 +5,6 @@ var settings = {
 };
 
 function setConfig(name, value) {
-    console.log("setting " + name + " to " + value);
     settings[name] = value;
 }
 exports.setConfig = setConfig;

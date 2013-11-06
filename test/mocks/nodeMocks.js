@@ -1,76 +1,100 @@
-﻿exports.getFSMock = function () {
+﻿exports.getFSMock = function() {
 
     var existing = [];
     var fileCount = 0;
     var mockStream = exports.getMockStream();
     var files = [];
+    var readFileData = "";
 
     return {
-
-        addExisting : function(e){
+        addExisting: function(e) {
             existing.push(e);
         },
 
-        reset: function(){
+        reset: function() {
             existing = [];
             fileCount = 0;
         },
 
-        setFileCount: function(c){
+        setFileCount: function(c) {
             fileCount = c;
         },
 
-        setMockstream: function(s){
+        setMockstream: function(s) {
             mockStream = s;
         },
 
-        setDirFiles: function(fls){
+        setDirFiles: function(fls) {
             files = fls;
-        },  
+        },
 
-        existsSync : function(filename){
+        setReadFileData: function(d) {
+            readFileData = d;
+        },
+
+        existsSync: function(filename) {
             return existing.indexOf(filename) > -1;
         },
 
-        mkdirSync: function () {
+        mkdir: function(name, mode, callback) {
+            setTimeout(callback, 0);
+        },
+
+        mkdirSync: function() {
 
         },
 
-        writeFile: function () { },
-
-        readdir: function (dir, cb) {
+        readdir: function(dir, cb) {
             var arr = [];
             arr.length = fileCount;
-            setTimeout(function () {
+            setTimeout(function() {
                 cb(null, arr);
             }, 0);
         },
 
-        rmdir: function (dir, cb) {
-            setTimeout(function () {
+        readFile: function(file, options, cb) {
+            setTimeout(function() {
+                cb(null, readFileData);
+            }, 0);
+        },
+
+        writeFile: function(path, data, options, cb) {
+            setTimeout(function() {
                 cb(null);
             }, 0);
         },
 
-        createWriteStream: function(){
-            return mockStream;
-        },
-
-        createReadStream: function(){
-            return mockStream;
-        },
-
-        unlink: function (file, cb) {
-            setTimeout(function () {
+        rmdir: function(dir, cb) {
+            setTimeout(function() {
                 cb(null);
             }, 0);
         },
 
-        readdirSync: function () {
+        createWriteStream: function() {
+            return mockStream;
+        },
+
+        createReadStream: function() {
+            return mockStream;
+        },
+
+        unlink: function(file, cb) {
+            setTimeout(function() {
+                cb(null);
+            }, 0);
+        },
+
+        readdirSync: function() {
             return files;
+        },
+
+        open: function(file, flags, mode, cb) {
+            setTimeout(function() {
+                cb(null, 0);
+            }, 0);
         }
     }
-}
+};
 
 exports.getMockStream = (function () {
 

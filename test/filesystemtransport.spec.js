@@ -32,7 +32,6 @@ describe("FileSystemTransport", function () {
 
     it("Can save a file stored in the temp directory to another place on the same filesystem", function (done) {
     
-        debugger
        var from = "file.jpg", to = "file2.jpg";
         TempDirMock.listFiles = function () {
             return [from];
