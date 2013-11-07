@@ -1,10 +1,11 @@
 ﻿var loader = require("./helpers/moduleLoader.js");
 var mocks = require("./mocks/nodeMocks.js");
 var fsMock = mocks.getFSMock();
+var rimrafMock = require("./mocks/rimrafMock.js");
 var path = require("path");
-var TempDir = loader.loadModule("./src/TempDir.js", { "fs": fsMock }).module.exports;
+var TempDir = loader.loadModule("./src/TempDir.js", { "fs": fsMock, "rimraf" : rimrafMock }).module.exports;
 
-var url = "http://www.google.com"
+var url = "http://www.google.com";
 
 describe("TempDir", function () {
 
@@ -53,27 +54,15 @@ describe("TempDir", function () {
 		expect(arg.url).toBe(url);
 	});
 
-	it("Can delete the temp directory if it is empty", function (done) {
-		spyOn(fsMock, "rmdir").andCallThrough();
+	it("Can delete the temp directory and all it's children", function (done) {
 		var tempDir = new TempDir();
 		tempDir.remove()
 		.then(function () {
-			expect(fsMock.rmdir).toHaveBeenCalled();
+			expect(rimrafMock).toHaveBeenCalled();
 			done();
 		});
 	});
 
-	it("Will not delete the temp directory if it is not empty", function () {
-		spyOn(fsMock, "rmdir").andCallThrough();
-		fsMock.setFileCount(1);
-
-		var tempDir = new TempDir();
-		tempDir.remove()
-		.then(function () {
-			expect(fsMock.rmdir).not.toHaveBeenCalled();
-			done();
-		});
-	});
 
 	it("Will return an array of files", function () {
 	    var files = ["file1.jpg", "file2.jpg", "file3.jpg"];

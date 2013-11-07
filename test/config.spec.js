@@ -1,5 +1,4 @@
-﻿var expect = require("chai").expect;
-var loader = require("./helpers/moduleLoader.js");
+﻿var loader = require("./helpers/moduleLoader.js");
 var config = loader.loadModule("./src/config.js").exports;
 var fs = require("fs");
 
@@ -8,13 +7,13 @@ console.log("config", config);
 describe("Config", function () {
 
     it("Can be loaded correctly", function () {
-        expect(config).to.not.be.null;
+        expect(config).not.toBeNull();
     });
 
     it("Can load a config file given a filepath", function () {
         var cnfg = config.load("./config.json");
 
-        expect(cnfg).not.to.be.null;
+        expect(cnfg).not.toBeNull();
     });
 
     it("Can load configuration data from an object", function () {
@@ -23,7 +22,7 @@ describe("Config", function () {
 
         var cfg = config.load(obj);
 
-        expect(cfg).to.not.be.null;
+        expect(cfg).not.toBeNull();
     });
 
     it("Should correctly populate the returned config class", function () {
@@ -32,10 +31,10 @@ describe("Config", function () {
 
         var cfg = config.load("./config.json");
 
-        expect(cfg.urls).to.eql(obj.urls);
-        expect(cfg.widths).to.eql(obj.widths);
-        expect(cfg.tempFolder).to.equal(obj.tempFolder);
-        expect(cfg.dest).to.equal(obj.dest);
+        expect(cfg.urls).toEqual(obj.urls);
+        expect(cfg.widths).toEqual(obj.widths);
+        expect(cfg.tempFolder).toEqual(obj.tempFolder);
+        expect(cfg.dest).toEqual(obj.dest);
     });
 
 });

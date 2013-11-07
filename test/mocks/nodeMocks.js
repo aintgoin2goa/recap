@@ -88,7 +88,8 @@
             return files;
         },
 
-        open: function(file, flags, mode, cb) {
+        open: function (file, flags, mode, cb) {
+            this.addExisting(file);
             setTimeout(function() {
                 cb(null, 0);
             }, 0);

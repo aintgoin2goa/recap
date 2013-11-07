@@ -44,7 +44,6 @@ describe("FileSystemTransport", function () {
 
         .then(
             function () {
-                debugger;
                 expect(fsMock.createReadStream).toHaveBeenCalledWith(from);
                 expect(fsMock.createWriteStream).toHaveBeenCalledWith(to);
                 done();
@@ -52,6 +51,12 @@ describe("FileSystemTransport", function () {
         );
 
     });
+
+    it("Will check if the detination directory is locked before using it");
+
+    it("Will lock the destination directory before copying");
+
+    it("Will unlock the destination after it's finished");
 
     it("Will loop through all files in the directory, moving one after the other", function (done) {
         var files = ["file1.jpg", "file2.jpg", "file3.jpg"];
@@ -79,27 +84,4 @@ describe("FileSystemTransport", function () {
             }
         );
     });
-
-    it("Will delete a file after it has been copied", function (done) {
-        
-        var from = "file.jpg", to = "file2.jpg";
-        TempDirMock.listFiles = function () {
-            return [from];
-        }
-        DestDirMock.getFilename = function () {
-            return to;
-        }
-        spyOn(fsMock, "unlink").andCallThrough();
-
-        transport.copyFiles()
-
-        .then(
-            function () {
-                expect(fsMock.unlink).toHaveBeenCalled();
-                expect(fsMock.unlink.mostRecentCall.args[0]).toBe(from);
-                done();
-            }
-        );
-    });
-
 });

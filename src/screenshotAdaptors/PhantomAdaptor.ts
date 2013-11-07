@@ -14,6 +14,9 @@ class PhantomAdaptor implements IScreenshotAdaptor{
 
     private phantom: NP_Phantom;
 
+    private delay: number = 10;
+
+
     public init(): Q.IPromise<any>
     {
         var dfd: Q.Deferred<any> = Q.defer();
@@ -49,13 +52,17 @@ class PhantomAdaptor implements IScreenshotAdaptor{
             if (err) {
                 dfd.reject(err);
             } else {
-                setTimeout(function () {
-                    dfd.resolve(status);
-                }, 10);
-                
+                this.delayedResolve(dfd);
             }
         });
         return dfd.promise;
+    }
+
+    private delayedResolve(dfd: Q.Deferred<any>): void {
+
+        setTimeout(function () {
+            dfd.resolve(true);
+        }, this.delay);
     }
 
     public capture(filename: string): Q.IPromise<any>

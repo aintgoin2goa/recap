@@ -60,12 +60,41 @@ describe("FileSystemDestination", function () {
 
     });
 
-    xit("Can check if the directory is locked");
+    it("Can check if the directory is locked", function (done) {
+        
+        destination.setup()
+           .then(function () {
+               return destination.lock();
+           })
+           .then(function () {
+               expect(destination.isLocked()).toBe(true);
+               done();
+           });
+    });
 
-    xit("Will not perform setup if the directory is locked");
+    it("Will not perform setup if the directory is locked", function(done) {
 
-    xit("Can update the data held in memory");
+        destination.lock()
+            .then(function() {
+                return destination.setup();
+            })
+            .then(function() {
+                expect(fsMock.mkdir).not.toHaveBeenCalled();
+                done();
+            });
 
-    xit("Can write the data to the file");
+    });
 
+    it("Can update the data held in memory", function (done) {
+        var data = [{ filename: "file", width: 300, date: new Date(), url: "http:google.com" }];
+        var dataStr = JSON.stringify(data);
+        
+        destination.updateData(data);
+        destination.writeData()
+        
+            .then(function() {
+                expect(fsMock.writeFile.mostRecentCall.args[1]).toBe(dataStr);
+                done();
+            });
+    });
 });

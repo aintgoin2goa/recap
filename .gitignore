@@ -6,4 +6,6 @@ dest/*
 *.csproj*
 *.sln
 *.suo
+*.dll
+*.pdb
 

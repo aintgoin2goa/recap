@@ -17,6 +17,9 @@ var FileSystemDestination = (function () {
     }
     FileSystemDestination.prototype.setup = function () {
         var _this = this;
+        if (this.isLocked()) {
+            return;
+        }
         var dfd = Q.defer();
 
         // if destination does not exist, create it

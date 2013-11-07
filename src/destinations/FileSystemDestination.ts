@@ -32,6 +32,9 @@ class FileSystemDestination implements IFileSystemDestination {
     }
 
     public setup(): Q.IPromise<any> {
+        if (this.isLocked()) {
+            return;
+        }
         var dfd = Q.defer<any>();
         // if destination does not exist, create it
         fs.mkdir(this.uri, "0777", () => {

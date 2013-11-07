@@ -1,7 +1,7 @@
 ﻿
 exports.getMockPage = function () {
     return  {
-        open: function(url, callback){
+        open: function (url, callback) {
             setTimeout(function () {
                 callback(null, "success");
             }, 0);

@@ -8,6 +8,7 @@ var Q = require("Q");
 
 var PhantomAdaptor = (function () {
     function PhantomAdaptor() {
+        this.delay = 10;
     }
     PhantomAdaptor.prototype.init = function () {
         var _this = this;
@@ -37,17 +38,22 @@ var PhantomAdaptor = (function () {
     };
 
     PhantomAdaptor.prototype.open = function (url) {
+        var _this = this;
         var dfd = Q.defer();
         this.page.open(url, function (err, status) {
             if (err) {
                 dfd.reject(err);
             } else {
-                setTimeout(function () {
-                    dfd.resolve(status);
-                }, 10);
+                _this.delayedResolve(dfd);
             }
         });
         return dfd.promise;
+    };
+
+    PhantomAdaptor.prototype.delayedResolve = function (dfd) {
+        setTimeout(function () {
+            dfd.resolve(true);
+        }, this.delay);
     };
 
     PhantomAdaptor.prototype.capture = function (filename) {
