@@ -14,16 +14,56 @@ class FileSystemTransport implements ITransport {
 
     private files: string[];
 
-    copyFiles(): Q.IPromise<boolean> {
-        var dfd: Q.Deferred<boolean> = Q.defer();
-        this.files = this.from.listFiles();
-        this.nextFile(dfd);
+    private waitTime: number = 5000;
+
+    private maxAttempts: number = 5;
+
+    private attempts: number = 0;
+
+    public copyFiles(dfd?: Q.Deferred<boolean>): Q.IPromise<boolean> {
+        if (dfd === undefined) {
+            dfd = Q.defer<boolean>();
+        }
+
+        this.checkForLock(dfd);
         return dfd.promise;
+    }
+
+    private checkForLock(dfd: Q.Deferred<boolean>): void {
+        this.attempts++;
+        if (this.to.isLocked()) {
+            this.tryAgain(dfd);
+        } else {
+            this.start(dfd);
+        }
+    }   
+
+    private tryAgain(dfd: Q.Deferred<boolean>): void {
+        if (this.attempts === this.maxAttempts) {
+            console.error("Destination still locked after " + this.attempts + " attempts.  Giving up...");
+            setImmediate(function () {
+                dfd.reject(false);
+            });
+        } else {
+            console.warn("Destination is locked, will try again in " + (this.waitTime / 1000) + " seconds");
+            setTimeout(() => {
+                this.checkForLock(dfd);
+            }, this.waitTime);
+        }
+    }
+
+    private start(dfd: Q.Deferred<boolean>): void {
+        this.to.lock().then( () => {
+            this.files = this.from.listFiles();
+            this.nextFile(dfd);
+        });
     }
 
     private nextFile(dfd: Q.Deferred<boolean>): void {
         if (this.files.length == 0) {
-            dfd.resolve(true);
+            this.to.unlock().then(function () {
+                dfd.resolve(true);
+            });
             return;
         }
         var file = this.files.shift();
@@ -40,6 +80,7 @@ class FileSystemTransport implements ITransport {
     private copyFile(file: string): Q.IPromise<boolean> {
         var dfd: Q.Deferred<boolean> = Q.defer();
         var source = fs.createReadStream(file);
+        debugger;
         var destination = fs.createWriteStream(this.to.getFilename(file));
         console.log("Copy " + file + " to " + this.to.getFilename(file));
         source.on("error", function (err) {

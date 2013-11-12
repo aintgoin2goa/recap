@@ -7,18 +7,57 @@ var console = require("../Console");
 
 var FileSystemTransport = (function () {
     function FileSystemTransport() {
+        this.waitTime = 5000;
+        this.maxAttempts = 5;
+        this.attempts = 0;
     }
-    FileSystemTransport.prototype.copyFiles = function () {
-        var dfd = Q.defer();
-        this.files = this.from.listFiles();
-        this.nextFile(dfd);
+    FileSystemTransport.prototype.copyFiles = function (dfd) {
+        if (dfd === undefined) {
+            dfd = Q.defer();
+        }
+
+        this.checkForLock(dfd);
         return dfd.promise;
+    };
+
+    FileSystemTransport.prototype.checkForLock = function (dfd) {
+        this.attempts++;
+        if (this.to.isLocked()) {
+            this.tryAgain(dfd);
+        } else {
+            this.start(dfd);
+        }
+    };
+
+    FileSystemTransport.prototype.tryAgain = function (dfd) {
+        var _this = this;
+        if (this.attempts === this.maxAttempts) {
+            console.error("Destination still locked after " + this.attempts + " attempts.  Giving up...");
+            setImmediate(function () {
+                dfd.reject(false);
+            });
+        } else {
+            console.warn("Destination is locked, will try again in " + (this.waitTime / 1000) + " seconds");
+            setTimeout(function () {
+                _this.checkForLock(dfd);
+            }, this.waitTime);
+        }
+    };
+
+    FileSystemTransport.prototype.start = function (dfd) {
+        var _this = this;
+        this.to.lock().then(function () {
+            _this.files = _this.from.listFiles();
+            _this.nextFile(dfd);
+        });
     };
 
     FileSystemTransport.prototype.nextFile = function (dfd) {
         var _this = this;
         if (this.files.length == 0) {
-            dfd.resolve(true);
+            this.to.unlock().then(function () {
+                dfd.resolve(true);
+            });
             return;
         }
         var file = this.files.shift();
@@ -32,6 +71,7 @@ var FileSystemTransport = (function () {
     FileSystemTransport.prototype.copyFile = function (file) {
         var dfd = Q.defer();
         var source = fs.createReadStream(file);
+        debugger;
         var destination = fs.createWriteStream(this.to.getFilename(file));
         console.log("Copy " + file + " to " + this.to.getFilename(file));
         source.on("error", function (err) {
