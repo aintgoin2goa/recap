@@ -1,7 +1,7 @@
 {
   "name": "reshot",
   "preferGlobal": true,
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "aintgoin2goa",
   "description": "creates responsive screenshots using phantomjs",
   "bin": {
@@ -16,23 +16,22 @@
     "screenshot",
     "responsive",
     "phantomjs",
-	"workflow"
+    "workflow"
   ],
-  "dependencies" : {
-	"node-phantom" : "~0.2",
-	"rimraf" : "~2.2",
-	"q" : "~0.9",
-	"prompt" : "~0.2",
-	"optimist" : "~0.6",
-	"colors" : "~0.6",
-	"fs-ext" : "0.3.1"
+  "dependencies": {
+    "node-phantom": "~0.2",
+    "rimraf": "~2.2",
+    "q": "~0.9",
+    "prompt": "~0.2",
+    "optimist": "~0.6",
+    "colors": "~0.6",
+    "fs-ext": "0.3.1"
   },
   "analyze": false,
   "devDependencies": {
-	"jasmine-node" : "~1.5"
+    "jasmine-node": "~1.5"
   },
-  "bundledDependencies": [
-  ],  
+  "bundledDependencies": [],
   "license": "MIT",
   "engines": {
     "node": ">=0.8"
