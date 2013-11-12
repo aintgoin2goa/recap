@@ -1,11 +1,14 @@
 {
-	"urls" : [
-		"http://nissan.co.th/",
-		"http://www.footlocker.eu/ns/kdi/gb/en/index.html",
-		"http://www.audiusa.com/"
-	],
-	"widths" : [
-		320, 640, 1024, 1900
-	],
-	"dest" : "./dest/"
+  "urls": [
+    "http://www.audiusa.com/",
+    "http://nissan.co.th/",
+    "http://www.footlocker.eu/ns/kdi/gb/en/index.html"
+  ],
+  "widths": [
+    "320",
+    "640",
+    "1024",
+    "1900"
+  ],
+  "dest": "./dest/"
 }
