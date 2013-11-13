@@ -3,6 +3,11 @@ var nodeMocks = require("./mocks/nodeMocks.js");
 
 var path = require("path");
 
+var fakeConsole = process.argv.indexOf("npm") > -1 ? console : {
+    log: function() {
+    }
+};
+
 describe("FileSystemDestination", function () {
     
     var fsMock;
@@ -17,7 +22,7 @@ describe("FileSystemDestination", function () {
         spyOn(fsMock, "writeFile").andCallThrough();
         spyOn(fsMock, "unlink").andCallThrough();
         spyOn(fsMock, "open").andCallThrough();
-        Destination = loader.loadModule("./src/destinations/FileSystemDestination.js", { "fs": fsMock }).module.exports;
+        Destination = loader.loadModule("./src/destinations/FileSystemDestination.js", { "fs": fsMock, "console" : fakeConsole }).module.exports;
         destination = new Destination(uri);
     });
 

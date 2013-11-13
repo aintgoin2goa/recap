@@ -58,7 +58,6 @@ exports.getDestDirMock = function () {
         },
         
         firstInvocationOf: function (fn) {
-            console.log("firstInvocationOf", fn, callTracker[fn], callTracker);
             if (callTracker[fn] && callTracker[fn].length) {
                 return callTracker[fn][0];
             }

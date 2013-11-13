@@ -2,8 +2,6 @@
 var config = loader.loadModule("./src/config.js").exports;
 var fs = require("fs");
 
-console.log("config", config);
-
 describe("Config", function () {
 
     it("Can be loaded correctly", function () {
