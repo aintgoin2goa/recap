@@ -1,7 +1,7 @@
 {
   "name": "recap",
   "preferGlobal": true,
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "aintgoin2goa",
   "description": "creates responsive screenshots using phantomjs",
   "bin": {
@@ -16,27 +16,26 @@
     "screenshot",
     "responsive",
     "phantomjs",
-	"workflow"
+    "workflow"
   ],
-  "dependencies" : {
-	"node-phantom" : "0.2.X",
-	"rimraf" : "2.2.X",
-	"q" : "0.9.X",
-	"prompt" : "0.2.X",
-	"optimist" : "0.6.X",
-	"colors" : "0.6.X"
+  "dependencies": {
+    "node-phantom": "0.2.X",
+    "rimraf": "2.2.X",
+    "q": "0.9.X",
+    "prompt": "0.2.X",
+    "optimist": "0.6.X",
+    "colors": "0.6.X"
   },
   "analyze": false,
   "devDependencies": {
-	"jasmine-node" : "1.5.X"
+    "jasmine-node": "1.5.X"
   },
-  "bundledDependencies": [
-  ],  
+  "bundledDependencies": [],
   "license": "MIT",
   "engines": {
     "node": ">=0.8"
   },
-  "scripts":{
-	"test" : "node ./node_modules/jasmine-node/lib/jasmine-node/cli.js --captureExceptions test/"
+  "scripts": {
+    "test": "node ./node_modules/jasmine-node/lib/jasmine-node/cli.js --captureExceptions test/"
   }
 }
