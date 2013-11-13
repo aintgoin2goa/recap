@@ -1,7 +1,7 @@
-reshot
+recap
 ======
 
-A library for taking screenshots of a url at various widths, to aid development of a responsive site.  Uses phantomjs to generate the screenshots/
+A library for taking screenshots of a url at various widths, to aid development of a responsive site.  Uses phantomjs to generate the screenshots.
 
 
 Installation
@@ -15,7 +15,7 @@ If this doesn't work, then read the phantomjs installation docs to find out why.
 
 Once once you have these dependencies up and running run the following command to install reshot 
     
-    npm install -g reshot
+    npm install -g recap
 
 Usage
 ------
@@ -40,15 +40,15 @@ The script requires a config.json script to tell it what urls to capture and at 
 	  "dest": "./dest/"
 	}
 	
-reshot can guide you through the process of creating a config file, just type `reshot` to begin.
+recap can guide you through the process of creating a config file, just type `recap` to begin.
 
 Once you have a config file you can use it by typing
 
-    reshot [path_to_config]
+    recap [path_to_config]
 	
 for example, if the config if is the current directory:
 
-    reshot ./config.json
+    recap ./config.json
 	
 
 

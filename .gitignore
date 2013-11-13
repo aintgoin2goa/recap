@@ -9,4 +9,6 @@ dest/*
 *.dll
 *.pdb
 npm-debug.log
+temp*/
 
+/*.user

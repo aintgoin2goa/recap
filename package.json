@@ -1,37 +1,38 @@
 {
-  "name": "reshot",
+  "name": "recap",
   "preferGlobal": true,
-  "version": "0.1.0",
+  "version": "0.0.1",
   "author": "aintgoin2goa",
   "description": "creates responsive screenshots using phantomjs",
   "bin": {
-    "reshot": "./bin/reshot.js"
+    "recap": "./bin/recap.js"
   },
   "main": "./src/main.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aintgoin2goa/reshot.git"
+    "url": "https://github.com/aintgoin2goa/recap.git"
   },
   "keywords": [
     "screenshot",
     "responsive",
     "phantomjs",
-    "workflow"
+	"workflow"
   ],
-  "dependencies": {
-    "node-phantom": "~0.2",
-    "rimraf": "~2.2",
-    "q": "~0.9",
-    "prompt": "~0.2",
-    "optimist": "~0.6",
-    "colors": "~0.6",
-    "fs-ext": "0.3.1"
+  "dependencies" : {
+	"node-phantom" : "~0.2",
+	"rimraf" : "~2.2",
+	"q" : "~0.9",
+	"prompt" : "~0.2",
+	"optimist" : "~0.6",
+	"colors" : "~0.6",
+	"fs-ext" : "0.3.1"
   },
   "analyze": false,
   "devDependencies": {
-    "jasmine-node": "~1.5"
+	"jasmine-node" : "~1.5"
   },
-  "bundledDependencies": [],
+  "bundledDependencies": [
+  ],  
   "license": "MIT",
   "engines": {
     "node": ">=0.8"
