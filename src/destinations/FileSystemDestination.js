@@ -4,6 +4,7 @@ var path = require("path");
 var fs = require("fs");
 var Q = require('q');
 var DestinationType = require("./DestinationType");
+var console = require("../Console");
 
 var FileSystemDestination = (function () {
     function FileSystemDestination(uri) {
@@ -23,7 +24,13 @@ var FileSystemDestination = (function () {
         var dfd = Q.defer();
 
         // if destination does not exist, create it
-        fs.mkdir(this.uri, "0777", function () {
+        console.log("initialising destination");
+        fs.mkdir(this.uri, "0666", function (err) {
+            if (err) {
+                console.error("Failed to create destination directory", err);
+                process.exit(1);
+            }
+
             // if we have a data file already, delete the file but store contents in memory
             fs.readFile(_this.dataFilePath, { encoding: "utf8" }, function (err, data) {
                 if (data) {

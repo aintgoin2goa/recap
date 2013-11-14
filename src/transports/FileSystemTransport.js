@@ -12,6 +12,7 @@ var FileSystemTransport = (function () {
         this.attempts = 0;
     }
     FileSystemTransport.prototype.copyFiles = function (dfd) {
+        console.log("Begin copying files");
         if (dfd === undefined) {
             dfd = Q.defer();
         }
@@ -47,6 +48,7 @@ var FileSystemTransport = (function () {
     FileSystemTransport.prototype.start = function (dfd) {
         var _this = this;
         this.to.lock().then(function () {
+            console.log("Destination locked succesfully, proceeding...");
             _this.files = _this.from.listFiles();
             _this.nextFile(dfd);
         });

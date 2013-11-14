@@ -6,5 +6,7 @@ interface IDestination {
 
     type: DestinationType;
 
+    setup(): Q.IPromise<any>;
+
 }
 

@@ -5,6 +5,7 @@ import path = require("path");
 import fs = require("fs");
 import Q = require('q');
 var DestinationType: DestinationType = require("./DestinationType");
+var console: IConsole = require("../Console");
 
 class FileSystemDestination implements IFileSystemDestination {
 
@@ -37,7 +38,12 @@ class FileSystemDestination implements IFileSystemDestination {
         }
         var dfd = Q.defer<any>();
         // if destination does not exist, create it
-        fs.mkdir(this.uri, "0777", () => {
+        console.log("initialising destination");
+        fs.mkdir(this.uri, "0666", (err) => {
+            if (err) {
+                console.error("Failed to create destination directory", err);
+                process.exit(1);
+            }
             // if we have a data file already, delete the file but store contents in memory
             fs.readFile(this.dataFilePath, { encoding: "utf8" }, (err: Error, data: string) => {
                 if (data) {

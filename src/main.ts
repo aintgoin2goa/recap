@@ -121,9 +121,17 @@ function copyFiles() {
         console.error(e);
         process.exit(1);
     }
-    
-    console.log("Copy files to " + destination.uri);
-    transport(tempDir).to(destination).then(finish, fail);
+    destination.setup().then(
+        function () {
+            console.log("Copy files to " + destination.uri);
+            transport(tempDir).to(destination).then(finish, fail);
+        },
+        function () {
+            console.error("Failed to setup destination");
+            process.exit();
+        }
+     );
+ 
 }
 
 function finish() {
