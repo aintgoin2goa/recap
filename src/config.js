@@ -3,9 +3,14 @@
 var fs = require("fs");
 var path = require("path");
 
+var loadedConfig;
+
 var Config = (function () {
     function Config() {
         this.dest = "../dest/";
+        this.options = {
+            waitTime: 5000
+        };
     }
     return Config;
 })();
@@ -35,8 +40,22 @@ function load(cfg) {
     if (cfg.dest) {
         config.dest = cfg.dest;
     }
+    if (cfg.options && cfg.options.waitTime) {
+        config.options.waitTime = cfg.options.waitTime;
+    }
+    loadedConfig = config;
+    console.log("loadedConfig", loadedConfig);
     return config;
 }
 exports.load = load;
+
+function getCurrentConfig() {
+    console.log("loadedConfig", loadedConfig);
+    if (loadedConfig == null) {
+        throw new Error("No config has been loaded yet");
+    }
+    return loadedConfig;
+}
+exports.getCurrentConfig = getCurrentConfig;
 
 //# sourceMappingURL=config.js.map

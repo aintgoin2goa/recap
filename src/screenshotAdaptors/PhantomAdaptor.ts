@@ -7,6 +7,8 @@
 import nodePhantom = require("node-phantom");
 var console: IConsole = require("../Console");
 var Q = require("Q");
+import configModule = require("../config");
+var config: IConfig;
 
 class PhantomAdaptor implements IScreenshotAdaptor{
 
@@ -14,12 +16,14 @@ class PhantomAdaptor implements IScreenshotAdaptor{
 
     private phantom: NP_Phantom;
 
-    private delay: number = 10;
+    private delay: number;
 
 
     public init(): Q.IPromise<any>
     {
         var dfd: Q.Deferred<any> = Q.defer();
+        config = configModule.getCurrentConfig();
+        this.delay = config.options.waitTime;
         nodePhantom.create((err, phantom) => {
             if (err) {
                 dfd.reject(err);

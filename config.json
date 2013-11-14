@@ -1,6 +1,6 @@
 {
   "urls": [
-    "http://www.agst.co/"
+    "http://96elephants.org/"
   ],
   "widths": [
     "320",
@@ -8,5 +8,8 @@
     "1024",
     "1900"
   ],
-  "dest": "./dest/"
+  "dest": "./dest/",
+  "options": {
+    "waitTime": 5000
+  }
 }

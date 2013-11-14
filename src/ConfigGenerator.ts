@@ -6,7 +6,10 @@ import Q = require('q');
 var config: IConfig = {
     urls: [],
     widths: [],
-    dest: ""
+    dest: "",
+    options: {
+        waitTime : 5000
+    }
 };
 
 var url = {

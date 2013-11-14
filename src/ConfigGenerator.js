@@ -6,7 +6,10 @@ var Q = require('q');
 var config = {
     urls: [],
     widths: [],
-    dest: ""
+    dest: "",
+    options: {
+        waitTime: 5000
+    }
 };
 
 var url = {

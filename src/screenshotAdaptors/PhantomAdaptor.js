@@ -5,14 +5,17 @@
 var nodePhantom = require("node-phantom");
 var console = require("../Console");
 var Q = require("Q");
+var configModule = require("../config");
+var config;
 
 var PhantomAdaptor = (function () {
     function PhantomAdaptor() {
-        this.delay = 10;
     }
     PhantomAdaptor.prototype.init = function () {
         var _this = this;
         var dfd = Q.defer();
+        config = configModule.getCurrentConfig();
+        this.delay = config.options.waitTime;
         nodePhantom.create(function (err, phantom) {
             if (err) {
                 dfd.reject(err);

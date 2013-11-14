@@ -27,8 +27,11 @@ var FileSystemDestination = (function () {
         console.log("initialising destination");
         fs.mkdir(this.uri, "0666", function (err) {
             if (err) {
-                console.error("Failed to create destination directory", err);
-                process.exit(1);
+                if (err.code == "EEXIST") {
+                    console.warn("Destination directory already exists, will attempt to merge");
+                } else {
+                    console.error("Failed to create destination directory", err);
+                }
             }
 
             // if we have a data file already, delete the file but store contents in memory
