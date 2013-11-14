@@ -53,12 +53,10 @@ export function load(cfg: any): IConfig
         config.options.waitTime = cfg.options.waitTime;
     }
     loadedConfig = config;
-    console.log("loadedConfig", loadedConfig);
     return config;
 } 
 
 export function getCurrentConfig(): IConfig {
-    console.log("loadedConfig", loadedConfig);
     if (loadedConfig == null) {
         throw new Error("No config has been loaded yet");
     }

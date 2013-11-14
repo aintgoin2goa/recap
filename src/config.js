@@ -44,13 +44,11 @@ function load(cfg) {
         config.options.waitTime = cfg.options.waitTime;
     }
     loadedConfig = config;
-    console.log("loadedConfig", loadedConfig);
     return config;
 }
 exports.load = load;
 
 function getCurrentConfig() {
-    console.log("loadedConfig", loadedConfig);
     if (loadedConfig == null) {
         throw new Error("No config has been loaded yet");
     }
