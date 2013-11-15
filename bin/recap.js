@@ -1,5 +1,4 @@
-﻿#! /usr/bin/env node
-    
+﻿    
 var argv= require("optimist")
     .options('v', {
     alias : "version",
@@ -11,9 +10,9 @@ var argv= require("optimist")
 })
 .argv;
     
-var package = require("../package.json");
+var pkg = require("../package.json");
 if(argv.v){
-    process.stdout.write(package.version);
+    process.stdout.write(pkg.version);
     process.stdout.write("\n");
     process.exit(0);
 }
@@ -21,7 +20,7 @@ if(argv.v){
 var console = require("../src/Console");
 console.setConfig("verbose", argv.V);
 
-var args = argv._
+var args = argv._;
     
 var main = require("../src/main");
 
