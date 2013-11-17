@@ -11,10 +11,8 @@ function resolveTransport(type: DestinationType): ITransport {
 }
 
 function transport(from: ITempDir) {
-    console.log("transport from", from);
     return {
         to: function (to: IDestination): Q.IPromise<boolean> {
-            console.log("tranport to", to);
             var transport = resolveTransport(to.type);
             transport.from = from;
             transport.to = to;

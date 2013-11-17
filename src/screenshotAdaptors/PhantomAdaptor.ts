@@ -6,7 +6,7 @@
 
 import nodePhantom = require("node-phantom");
 var console: IConsole = require("../Console");
-var Q = require("Q");
+var Q = require("q");
 import configModule = require("../config");
 var config: IConfig;
 

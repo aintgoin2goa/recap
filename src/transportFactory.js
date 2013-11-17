@@ -9,10 +9,8 @@ function resolveTransport(type) {
 }
 
 function transport(from) {
-    console.log("transport from", from);
     return {
         to: function (to) {
-            console.log("tranport to", to);
             var transport = resolveTransport(to.type);
             transport.from = from;
             transport.to = to;

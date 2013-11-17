@@ -4,7 +4,7 @@
 /// <reference path="IScreenshotAdaptor.ts" />
 var nodePhantom = require("node-phantom");
 var console = require("../Console");
-var Q = require("Q");
+var Q = require("q");
 var configModule = require("../config");
 var config;
 

@@ -33,7 +33,7 @@
   "bundledDependencies": [],
   "license": "MIT",
   "engines": {
-    "node": ">=0.8"
+    "node": ">=0.10"
   },
   "scripts": {
     "test": "node ./node_modules/jasmine-node/lib/jasmine-node/cli.js --captureExceptions test/"
