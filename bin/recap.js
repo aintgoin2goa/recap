@@ -1,6 +1,6 @@
-﻿#! /usr/bin/env node
-    
-var argv= require("optimist")
+﻿#!/usr/local/bin/node
+
+var argv = require("optimist")
     .options('v', {
     alias : "version",
     default : false
