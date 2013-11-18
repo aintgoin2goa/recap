@@ -2,10 +2,12 @@ require("colors");
 
 interface IConsoleSettings {
     verbose: boolean;
+    enableForTests: boolean;
 }
 
 var settings: IConsoleSettings = {
-    verbose: false
+    verbose: false,
+    enableForTests: false
 }
 
 export function setConfig<T>(name: string, value: T): void {
@@ -34,6 +36,11 @@ function parseArgs(args: any[]): string[]{
 }
 
 function printToScreen(args: string[], color: string): void {
+    //if run tests test don't print anything
+    if (process.argv.indexOf("node") != -1 && process.argv.indexOf("test/") != -1 && settings.enableForTests === false) {
+        return;
+    }
+
     console.log(args.join(", " + "\r\n")[color]);
 }
 

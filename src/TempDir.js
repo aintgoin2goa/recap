@@ -66,4 +66,4 @@ var TempDir = (function () {
 
 module.exports = TempDir;
 
-//# sourceMappingURL=tempDir.js.map
+//# sourceMappingURL=TempDir.js.map
