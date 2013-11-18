@@ -21,7 +21,7 @@ class FileSystemTransport implements ITransport {
     private attempts: number = 0;
 
     public copyFiles(dfd?: Q.Deferred<boolean>): Q.IPromise<boolean> {
-        console.log("Begin copying files");
+       
         if (dfd === undefined) {
             dfd = Q.defer<boolean>();
         }
@@ -54,11 +54,14 @@ class FileSystemTransport implements ITransport {
     }
 
     private start(dfd: Q.Deferred<boolean>): void {
+        console.log("Attempting to lock destination");
         this.to.lock().then(() => {
             console.log("Destination locked succesfully, proceeding...");
             this.files = this.from.listFiles();
             this.nextFile(dfd);
-        });
+        }, (err) => {
+            console.error("Failed to lock destination", err);
+            });
     }
 
     private nextFile(dfd: Q.Deferred<boolean>): void {

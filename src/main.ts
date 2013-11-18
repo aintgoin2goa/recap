@@ -58,7 +58,7 @@ function takeScreenshots(): void {
             takeNextScreenshot();
         },
         function () {
-            console.error("Failed to initalize adaptor");
+            console.error("Failed to initalize adaptor", err);
         });
     
 }

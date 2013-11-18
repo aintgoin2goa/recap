@@ -54,7 +54,7 @@ function takeScreenshots() {
         url = urls.shift();
         takeNextScreenshot();
     }, function () {
-        console.error("Failed to initalize adaptor");
+        console.error("Failed to initalize adaptor", err);
     });
 }
 
