@@ -8,7 +8,7 @@
     "1024",
     "1900"
   ],
-  "dest": "../../dest/",
+  "dest": "./dest/",
   "options": {
     "waitTime": 5000
   }

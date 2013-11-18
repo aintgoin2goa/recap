@@ -1,11 +1,12 @@
 ﻿var loader = require("./helpers/moduleLoader.js");
 var mocks = require("./mocks/nodePhantomMock.js");
+var localMocks = require("./mocks/localMocks");
 var mockPage = mocks.getMockPage();
 var mockPhantom = mocks.getMockPhantom(mockPage);
 var mockPhantomModule = mocks.getMockPhantomModule(mockPhantom);
-
+var mockConfig = localMocks.getMockConfig();
 var Q = require("q");
-var Adaptor = loader.loadModule("./src/screenshotAdaptors/PhantomAdaptor.js", { "node-phantom": mockPhantomModule }).module.exports;
+var Adaptor = loader.loadModule("./src/screenshotAdaptors/PhantomAdaptor.js", { "node-phantom": mockPhantomModule, "../config" : mockConfig }).module.exports;
 var Factory = loader.loadModule("./src/screenshotAdaptorFactory.js").module.exports;
 
 var phantom, factory;

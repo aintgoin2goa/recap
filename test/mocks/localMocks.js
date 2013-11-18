@@ -78,7 +78,7 @@ exports.getDestDirMock = function () {
         getFilename: (function () {
             return jasmine.createSpy("getFilename").andCallFake(function (tempFile) {
                 setImmediate(function() {
-                    callTracker.getFilename.push(new Date().getTime());
+                    callTracker.getFilename.push(new Date().getTime() + 10);
                 });
                 return filename;
             });
@@ -115,4 +115,19 @@ exports.getDestDirMock = function () {
             });
         }()),
     };
+}
+
+exports.getMockConfig = function () {
+
+    var config = { urls: [], widths: [], dest: '', options: { waitTime: 1000 } };
+
+    return {
+        load: (function() {
+            return jasmine.createSpy("load");
+        }()),
+        getCurrentConfig : function() {
+            return config;
+        }
+    };
+
 }
