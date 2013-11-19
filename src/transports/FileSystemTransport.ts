@@ -61,6 +61,7 @@ class FileSystemTransport implements ITransport {
             this.nextFile(dfd);
         }, (err) => {
             console.error("Failed to lock destination", err);
+            process.exit(1);
             });
     }
 

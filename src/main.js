@@ -53,7 +53,7 @@ function takeScreenshots() {
         console.log("Beginning...");
         url = urls.shift();
         takeNextScreenshot();
-    }, function () {
+    }, function (err) {
         console.error("Failed to initalize adaptor", err);
     });
 }

@@ -53,6 +53,7 @@ var FileSystemTransport = (function () {
             _this.nextFile(dfd);
         }, function (err) {
             console.error("Failed to lock destination", err);
+            process.exit(1);
         });
     };
 
