@@ -1,6 +1,6 @@
-﻿var loader = require("./helpers/moduleLoader.js");
-var nodeMocks = require("./mocks/nodeMocks.js");
-var localMocks = require("./mocks/localMocks.js");
+﻿var loader = require("../helpers/moduleLoader.js");
+var nodeMocks = require("../mocks/nodeMocks.js");
+var localMocks = require("../mocks/localMocks.js");
 
 var fsMock;
 var streamMock;

@@ -1,7 +1,7 @@
-﻿var loader = require("./helpers/moduleLoader.js");
-var mocks = require("./mocks/nodeMocks.js");
+﻿var loader = require("../helpers/moduleLoader.js");
+var mocks = require("../mocks/nodeMocks.js");
 var fsMock = mocks.getFSMock();
-var rimrafMock = require("./mocks/rimrafMock.js");
+var rimrafMock = require("../mocks/rimrafMock.js");
 var path = require("path");
 var TempDir = loader.loadModule("./src/TempDir.js", { "fs": fsMock, "rimraf" : rimrafMock }).module.exports;
 

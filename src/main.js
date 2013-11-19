@@ -23,14 +23,19 @@ var destination;
 var urls;
 var url;
 var widths;
+var dfd;
+var terminal;
 
-function init(config) {
+function init(config, isTerminal) {
+    terminal = isTerminal || false;
+    dfd = Q.defer();
     cnfg = Config.load(config);
     console.log("config loaded", cnfg);
     factory = new ScreenshotAdaptorFactory(PhantomAdaptor);
     adaptor = factory.getNew();
     tempDir = new TempDir();
     takeScreenshots();
+    return dfd.promise;
 }
 
 function generateConfig() {
@@ -42,8 +47,29 @@ function generateConfig() {
 }
 
 function fail() {
-    console.error("Something went wrong", arguments);
-    process.exit(1);
+    var args = [];
+    for (var _i = 0; _i < (arguments.length - 0); _i++) {
+        args[_i] = arguments[_i + 0];
+    }
+    console.error(args);
+    if (terminal) {
+        process.exit(1);
+    } else {
+        dfd.reject(args);
+    }
+}
+
+function succeed() {
+    var args = [];
+    for (var _i = 0; _i < (arguments.length - 0); _i++) {
+        args[_i] = arguments[_i + 0];
+    }
+    console.success(args);
+    if (terminal) {
+        process.exit(0);
+    } else {
+        dfd.resolve(args);
+    }
 }
 
 function takeScreenshots() {
@@ -54,7 +80,7 @@ function takeScreenshots() {
         url = urls.shift();
         takeNextScreenshot();
     }, function (err) {
-        console.error("Failed to initalize adaptor", err);
+        fail("Failed to initalize adaptor", err);
     });
 }
 
@@ -105,22 +131,19 @@ function copyFiles() {
     try  {
         destination = DestinationResolver.DestinationResolver.resolve(cnfg.dest);
     } catch (e) {
-        console.error(e);
-        process.exit(1);
+        fail(e);
     }
     destination.setup().then(function () {
         console.log("Copy files to " + destination.uri);
         transport(tempDir).to(destination).then(finish, fail);
     }, function () {
-        console.error("Failed to setup destination");
-        process.exit();
+        fail("Failed to setup destination");
     });
 }
 
 function finish() {
     tempDir.remove().then(function () {
-        console.success("Done.  Your files can be found in " + destination.uri);
-        process.exit(0);
+        succeed("Done.  Your files can be found in " + destination.uri);
     });
 }
 

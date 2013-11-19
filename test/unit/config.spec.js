@@ -1,4 +1,4 @@
-﻿var loader = require("./helpers/moduleLoader.js");
+﻿var loader = require("../helpers/moduleLoader.js");
 var config = loader.loadModule("./src/config.js").exports;
 var fs = require("fs");
 

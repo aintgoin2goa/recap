@@ -73,7 +73,7 @@ class FileSystemDestination implements IFileSystemDestination {
 
     public lock(): Q.IPromise<any> {
         var dfd = Q.defer<any>();
-        fs.open(this.lockFile, "wx+", "0666", function (err) {
+        fs.open(this.lockFile, "wx+", "0777", function (err) {
             if (err) {
                 dfd.reject(err);
             } else {

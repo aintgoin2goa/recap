@@ -20,6 +20,7 @@ if(argv.v){
     
 var console = require("../src/Console");
 console.setConfig("verbose", argv.V);
+console.setConfig("enabled", true);
 
 var args = argv._;
     
@@ -28,7 +29,7 @@ var main = require("../src/main");
 
 if(args.length){
     var config = args[0];
-    main.run(config);
+    main.run(config, true);
 }else{
     main.generateConfig();
 }

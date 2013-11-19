@@ -60,7 +60,7 @@ var FileSystemDestination = (function () {
 
     FileSystemDestination.prototype.lock = function () {
         var dfd = Q.defer();
-        fs.open(this.lockFile, "wx+", "0666", function (err) {
+        fs.open(this.lockFile, "wx+", "0777", function (err) {
             if (err) {
                 dfd.reject(err);
             } else {

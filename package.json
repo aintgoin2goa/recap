@@ -28,7 +28,7 @@
   },
   "analyze": false,
   "devDependencies": {
-    "jasmine-node": "1.5.X"
+    "jasmine-node": "1.11.X"
   },
   "bundledDependencies": [],
   "license": "MIT",

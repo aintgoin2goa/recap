@@ -1,8 +1,8 @@
 require("colors");
 
 var settings = {
-    verbose: false,
-    enableForTests: false
+    verbose: true,
+    enabled: true
 };
 
 function setConfig(name, value) {
@@ -32,11 +32,9 @@ function parseArgs(args) {
 }
 
 function printToScreen(args, color) {
-    if (process.argv.indexOf("node") != -1 && process.argv.indexOf("test/") != -1 && settings.enableForTests === false) {
-        return;
+    if (settings.enabled) {
+        console.log(args.join(", " + "\r\n")[color]);
     }
-
-    console.log(args.join(", " + "\r\n")[color]);
 }
 
 function info() {
