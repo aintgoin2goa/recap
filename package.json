@@ -7,7 +7,7 @@
   "bin": {
     "recap": "./bin/recap.js"
   },
-  "main": "./src/main.js",
+  "main": "./js/main.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/aintgoin2goa/recap.git"
@@ -28,14 +28,18 @@
   },
   "analyze": false,
   "devDependencies": {
-    "jasmine-node": "1.11.X"
+    "grunt" : "0.4.1",
+    "grunt-jasmine-node-coverage" : "0.1.6",
+    "grunt-ts" : "1.4.2"
   },
-  "bundledDependencies": [],
+  "bundledDependencies": [
+    "grunt-jasmine-node-coverage"
+  ],
   "license": "MIT",
   "engines": {
     "node": ">=0.10"
   },
   "scripts": {
-    "test": "node ./node_modules/jasmine-node/lib/jasmine-node/cli.js --captureExceptions test/"
+    "test": "grunt test"
   }
 }

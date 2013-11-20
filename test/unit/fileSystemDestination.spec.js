@@ -14,7 +14,7 @@ describe("FileSystemDestination", function () {
     var Destination;
     var destination;
 
-    var uri = "./dest";
+    var uri = "./dest/";
 
     beforeEach(function () {
         fsMock = nodeMocks.getFSMock();
@@ -22,7 +22,7 @@ describe("FileSystemDestination", function () {
         spyOn(fsMock, "writeFile").andCallThrough();
         spyOn(fsMock, "unlink").andCallThrough();
         spyOn(fsMock, "open").andCallThrough();
-        Destination = loader.loadModule("./src/destinations/FileSystemDestination.js", { "fs": fsMock, "console" : fakeConsole }).module.exports;
+        Destination = loader.loadModule("./js/destinations/FileSystemDestination.js", { "fs": fsMock, "console" : fakeConsole }).module.exports;
         destination = new Destination(uri);
     });
 
@@ -58,7 +58,7 @@ describe("FileSystemDestination", function () {
                 return destination.lock();
             })
             .then(function () {
-                expect(fsMock.open.mostRecentCall.args[0]).toBe(uri + path.sep + "LOCKED");
+                expect(fsMock.open.mostRecentCall.args[0]).toBe(uri + "LOCKED");
                 expect(fsMock.open.mostRecentCall.args[1]).toBe("wx+");
                 done();
             });

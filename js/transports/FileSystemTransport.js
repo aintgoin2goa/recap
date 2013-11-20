@@ -2,45 +2,36 @@
 /// <reference path="../d/Q.d.ts" />
 /// <reference path="../d/node.d.ts" />
 /// <reference path="../destinations/IFileSystemDestination.ts" />
+var fs = require("fs");
+var Q = require("q");
+var console = require("../Console");
 
-import fs = require("fs");
-import Q = require("q");
-var console: IConsole = require("../Console");
-
-class FileSystemTransport implements ITransport {
-
-    public from: ITempDir;
-
-    public to: IFileSystemDestination;
-
-    private files: string[];
-
-    private waitTime: number = 5000;
-
-    private maxAttempts: number = 5;
-
-    private attempts: number = 0;
-
-    public copyFiles(dfd?: Q.Deferred<boolean>): Q.IPromise<boolean> {
-       
+var FileSystemTransport = (function () {
+    function FileSystemTransport() {
+        this.waitTime = 5000;
+        this.maxAttempts = 5;
+        this.attempts = 0;
+    }
+    FileSystemTransport.prototype.copyFiles = function (dfd) {
         if (dfd === undefined) {
-            dfd = Q.defer<boolean>();
+            dfd = Q.defer();
         }
 
         this.checkForLock(dfd);
         return dfd.promise;
-    }
+    };
 
-    private checkForLock(dfd: Q.Deferred<boolean>): void {
+    FileSystemTransport.prototype.checkForLock = function (dfd) {
         this.attempts++;
         if (this.to.isLocked()) {
             this.tryAgain(dfd);
         } else {
             this.start(dfd);
         }
-    }   
+    };
 
-    private tryAgain(dfd: Q.Deferred<boolean>): void {
+    FileSystemTransport.prototype.tryAgain = function (dfd) {
+        var _this = this;
         if (this.attempts === this.maxAttempts) {
             console.error("Destination still locked after " + this.attempts + " attempts.  Giving up...");
             setImmediate(function () {
@@ -48,25 +39,27 @@ class FileSystemTransport implements ITransport {
             });
         } else {
             console.warn("Destination is locked, will try again in " + (this.waitTime / 1000) + " seconds");
-            setTimeout(() => {
-                this.checkForLock(dfd);
+            setTimeout(function () {
+                _this.checkForLock(dfd);
             }, this.waitTime);
         }
-    }
+    };
 
-    private start(dfd: Q.Deferred<boolean>): void {
+    FileSystemTransport.prototype.start = function (dfd) {
+        var _this = this;
         console.log("Attempting to lock destination");
-        this.to.lock().then(() => {
+        this.to.lock().then(function () {
             console.log("Destination locked succesfully, proceeding...");
-            this.files = this.from.listFiles();
-            this.nextFile(dfd);
-        }, (err) => {
+            _this.files = _this.from.listFiles();
+            _this.nextFile(dfd);
+        }, function (err) {
             console.error("Failed to lock destination", err);
             process.exit(1);
-            });
-    }
+        });
+    };
 
-    private nextFile(dfd: Q.Deferred<boolean>): void {
+    FileSystemTransport.prototype.nextFile = function (dfd) {
+        var _this = this;
         if (this.files.length == 0) {
             this.to.unlock().then(function () {
                 dfd.resolve(true);
@@ -74,18 +67,15 @@ class FileSystemTransport implements ITransport {
             return;
         }
         var file = this.files.shift();
-        this.copyFile(file)
-            .then(
-            () => {
-                this.nextFile(dfd);
-            },
-            () => {
-                dfd.reject(false);
+        this.copyFile(file).then(function () {
+            _this.nextFile(dfd);
+        }, function () {
+            dfd.reject(false);
         });
-    }
+    };
 
-    private copyFile(file: string): Q.IPromise<boolean> {
-        var dfd: Q.Deferred<boolean> = Q.defer();
+    FileSystemTransport.prototype.copyFile = function (file) {
+        var dfd = Q.defer();
         var source = fs.createReadStream(file);
         debugger;
         var destination = fs.createWriteStream(this.to.getFilename(file));
@@ -108,7 +98,11 @@ class FileSystemTransport implements ITransport {
         source.pipe(destination);
 
         return dfd.promise;
-    }
-}
+    };
+    return FileSystemTransport;
+})();
 
-export = FileSystemTransport;
+
+module.exports = FileSystemTransport;
+
+//# sourceMappingURL=FileSystemTransport.js.map

@@ -1,4 +1,4 @@
-
+/// <reference path="destinations/DestinationType.ts" />
 
 import FileSystemTransport = require("transports/FileSystemTransport");
 var DestinationType: DestinationType = require("./destinations/DestinationType");

@@ -1,4 +1,4 @@
-﻿var recap = require("../../src/main.js");
+﻿var recap = require("../../js/main.js");
 var fs = require("fs");
 var rimraf = require("rimraf");
 var path = require("path");

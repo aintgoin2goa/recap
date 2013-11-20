@@ -6,8 +6,8 @@ interface IConsoleSettings {
 }
 
 var settings: IConsoleSettings = {
-    verbose: true,
-    enabled: true
+    verbose: false,
+    enabled: false
 }
 
 export function setConfig<T>(name: string, value: T): void {

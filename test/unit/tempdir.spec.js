@@ -3,7 +3,7 @@ var mocks = require("../mocks/nodeMocks.js");
 var fsMock = mocks.getFSMock();
 var rimrafMock = require("../mocks/rimrafMock.js");
 var path = require("path");
-var TempDir = loader.loadModule("./src/TempDir.js", { "fs": fsMock, "rimraf" : rimrafMock }).module.exports;
+var TempDir = loader.loadModule("./js/TempDir.js", { "fs": fsMock, "rimraf" : rimrafMock }).module.exports;
 
 var url = "http://www.google.com";
 

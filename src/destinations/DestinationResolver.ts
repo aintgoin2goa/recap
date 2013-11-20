@@ -1,4 +1,5 @@
-
+/// <reference path="IDestination.ts" />
+/// <reference path="./FileSystemDestination.ts" />
 
 export module DestinationResolver{
     export function resolve(uri: string): IDestination {

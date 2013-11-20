@@ -26,7 +26,7 @@ describe("FileSystemTransport", function () {
         spyOn(fsMock, "createWriteStream").andCallThrough();
         spyOn(fsMock, "createReadStream").andCallThrough();
         fsMock.setMockstream(streamMock);
-        Transport = loader.loadModule("./src/transports/FileSystemTransport.js", { "fs": fsMock }).module.exports;
+        Transport = loader.loadModule("./js/transports/FileSystemTransport.js", { "fs": fsMock }).module.exports;
         transport = new Transport();
         transport.from = TempDirMock;
         transport.to = DestDirMock;
