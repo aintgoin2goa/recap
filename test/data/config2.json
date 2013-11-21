@@ -1,0 +1,15 @@
+{
+  "urls": [
+    "https://www.ableton.com/"
+  ],
+  "widths": [
+    "320",
+    "640",
+    "1024",
+    "1900"
+  ],
+  "dest": "./dest/",
+  "options": {
+    "waitTime": 5000
+  }
+}

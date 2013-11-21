@@ -96,7 +96,7 @@ var FileSystemDestination = (function () {
 
     FileSystemDestination.prototype.writeData = function () {
         var dfd = Q.defer();
-        var data = JSON.stringify(this.data);
+        var data = JSON.stringify(this.data, null, 2);
         fs.writeFile(this.dataFilePath, data, { encoding: "utf8" }, function (err) {
             if (err) {
                 dfd.reject(err);

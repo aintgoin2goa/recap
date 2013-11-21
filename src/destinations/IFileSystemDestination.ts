@@ -1,6 +1,6 @@
 interface IFileSystemDestination extends IDestination {
 
-    setup(): Q.IPromise<any>;
+	dataFile: string;
 
     getFilename(tempName: string): string;
 

@@ -34,7 +34,7 @@ describe("Recap", function () {
                 expectedFiles.push(url + "_" + width + ".jpg");
             });
         });
-          console.log('expectedFiles', expectedFiles);
+          //console.log('expectedFiles', expectedFiles);
         var prc = exec("recap " + configPath);
         
         prc.on("close",
@@ -42,10 +42,10 @@ describe("Recap", function () {
                 try {
                     //console.log("Finished, running assertations");
                     var files = fs.readdirSync(config.dest);
-                     console.log("files", files);
+                     //console.log("files", files);
                     var data = require(config.dest + "data.json");
                  
-                    console.log('data', data);
+                    //console.log('data', data);
                     for (var i = 0, l = expectedFiles.length; i < l; i++) {
                         expect(files).toContain(expectedFiles[i]);
                     }
@@ -89,12 +89,12 @@ describe("Recap", function () {
         recap.run(config).then(
             function () {
                 //try {
-                    console.log("Finished, running assertations");
+                    //console.log("Finished, running assertations");
                     var files = fs.readdirSync(config.dest);
                     var data = require(config.dest + "data.json");
-                    console.log('expectedFiles', expectedFiles);
-                    console.log("files", files);
-                    console.log('data', data);
+                    //console.log('expectedFiles', expectedFiles);
+                    //console.log("files", files);
+                    //console.log('data', data);
                     for (var i = 0, l = expectedFiles.length; i < l; i++) {
                         expect(files).toContain(expectedFiles[i]);
                     }
@@ -106,7 +106,7 @@ describe("Recap", function () {
                // } catch(e) {
                //     console.log(e);
               //  }
-                console.log("done");
+                //console.log("done");
                 done();
             },
             function() {

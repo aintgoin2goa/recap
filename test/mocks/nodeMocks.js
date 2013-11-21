@@ -58,6 +58,10 @@
             }, 0);
         },
 
+        readFileSync: function(file, options){
+            return readFileData;
+        },
+
         writeFile: function(path, data, options, cb) {
             setTimeout(function() {
                 cb(null);
@@ -94,23 +98,23 @@
                 cb(null, 0);
             }, 0);
         }
-    }
+    };
 };
 
 exports.getMockStream = (function () {
 
     var Stream = function () {
         this.handlers = {};
-    }
+    };
 
     Stream.prototype.on = function (ev, cb) {
         if (!this.handlers[ev]) {
             this.handlers[ev] = [];
         }
         this.handlers[ev].push(cb);
-    }
+    };
 
-    Stream.prototype.pipe = function () { }
+    Stream.prototype.pipe = function () { };
 
     Stream.prototype.fire = function(ev){
         if(!this.handlers[ev]){
@@ -120,10 +124,10 @@ exports.getMockStream = (function () {
         this.handlers[ev].forEach(function (func) {
             func.call();
         });
-    }
+    };
 
     return function () {
         return new Stream();
-    }
+    };
 
 }());

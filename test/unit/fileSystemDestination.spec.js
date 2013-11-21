@@ -36,7 +36,7 @@ describe("FileSystemDestination", function () {
 
     it("Will save any existing data to memory and delete the data.json file", function(done) {
         var data = [{ filename: "file", width: 300, date: new Date(), url: "http:google.com" }];
-        fsMock.setReadFileData(JSON.stringify(data));
+        fsMock.setReadFileData(JSON.stringify(data, null, 2));
        
         destination.setup()
             .then(function () {
@@ -44,7 +44,7 @@ describe("FileSystemDestination", function () {
             })
         
             .then(function () {
-                expect(fsMock.writeFile.mostRecentCall.args[1]).toBe(JSON.stringify(data));
+                expect(fsMock.writeFile.mostRecentCall.args[1]).toBe(JSON.stringify(data, null, 2));
                 expect(fsMock.unlink.mostRecentCall.args[0]).toBe(uri + path.sep + "data.json");
                 done();
             });
@@ -92,7 +92,7 @@ describe("FileSystemDestination", function () {
 
     it("Can update the data held in memory", function (done) {
         var data = [{ filename: "file", width: 300, date: new Date(), url: "http:google.com" }];
-        var dataStr = JSON.stringify(data);
+        var dataStr = JSON.stringify(data, null, 2);
         
         destination.updateData(data);
         destination.writeData()

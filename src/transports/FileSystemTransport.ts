@@ -68,11 +68,20 @@ class FileSystemTransport implements ITransport {
 
     private nextFile(dfd: Q.Deferred<boolean>): void {
         if (this.files.length == 0) {
-            this.to.unlock().then(function () {
+            console.log("All files copied, writing data.json file");
+            this.to.writeData()
+            .then(
+                () => {
+                    console.log("unlock destination directory");
+                    return this.to.unlock();
+                }
+            )
+            .then(function () {
                 dfd.resolve(true);
             });
             return;
         }
+
         var file = this.files.shift();
         this.copyFile(file)
             .then(
@@ -86,8 +95,16 @@ class FileSystemTransport implements ITransport {
 
     private copyFile(file: string): Q.IPromise<boolean> {
         var dfd: Q.Deferred<boolean> = Q.defer();
+        if(file.indexOf(this.to.dataFile) != -1){
+            this.readData(file);
+            setImmediate(function(){
+                dfd.resolve(true);
+            });
+            return dfd.promise;
+        }
+
+
         var source = fs.createReadStream(file);
-        debugger;
         var destination = fs.createWriteStream(this.to.getFilename(file));
         console.log("Copy " + file + " to " + this.to.getFilename(file));
         source.on("error", function (err) {
@@ -108,6 +125,17 @@ class FileSystemTransport implements ITransport {
         source.pipe(destination);
 
         return dfd.promise;
+    }
+
+    private readData(file: string): void{
+        var dataStr: string = fs.readFileSync(file, {encoding:"utf8"});
+        // if undefined, null or empty may as well not bother
+        if(!dataStr){
+            return;
+        }
+
+        var data: ITempDirRecord[] = JSON.parse(dataStr);
+        this.to.updateData(data);
     }
 }
 

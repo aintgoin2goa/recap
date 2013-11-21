@@ -114,8 +114,20 @@ exports.getDestDirMock = function () {
                 return dfd.promise;
             });
         }()),
+
+        updateData: jasmine.createSpy("updateData"),
+
+        writeData: jasmine.createSpy("writeData").andCallFake(function(){
+             var dfd = Q.defer();
+            setImmediate(function() {
+                dfd.resolve();
+            });
+            return dfd.promise;
+        }),
+
+        dataFile : "data.json"
     };
-}
+};
 
 exports.getMockConfig = function () {
 

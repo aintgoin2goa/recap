@@ -41,7 +41,6 @@ describe("FileSystemTransport", function () {
             return [from];
         };
         DestDirMock.setFilename(to);
-          
         transport.copyFiles()
 
         .then(
@@ -54,7 +53,7 @@ describe("FileSystemTransport", function () {
 
     });
 
-    it("Will check if the destination directory is locked before using it", function(done) {
+   it("Will check if the destination directory is locked before using it", function(done) {
         var from = "file.jpg";
         TempDirMock.listFiles = function () {
             return [from];
@@ -145,4 +144,56 @@ describe("FileSystemTransport", function () {
             }
         );
     });
+
+   it("Will not copy the data.json file", function(done){
+        var files = ["file1.jpg", "file2.jpg", "file3.jpg", "data.json"];
+        var length = files.length;
+        var filesCopy = files.slice(0);
+        TempDirMock.listFiles = function() {
+            return files;
+        };
+        DestDirMock.getFilename = function(filename) {
+            return filename;
+        };
+
+        transport.copyFiles()
+
+        .then(
+            function () {
+                expect(fsMock.createReadStream).not.toHaveBeenCalledWith("data.json");
+                done();
+            },
+            function(){
+                done(false);
+            }
+        );
+    });
+
+   it("Will read in data from the data.json and pass it to the destination to be merged with existing data", function(done){
+          var files = ["file1.jpg", "file2.jpg", "file3.jpg", "data.json"];
+          var data = ["some data"];
+        var length = files.length;
+        var filesCopy = files.slice(0);
+        TempDirMock.listFiles = function() {
+            return files;
+        };
+        DestDirMock.getFilename = function(filename) {
+            return filename;
+        };
+        fsMock.setReadFileData(JSON.stringify(data));
+     
+        transport.copyFiles()
+
+        .then(
+            function () {
+                expect(DestDirMock.updateData).toHaveBeenCalledWith(data);
+                done();
+            },
+            function(){
+                done(false);
+            }
+        );
+    });
+
+
 });

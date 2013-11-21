@@ -13,7 +13,7 @@ class FileSystemDestination implements IFileSystemDestination {
 
     public type: DestinationType;
 
-    private dataFile: string = "data.json";
+    public dataFile: string = "data.json";
 
     private lockFile: string;
 
@@ -108,7 +108,7 @@ class FileSystemDestination implements IFileSystemDestination {
 
     public writeData(): Q.IPromise<any> {
         var dfd = Q.defer<any>();
-        var data = JSON.stringify(this.data);
+        var data = JSON.stringify(this.data, null, 2);
         fs.writeFile(this.dataFilePath, data, { encoding: "utf8" }, function (err: Error) {
             if (err) {
                 dfd.reject(err);
