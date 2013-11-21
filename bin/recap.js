@@ -18,13 +18,13 @@ if(argv.v){
     process.exit(0);
 }
     
-var console = require("../src/Console");
+var console = require("../js/Console");
 console.setConfig("verbose", argv.V);
 console.setConfig("enabled", true);
 
 var args = argv._;
     
-var main = require("../src/main");
+var main = require("../js/main");
 
 
 if(args.length){

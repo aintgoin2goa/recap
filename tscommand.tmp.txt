@@ -1,0 +1,1 @@
+"src/ConfigGenerator.ts" "src/Console.ts" "src/IConsole.ts" "src/ITempDir.ts" "src/Iconfig.ts" "src/TempDir.ts" "src/config.ts" "src/main.ts" "src/screenshotAdaptorFactory.ts" "src/transportFactory.ts" --sourcemap --target ES5 --module commonjs --outDir js

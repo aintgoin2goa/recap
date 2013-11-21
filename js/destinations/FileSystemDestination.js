@@ -25,7 +25,7 @@ var FileSystemDestination = (function () {
 
         // if destination does not exist, create it
         console.log("initialising destination");
-        fs.mkdir(this.uri, "0666", function (err) {
+        fs.mkdir(this.uri, "0777", function (err) {
             if (err) {
                 if (err.code == "EEXIST") {
                     console.warn("Destination directory already exists, will attempt to merge");

@@ -14,6 +14,8 @@ import TempDir = require("./TempDir");
 import DestinationResolver = require("destinations/DestinationResolver");
 import transport = require("transportFactory");
 import ConfigGenerator = require("./ConfigGenerator");
+import path = require("path");
+
 var console: IConsole = require("./Console");
 
 var cnfg: IConfig;
@@ -152,7 +154,7 @@ function copyFiles() {
 
 function finish() {
     tempDir.remove().then(function () {
-        succeed("Done.  Your files can be found in " + destination.uri);
+        succeed("Done.  Your files can be found in " + path.resolve(destination.uri) );
     });
 }
 

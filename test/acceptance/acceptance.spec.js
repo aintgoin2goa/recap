@@ -6,7 +6,7 @@ var exec = require('child_process').exec;
 process.chdir("./test/acceptance");
 describe("Recap", function () {
 
-    var configPath = "./config.json";
+    var configPath = "../data/config.json";
     var config;
 
     beforeEach(function() {
@@ -34,17 +34,17 @@ describe("Recap", function () {
                 expectedFiles.push(url + "_" + width + ".jpg");
             });
         });
-
+          console.log('expectedFiles', expectedFiles);
         var prc = exec("recap " + configPath);
-
+        
         prc.on("close",
             function () {
                 try {
                     //console.log("Finished, running assertations");
                     var files = fs.readdirSync(config.dest);
+                     console.log("files", files);
                     var data = require(config.dest + "data.json");
-                    console.log('expectedFiles', expectedFiles);
-                    console.log("files", files);
+                 
                     console.log('data', data);
                     for (var i = 0, l = expectedFiles.length; i < l; i++) {
                         expect(files).toContain(expectedFiles[i]);
@@ -63,7 +63,7 @@ describe("Recap", function () {
             });
 
         prc.on("error", function (e) {
-            console.log(e);
+            console.log("process error", e);
             done(false);
         });
 

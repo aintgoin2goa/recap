@@ -1,4 +1,4 @@
-﻿var loader = require("../helpers/moduleLoader.js");
+var loader = require("../helpers/moduleLoader.js");
 var nodeMocks = require("../mocks/nodeMocks.js");
 
 var path = require("path");

@@ -1,7 +1,7 @@
 obj/
 bin-debug/
 bin-release/
-node_modules/
+node_modules/*
 !node_modules/grunt-jasmine-node-coverage/
 dest/*
 *.csproj*
