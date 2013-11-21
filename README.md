@@ -3,8 +3,6 @@ recap
 
 A library for taking screenshots of a url at various widths, to aid development of a responsive site.  Uses phantomjs to generate the screenshots.
 
-**Currently, it only works on windows - a version with support for linux and max will follow shortly.**
-
 
 Installation
 ---------------
@@ -56,11 +54,9 @@ for example, if the config if is the current directory:
 TroubleShooting
 ------------------
 
-If anything goes wrong, double-check that you defintely have phantomjs installed.  If that's ok then you might need to use `sudo` in order for it to write to existing directories in the filesystem.
-
-	sudo recap ./config.json
+If anything goes wrong, double-check that you defintely have phantomjs installed.  If that's ok then check you have permission to write to location where you're trying to save the files.  You could use sudo, but I wouldn't recommend it.
 	
 There's also a verbose mode which will help you to diagnose errors
 
-    sudo recap ./config.json --verbose
+    recap ./config.json --verbose
 
