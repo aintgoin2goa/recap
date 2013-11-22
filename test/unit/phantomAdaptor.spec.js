@@ -6,7 +6,7 @@ var mockPhantom = mocks.getMockPhantom(mockPage);
 var mockPhantomModule = mocks.getMockPhantomModule(mockPhantom);
 var mockConfig = localMocks.getMockConfig();
 var Q = require("q");
-var Adaptor = loader.loadModule("./js/screenshotAdaptors/PhantomAdaptor.js", { "node-phantom": mockPhantomModule, "../config" : mockConfig }).module.exports;
+var Adaptor = loader.loadModule("./js/screenshotAdaptors/PhantomAdaptor.js", { "node-phantom": mockPhantomModule, "../Config" : mockConfig }).module.exports;
 var Factory = loader.loadModule("./js/screenshotAdaptorFactory.js").module.exports;
 
 var phantom, factory;
@@ -21,10 +21,9 @@ describe("PhantomAdaptor", function () {
 
     it("Can spin up a new instance of phantomjs", function (done) {
         spyOn(mockPhantom, "createPage").andCallThrough();
-
         phantom.init().then(
             function () {
-                expect(mockPhantom.createPage).toHaveBeenCalled();
+                expect(mockPhantomModule.create).toHaveBeenCalled();
                 done();
             }
         );
@@ -34,9 +33,15 @@ describe("PhantomAdaptor", function () {
         spyOn(mockPage, "set").andCallThrough();
 
         phantom.init()
-        .then(function () {
-            return phantom.setViewPortSize(400, 200);
-        }).then(
+         .then(
+            function () {
+                return phantom.open();
+        })
+        .then(
+            function () {
+                return phantom.setViewPortSize(400, 200);
+        })
+        .then(
             function () {
                 expect(mockPage.set.mostRecentCall.args[0]).toBe("viewportSize");
                 expect(mockPage.set.mostRecentCall.args[1]).toEqual({ width: 400, height: 200 });
@@ -48,14 +53,17 @@ describe("PhantomAdaptor", function () {
 
     it("Can open a url", function (done) {
         var testUrl = "http://www.google.com";
-        
+       
         phantom.init()
-        .then(function () {
-            spyOn(mockPage, "open").andCallThrough();
-            return phantom.open(testUrl);
+           .then(
+            function () {
+                return phantom.open();
         })
         .then(function () {
-            expect(mockPage.open.mostRecentCall.args[0]).toBe(testUrl);
+            return phantom.navigate(testUrl);
+        })
+        .then(function () {
+            expect(mockPage.open).toHaveBeenCalledWith(testUrl, jasmine.any(Function));
             done();
         });
     });
@@ -68,7 +76,10 @@ describe("PhantomAdaptor", function () {
 
         phantom.init()
         .then(function () {
-            return phantom.open(testUrl);
+            return phantom.open();
+        })
+        .then(function () {
+            return phantom.navigate(testUrl);
         })
         .then(function () {
             return phantom.capture(filename);
@@ -81,16 +92,17 @@ describe("PhantomAdaptor", function () {
         });
     });
 
-    it("Can close the phantom instance when finished with it", function (done) {
-        spyOn(mockPhantom, "exit").andCallThrough();
-        spyOn(mockPage, "close").andCallThrough();
+    it("Can close the page object when finished with it", function (done) {
+
         phantom.init()
+         .then(function () {
+            return phantom.open();
+        })
         .then(function () {
             return phantom.close();
         }).
         then(function () {
             expect(mockPage.close).toHaveBeenCalled();
-            expect(mockPhantom.exit).toHaveBeenCalled();
             done();
         });
     });

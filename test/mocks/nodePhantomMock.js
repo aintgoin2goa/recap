@@ -1,16 +1,17 @@
 ﻿
 exports.getMockPage = function () {
     return  {
-        open: function (url, callback) {
+        open: jasmine.createSpy("open").andCallFake(function (url, callback) {
             setTimeout(function () {
                 callback(null, "success");
             }, 0);
-        },
-        close: function(callback){
+        }),
+
+        close: jasmine.createSpy("close").andCallFake(function(callback){
             setTimeout(function () {
                 callback(null);
             }, 0);
-        },
+        }),
         render: function(filename, callback){
             setTimeout(function () {
                 callback(null);
@@ -21,7 +22,7 @@ exports.getMockPage = function () {
                 callback(null);
             }, 0);
         }
-    }
+    };
 };
 
 exports.getMockPhantom = function(mockPage){
@@ -38,17 +39,16 @@ exports.getMockPhantom = function(mockPage){
         },
         on: function (event, callback) {
         }
-    }
+    };
 };
 
 exports.getMockPhantomModule = function(mockPhantom){
 
     return {
-        create: function (callback) {
+        create: jasmine.createSpy("create").andCallFake(function (callback) {
             setTimeout(function () {
                 callback(null, mockPhantom);
             }, 0);
-        }
-    }
-
+        })
+    };
 };

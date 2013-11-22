@@ -11,6 +11,6 @@
   "dest": "./dest/",
   "options": {
     "waitTime": 5000,
-    "crawl" : true
+    "crawl" : false
   }
 }

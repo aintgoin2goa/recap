@@ -12,4 +12,5 @@ dest/*
 npm-debug.log
 temp*/
 screenshots/
+test/acceptance/dest/
 /*.user
