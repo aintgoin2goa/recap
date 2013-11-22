@@ -1,0 +1,16 @@
+{
+  "urls": [
+    "http://www.datsun.com/"
+  ],
+  "widths": [
+    "320",
+    "640",
+    "1024",
+    "1900"
+  ],
+  "dest": "./screenshots/",
+  "options": {
+    "waitTime": "50",
+    "crawl": true
+  }
+}

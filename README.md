@@ -17,6 +17,17 @@ Once once you have these dependencies up and running run the following command t
     
     npm install -g recap
 
+
+Quickstart
+------------
+
+If you just want to see what recap can do run this command to get going immediately
+
+	recap demo
+
+This will walk you through the process a creating a config file, suggesting some defaults.
+
+
 Usage
 ------
 
@@ -36,8 +47,12 @@ The script requires a config.json script to tell it what urls to capture and at 
 		"1024",
 		"1900"
 	  ],
-	  // location to save the images (relative to the cwd)
-	  "dest": "./dest/"
+	  // location to save the images (relative to the current working directory)
+	  "dest": "./dest/",
+	  "options" : {
+	  	   "waitTime" : 50, // will pause for this ammout of time before capturing the page
+	  	   "crawl" : true // if true this will activate crawl mode
+	  }
 	}
 	
 recap can guide you through the process of creating a config file, just type `recap` to begin.
@@ -49,7 +64,22 @@ Once you have a config file you can use it by typing
 for example, if the config if is the current directory:
 
     recap ./config.json
-	
+
+### Using progamatically
+
+Recap can also be used via require.  Simply pass a config object to the `run` method:
+
+	var recap = require("recap");
+
+	recap.run(config);
+
+The run method will return a promise
+
+### Crawl Mode
+
+If crawl mode is enabled each url will be scanned for links.  Any link found pointing to the same domain will be added to the urls to capture.  
+
+You can use this to capture an entire site simply by giving the homepage.
 	
 TroubleShooting
 ------------------
@@ -60,3 +90,8 @@ There's also a verbose mode which will help you to diagnose errors
 
     recap ./config.json --verbose
 
+If recap encounters an error if doesn't delete it current temp directory.  Therefore you many end up with a lot of crap on your filesystem if you have a lot of errors.  If you run
+
+	recap clean
+
+All directories under the current working directory named "tempX" will be deleted.

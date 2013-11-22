@@ -11,5 +11,5 @@ dest/*
 *.pdb
 npm-debug.log
 temp*/
-
+screenshots/
 /*.user

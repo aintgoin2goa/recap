@@ -15,8 +15,9 @@ var config = {
 
 var url = {
     name: "url",
-    description: "Please enter a url.  Leave blank to confinue to next step.",
-    required: false
+    description: "Please enter a url.",
+    required: true,
+    default: "http://www.datsun.com/"
 };
 var widths = {
     name: "widths",
@@ -28,11 +29,25 @@ var dest = {
     name: "dest",
     description: "Please enter the filepath to save your images",
     required: true,
-    default: "./dest/"
+    default: "./screenshots/"
 };
+
+var wait = {
+    name: "wait",
+    description: "How long would you like to wait for the page to be ready before capturing it?",
+    default: 50
+};
+
+var crawl = {
+    name: "crawl",
+    message: "Would you like to enable crawl mode (y/n)?",
+    validator: /y[es]*|n[o]?/,
+    warning: 'Must respond yes or no'
+};
+
 var use = {
     name: 'use',
-    message: "Would you like to use the config now?",
+    message: "Would you like to use the config now (y/n)?",
     validator: /y[es]*|n[o]?/,
     warning: 'Must respond yes or no'
 };
@@ -44,6 +59,10 @@ function generate() {
         return promptForWidths();
     }).then(function () {
         return promptForDest();
+    }).then(function () {
+        return promptForWaitTime();
+    }).then(function () {
+        return promptForCrawl();
     }).then(function () {
         return saveConfig();
     }).then(function () {
@@ -74,12 +93,8 @@ function promptForUrl(dfd) {
     prompt.get(url, function (err, result) {
         handleError(err);
 
-        if (result.url) {
-            config.urls.push(result.url);
-            promptForUrl(dfd);
-        } else {
-            dfd.resolve(true);
-        }
+        config.urls.push(result.url);
+        dfd.resolve(true);
     });
     return dfd.promise;
 }
@@ -101,6 +116,28 @@ function promptForDest() {
         handleError(err);
 
         config.dest = result.dest;
+        dfd.resolve(true);
+    });
+    return dfd.promise;
+}
+
+function promptForWaitTime() {
+    var dfd = Q.defer();
+    prompt.get(wait, function (err, result) {
+        handleError(err);
+
+        config.options.waitTime = result.wait;
+        dfd.resolve(true);
+    });
+    return dfd.promise;
+}
+
+function promptForCrawl() {
+    var dfd = Q.defer();
+    prompt.get(crawl, function (err, result) {
+        handleError(err);
+
+        config.options.crawl = (result.crawl === "y" || result.crawl === "yes");
         dfd.resolve(true);
     });
     return dfd.promise;
