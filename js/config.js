@@ -9,7 +9,8 @@ var Config = (function () {
     function Config() {
         this.dest = "../dest/";
         this.options = {
-            waitTime: 5000
+            waitTime: 5000,
+            crawl: false
         };
     }
     return Config;
@@ -40,8 +41,10 @@ function load(cfg) {
     if (cfg.dest) {
         config.dest = cfg.dest;
     }
-    if (cfg.options && cfg.options.waitTime) {
-        config.options.waitTime = cfg.options.waitTime;
+    if (cfg.options) {
+        for (var option in cfg.options) {
+            config.options[option] = cfg.options[option];
+        }
     }
     loadedConfig = config;
     return config;
@@ -56,4 +59,4 @@ function getCurrentConfig() {
 }
 exports.getCurrentConfig = getCurrentConfig;
 
-//# sourceMappingURL=config.js.map
+//# sourceMappingURL=Config.js.map

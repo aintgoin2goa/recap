@@ -7,7 +7,7 @@
 import nodePhantom = require("node-phantom");
 var console: IConsole = require("../Console");
 var Q = require("q");
-import configModule = require("../config");
+import configModule = require("../Config");
 var config: IConfig;
 
 class PhantomAdaptor implements IScreenshotAdaptor{
@@ -17,7 +17,6 @@ class PhantomAdaptor implements IScreenshotAdaptor{
     private phantom: NP_Phantom;
 
     private delay: number;
-
 
     public init(): Q.IPromise<any>
     {
@@ -30,7 +29,7 @@ class PhantomAdaptor implements IScreenshotAdaptor{
                 return;
             }
             this.phantom = phantom;
-            this.OnCreate(phantom, dfd);
+            dfd.resolve(true);
         });
         return dfd.promise;
     }
@@ -49,24 +48,59 @@ class PhantomAdaptor implements IScreenshotAdaptor{
         return dfd.promise;
     }
 
-    public open(url: string): Q.IPromise<any>
+    public open(): Q.IPromise<any>
     {
         var dfd: Q.Deferred<any> = Q.defer();
-        this.page.open(url, (err, status) => {
+        this.phantom.createPage( (err, page) => {
             if (err) {
                 dfd.reject(err);
-            } else {
-                this.delayedResolve(dfd);
+                return;
             }
+            this.page = page;
+            dfd.resolve(true);
         });
         return dfd.promise;
     }
 
-    private delayedResolve(dfd: Q.Deferred<any>): void {
+    public navigate(url: string): Q.IPromise<any>
+    {
+        var dfd: Q.Deferred<any> = Q.defer();
+        this.page.open(url, (err, status) =>{
+            if(err){
+                dfd.reject(err);
+                return
+            }
 
-        setTimeout(function () {
-            dfd.resolve(true);
-        }, this.delay);
+            this.delayedResolve(dfd);
+        });
+
+        return dfd.promise;
+    }
+
+    public crawl(): Q.IPromise<any>
+    {
+        console.log("start crawl")
+        var dfd: Q.Deferred<any> = Q.defer();
+        var crawlFunc = function(){
+            var urls = [];
+            var links = document.getElementsByTagName('a');
+            for(var i=0, l=links.length; i<l; i++){
+                if(links[i].href.indexOf(location.hostname) != -1){
+                    urls.push(links[i].href.replace(/#.*$/, ''));
+                }
+            }
+            return urls;
+        }
+        this.page.evaluate(crawlFunc, function(err, urls){
+            console.log("urls found", urls);
+            if(err){
+                console.log(err);
+                dfd.reject(err);
+            }else{
+                dfd.resolve(urls);
+            }
+        });
+        return dfd.promise;
     }
 
     public capture(filename: string): Q.IPromise<any>
@@ -87,46 +121,28 @@ class PhantomAdaptor implements IScreenshotAdaptor{
     {
         var dfd: Q.Deferred<any> = Q.defer();
         this.page.close(() => {
-            this.phantom.exit(() => {
-                console.log("Phantom exited");
-                dfd.resolve(true);
-            });
+            console.log("Page closed");
+            dfd.resolve(true);
         });
         return dfd.promise;
     }
 
-    private OnCreate(phantom: NP_Phantom, dfd: Q.Deferred<any>): void
+    public exit(): Q.IPromise<any>
     {
-        console.log("Created instance of phantom");
-        phantom.createPage( (err, page) => {
-            if (err) {
-                dfd.reject(err);
-                return;
-            }
-            this.OnPageCreate(page, dfd);
+        var dfd: Q.Deferred<any> = Q.defer();
+        this.phantom.exit(() => {
+            dfd.resolve(true);
         });
-        phantom.on("exit", () => {
-            this.OnExit();
-        });
+        return dfd.promise;
     }
 
-    private OnPageCreate(page: NP_Page, dfd: Q.Deferred<any>): void
-    {
-        this.page = page;
-        console.log("page created");
-        dfd.resolve(true);
-    }
-
-    private OnExit(): void
-    {
-        console.log("Phantom exited");
-    }
-
-    private OnPageClose(): void
+    private delayedResolve(dfd: Q.Deferred<any>): void 
     {
 
+        setTimeout(function () {
+            dfd.resolve(true);
+        }, this.delay);
     }
-
 }
 
 export = PhantomAdaptor;

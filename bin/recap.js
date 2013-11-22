@@ -27,9 +27,16 @@ var args = argv._;
 var main = require("../js/main");
 
 
-if(args.length){
-    var config = args[0];
-    main.run(config, true);
-}else{
-    main.generateConfig();
+switch(args[0]){
+    case "demo" :
+        main.generateConfig();
+        break;
+    case "clean" : 
+        main.clean();
+        break;
+    default : 
+        main.run(args[0], true);
+        break;
 }
+
+

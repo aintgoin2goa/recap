@@ -1,1 +1,1 @@
-//# sourceMappingURL=Iconfig.js.map
+//# sourceMappingURL=IConfig.js.map

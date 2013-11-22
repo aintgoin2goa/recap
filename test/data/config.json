@@ -1,15 +1,16 @@
 {
   "urls": [
-    "http://96elephants.org/"
+    "http://www.datsun.com/"
   ],
   "widths": [
     "320",
-    "640",
+    "480",
     "1024",
     "1900"
   ],
   "dest": "./dest/",
   "options": {
-    "waitTime": 5000
+    "waitTime": 5000,
+    "crawl" : true
   }
 }

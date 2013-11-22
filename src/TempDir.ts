@@ -2,8 +2,8 @@
 /// <reference path="d/node.d.ts" />
 /// <reference path = "d/Q.d.ts" />
 
-import fs = require("fs");
-import path = require("path");
+var fs = require("fs");
+var path = require("path");
 import Q = require('q');
 var rimraf = require("rimraf");
 

@@ -14,4 +14,6 @@ interface IConfigOptions {
 
     waitTime: number;
 
+    crawl: boolean;
+
 }

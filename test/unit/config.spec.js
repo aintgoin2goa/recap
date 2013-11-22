@@ -36,6 +36,7 @@ describe("Config", function () {
         expect(cfg.widths).toEqual(obj.widths);
         expect(cfg.tempFolder).toEqual(obj.tempFolder);
         expect(cfg.dest).toEqual(obj.dest);
+        expect(cfg.options).toEqual(obj.options);
     });
 
 });

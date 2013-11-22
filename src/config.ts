@@ -15,7 +15,8 @@ export class Config implements IConfig{
     public dest: string = "../dest/";
 
     public options: IConfigOptions = {
-        waitTime : 5000
+        waitTime : 5000,
+        crawl : false
     }
 
 }
@@ -49,8 +50,10 @@ export function load(cfg: any): IConfig
     if (cfg.dest) {
         config.dest = cfg.dest;
     }
-    if (cfg.options && cfg.options.waitTime) {
-        config.options.waitTime = cfg.options.waitTime;
+    if (cfg.options){
+        for(var option in cfg.options){
+            config.options[option] = cfg.options[option];
+        }
     }
     loadedConfig = config;
     return config;

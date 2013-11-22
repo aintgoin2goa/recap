@@ -1,7 +1,8 @@
-/// <reference path="./IConfig.ts" />
-/// <reference path="./ITempDir.ts" />
-/// <reference path=./ScreenshotAdaptors/IScreenshotAdaptor.ts" />
+/// <reference path="IConfig.ts" />
+/// <reference path="ITempDir.ts" />
+/// <reference path="screenshotAdaptors/IScreenshotAdaptor.ts" />
 /// <reference path="transports/ITransport.ts" />
+/// <reference path="IConsole.ts" />
 /// <reference path="d/node.d.ts" />
 /// <reference path="d/Q.d.ts" />
 
@@ -9,12 +10,14 @@ import Q = require("q");
 
 import PhantomAdaptor = require("screenshotAdaptors/PhantomAdaptor");
 import ScreenshotAdaptorFactory = require("./screenshotAdaptorFactory");
-import Config = require("./config");
+import Config = require("./Config");
 import TempDir = require("./TempDir");
 import DestinationResolver = require("destinations/DestinationResolver");
 import transport = require("transportFactory");
 import ConfigGenerator = require("./ConfigGenerator");
 import path = require("path");
+var fs = require("fs");
+var rimraf = require("rimraf");
 
 var console: IConsole = require("./Console");
 
@@ -24,6 +27,7 @@ var adaptor: IScreenshotAdaptor;
 var tempDir: ITempDir; 
 var destination: IDestination;
 var urls: string[];
+var allUrls: string[];
 var url: string;
 var widths: number[];
 var dfd: Q.Deferred<any>;
@@ -69,68 +73,107 @@ function succeed(...args) {
 }
 
 function takeScreenshots(): void {
-    urls = cnfg.urls;
+    urls = cnfg.urls.slice(0);
+    allUrls = cnfg.urls.slice(0);
     widths = cnfg.widths.slice(0);
     adaptor.init()
         .then(function () {
             console.log("Beginning...");
-            url = urls.shift();
-            takeNextScreenshot();
+            nextUrl();
         },
         function (err) {
             fail("Failed to initalize adaptor", err);
         });
-    
 }
 
-function takeNextScreenshot(): void {
-    var width: number;
-    console.log("Next");
-    tempDir.saveRecords();
-
+function nextUrl(): void
+{
+    console.log("nextUrl", urls);
     if (urls.length == 0 && widths.length == 0) {
+        adaptor.exit();
         copyFiles();
         return;
     }
 
-    if (widths.length == 0) {
-        widths = cnfg.widths.slice(0);
-        url = urls.shift();
+    url = urls.shift(); 
+    widths = cnfg.widths.slice(0);
+    console.log("opening new page");
+    adaptor.open().then(nextScreenshot, fail);
+}
+
+function nextScreenshot()
+{
+    tempDir.saveRecords();
+    if(widths.length === 0){
+        console.log("Closing page");
+        adaptor.close().then(nextUrl);
+        return;
     }
 
-    width = widths.shift();
-    console.warn("Next screenshot: " + url + " width: " + width);
-    takeScreenshot(url, width).then(takeNextScreenshot, fail); 
+    var width = widths.shift(); 
+    console.warn("Next screenshot: " + url + " width: " + width); 
+    takeScreenshot(url, width).then(nextScreenshot, fail);   
 }
 
 function takeScreenshot(url: string, width: number): Q.IPromise<boolean> {
     var dfd: Q.Deferred<boolean> = Q.defer();
     var filename = tempDir.createRecord(url, width);
-    adaptor.open(url)
-        .then(function () {
-            console.log("Set Viewport", width);
-            return adaptor.setViewPortSize(width, width);
-        },
-        function () {
-            dfd.reject(false);
-        })
+    console.log("set viewport width to " + width);
+    adaptor.setViewPortSize(width, width)
 
-        .then(function () {
-            console.log("Capture ScreenShot");
+    .then(
+        function(){
+            console.log("Navigate to " + url);
+            return adaptor.navigate(url);
+        },
+        fail
+    )
+
+    .then(
+        function(){
+            if(cnfg.options.crawl && width === cnfg.widths[0]){
+                console.log("Crawl page for other urls");
+                return adaptor.crawl();
+            }
+            // if we're not crawling the page for urls, simplys move along to next step
+            var dfd = Q.defer();
+            setImmediate(function(){
+                dfd.resolve(true);
+            });
+            return dfd.promise;    
+        },
+        fail
+    )
+
+    .then(
+        function(urls){
+            if(urls && urls instanceof Array){
+                addUrls(urls);
+            }
+
+            console.log("Capture page and save to " + filename);
             return adaptor.capture(filename);
         },
-        function () {
-            dfd.reject(false);
-        })
+        fail
+    )
 
-        .then(function () {
-            console.log("Captured");
+    .then(
+        function(){
             dfd.resolve(true);
         },
-        function () {
-            dfd.reject(false);
-        });
+        fail
+    );
+
     return dfd.promise;
+}
+
+function addUrls(crawledUrls: string[]): void
+{
+    var uniqueUrls = crawledUrls.filter(function(url){
+        return allUrls.indexOf(url) == -1;
+    });
+    urls = urls.concat(uniqueUrls);
+    allUrls = allUrls.concat(uniqueUrls);
 }
 
 function copyFiles() {
@@ -164,9 +207,39 @@ function parseArgs(): string[] {
     });
 }
 
+function clean(): void
+{
+    console.log("clean");
+    var dir = process.cwd();
+    var files: string[] = fs.readdirSync(dir);
+    var i = -1;
+    var cleanFile = function(f){
+        if(f.indexOf("temp") === 0){
+            console.log("removing " + f);
+            rimraf(path.resolve(f), nextFile);
+        }else{
+            nextFile();
+        }
+    }
+    var nextFile = function(){
+        i++;
+        if(i < files.length){
+            cleanFile(files[i]);
+        }else{
+            console.success("Removed temporary directories");
+            process.exit();
+        }
+       
+    }
+    nextFile();
+}
+
+
+
 
 exports.run = init;
 exports.generateConfig = generateConfig;
+exports.clean = clean;
 
 
   

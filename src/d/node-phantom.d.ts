@@ -9,6 +9,7 @@ interface NP_Page{
     viewportSize: NP_ViewPortSize;
     render(filename: string, callback: (err: any) => void): void;
     set(property: string, value: any, callback: (err: any) => void): void;
+    evaluate(func: () => void, callback: (err:any, urls:any) => void): void;
     onLoadFinished: () => void;
 }
 interface NP_Phantom{

@@ -57,11 +57,8 @@ describe("PhantomAdaptor", function () {
         .then(function () {
             expect(mockPage.open.mostRecentCall.args[0]).toBe(testUrl);
             done();
-      
         });
     });
-
-
 
     it("Can capture the contents of the url and save it to a file", function (done) {
         var testUrl = "http://www.google.com";
@@ -74,7 +71,7 @@ describe("PhantomAdaptor", function () {
             return phantom.open(testUrl);
         })
         .then(function () {
-            return phantom.capture(filename)
+            return phantom.capture(filename);
         })
         .then(function () {
            
@@ -97,5 +94,7 @@ describe("PhantomAdaptor", function () {
             done();
         });
     });
+
+
 
 });

@@ -5,7 +5,7 @@
 var nodePhantom = require("node-phantom");
 var console = require("../Console");
 var Q = require("q");
-var configModule = require("../config");
+var configModule = require("../Config");
 var config;
 
 var PhantomAdaptor = (function () {
@@ -22,7 +22,7 @@ var PhantomAdaptor = (function () {
                 return;
             }
             _this.phantom = phantom;
-            _this.OnCreate(phantom, dfd);
+            dfd.resolve(true);
         });
         return dfd.promise;
     };
@@ -40,23 +40,58 @@ var PhantomAdaptor = (function () {
         return dfd.promise;
     };
 
-    PhantomAdaptor.prototype.open = function (url) {
+    PhantomAdaptor.prototype.open = function () {
+        var _this = this;
+        var dfd = Q.defer();
+        this.phantom.createPage(function (err, page) {
+            if (err) {
+                dfd.reject(err);
+                return;
+            }
+            _this.page = page;
+            dfd.resolve(true);
+        });
+        return dfd.promise;
+    };
+
+    PhantomAdaptor.prototype.navigate = function (url) {
         var _this = this;
         var dfd = Q.defer();
         this.page.open(url, function (err, status) {
             if (err) {
                 dfd.reject(err);
-            } else {
-                _this.delayedResolve(dfd);
+                return;
             }
+
+            _this.delayedResolve(dfd);
         });
+
         return dfd.promise;
     };
 
-    PhantomAdaptor.prototype.delayedResolve = function (dfd) {
-        setTimeout(function () {
-            dfd.resolve(true);
-        }, this.delay);
+    PhantomAdaptor.prototype.crawl = function () {
+        console.log("start crawl");
+        var dfd = Q.defer();
+        var crawlFunc = function () {
+            var urls = [];
+            var links = document.getElementsByTagName('a');
+            for (var i = 0, l = links.length; i < l; i++) {
+                if (links[i].href.indexOf(location.hostname) != -1) {
+                    urls.push(links[i].href.replace(/#.*$/, ''));
+                }
+            }
+            return urls;
+        };
+        this.page.evaluate(crawlFunc, function (err, urls) {
+            console.log("urls found", urls);
+            if (err) {
+                console.log(err);
+                dfd.reject(err);
+            } else {
+                dfd.resolve(urls);
+            }
+        });
+        return dfd.promise;
     };
 
     PhantomAdaptor.prototype.capture = function (filename) {
@@ -73,43 +108,26 @@ var PhantomAdaptor = (function () {
     };
 
     PhantomAdaptor.prototype.close = function () {
-        var _this = this;
         var dfd = Q.defer();
         this.page.close(function () {
-            _this.phantom.exit(function () {
-                console.log("Phantom exited");
-                dfd.resolve(true);
-            });
+            console.log("Page closed");
+            dfd.resolve(true);
         });
         return dfd.promise;
     };
 
-    PhantomAdaptor.prototype.OnCreate = function (phantom, dfd) {
-        var _this = this;
-        console.log("Created instance of phantom");
-        phantom.createPage(function (err, page) {
-            if (err) {
-                dfd.reject(err);
-                return;
-            }
-            _this.OnPageCreate(page, dfd);
+    PhantomAdaptor.prototype.exit = function () {
+        var dfd = Q.defer();
+        this.phantom.exit(function () {
+            dfd.resolve(true);
         });
-        phantom.on("exit", function () {
-            _this.OnExit();
-        });
+        return dfd.promise;
     };
 
-    PhantomAdaptor.prototype.OnPageCreate = function (page, dfd) {
-        this.page = page;
-        console.log("page created");
-        dfd.resolve(true);
-    };
-
-    PhantomAdaptor.prototype.OnExit = function () {
-        console.log("Phantom exited");
-    };
-
-    PhantomAdaptor.prototype.OnPageClose = function () {
+    PhantomAdaptor.prototype.delayedResolve = function (dfd) {
+        setTimeout(function () {
+            dfd.resolve(true);
+        }, this.delay);
     };
     return PhantomAdaptor;
 })();

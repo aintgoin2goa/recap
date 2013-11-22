@@ -8,7 +8,8 @@ var config: IConfig = {
     widths: [],
     dest: "",
     options: {
-        waitTime : 5000
+        waitTime : 5000,
+        crawl : false
     }
 };
 
