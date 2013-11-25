@@ -5,7 +5,7 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     ts: {            
       dev: {                                
-          src: ["src/*.ts", "src/ts/**/*.ts"],       
+          src: ["src/**/*.ts"],       
           outDir: 'js',    
           watch: 'src',                    
           options: {                    
@@ -16,9 +16,11 @@ module.exports = function(grunt) {
           },
       },
       build: {                        
-          src: ["src/ts/**/*.ts"],    
-          outDir: 'src/js',  
-          options: {                  
+          src: ["src/**/*.ts"],    
+          outDir: 'js',  
+          options: {
+              target: 'es5',            
+              module: 'commonjs',                    
               sourcemap: false,
               comments: false
           }

@@ -40,7 +40,7 @@ function init(config, isTerminal) {
     factory = new ScreenshotAdaptorFactory(PhantomAdaptor);
     adaptor = factory.getNew();
     tempDir = new TempDir();
-    takeScreenshots();
+    tempDir.ready.then(takeScreenshots, fail);
     return dfd.promise;
 }
 

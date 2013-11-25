@@ -760,7 +760,7 @@ declare module "fs" {
     export function mkdir(path: string, mode?: string, callback?: Function): void;
     export function mkdirSync(path: string, mode?: string): void;
     export function readdir(path: string, callback?: (err: Error, files: string[]) => void): void;
-    export function yncreaddirS(path: string): string[];
+    export function readdirSync(path: string): string[];
     export function close(fd: string, callback?: Function): void;
     export function closeSync(fd: string): void;
     export function open(path: string, flags: string, mode?: string, callback?: (err: Error, fd: string) =>any): void;

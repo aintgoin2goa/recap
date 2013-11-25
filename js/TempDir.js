@@ -1,16 +1,18 @@
 /// <reference path="ITempDir.ts" />
 /// <reference path="d/node.d.ts" />
-/// <reference path = "d/Q.d.ts" />
+/// <reference path="d/Q.d.ts" />
+/// <reference path="d/tmp.d.ts" />
 var fs = require("fs");
 var path = require("path");
 var Q = require('q');
+var tmp = require('tmp');
 var rimraf = require("rimraf");
 
 var TempDir = (function () {
     function TempDir() {
         this.dirBase = "temp";
         this.extension = ".jpg";
-        this.dir = this.createTempDir();
+        this.ready = this.createTempDir();
         this.records = [];
     }
     TempDir.prototype.createRecord = function (url, width) {
@@ -51,14 +53,19 @@ var TempDir = (function () {
     };
 
     TempDir.prototype.createTempDir = function () {
-        var i = 1;
-        var filename = this.dirBase + i.toString();
-        while (fs.existsSync(filename)) {
-            i++;
-            filename = this.dirBase + i.toString();
-        }
-        fs.mkdirSync(filename);
-        return filename;
+        var _this = this;
+        var dfd = Q.defer();
+        tmp.dir(function (err, path) {
+            if (err) {
+                console.error("Failed to create temporary directory", err);
+                process.exit(1);
+                return;
+            }
+
+            _this.dir = path;
+            dfd.resolve(true);
+        });
+        return dfd.promise;
     };
     return TempDir;
 })();

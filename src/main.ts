@@ -41,8 +41,8 @@ function init(config: Object, isTerminal?: boolean): Q.IPromise<any> {
     console.log("config loaded", cnfg);
     factory = new ScreenshotAdaptorFactory<PhantomAdaptor>(PhantomAdaptor);
     adaptor = factory.getNew();
-    tempDir = new TempDir();  
-    takeScreenshots();  
+    tempDir = new TempDir()
+    tempDir.ready.then(takeScreenshots, fail);  
     return dfd.promise;
 }
 

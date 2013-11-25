@@ -1,15 +1,19 @@
 /// <reference path="ITempDir.ts" />
 /// <reference path="d/node.d.ts" />
-/// <reference path = "d/Q.d.ts" />
+/// <reference path="d/Q.d.ts" />
+/// <reference path="d/tmp.d.ts" />
 
-var fs = require("fs");
-var path = require("path");
+import fs = require("fs");
+import path = require("path");
 import Q = require('q');
+import tmp = require('tmp');
 var rimraf = require("rimraf");
 
 class TempDir implements ITempDir {
 
     public dir: string;
+
+    public ready: Q.IPromise<any>;
 
     private records: ITempDirRecord[];
 
@@ -19,7 +23,7 @@ class TempDir implements ITempDir {
 
     constructor()
     {
-        this.dir = this.createTempDir();
+        this.ready = this.createTempDir();
         this.records = []; 
     }
 
@@ -59,15 +63,20 @@ class TempDir implements ITempDir {
         });
     }
 
-    private createTempDir(): string {
-        var i = 1;
-        var filename = this.dirBase + i.toString();
-        while(fs.existsSync(filename) ){
-            i++;
-            filename = this.dirBase + i.toString();
-        } 
-        fs.mkdirSync(filename);
-        return filename;
+    private createTempDir(): Q.IPromise<any> {
+       var dfd = Q.defer<any>();
+       tmp.dir((err, path) =>{
+            if(err){
+                console.error("Failed to create temporary directory", err);
+                process.exit(1);
+                return;
+            }
+            
+            this.dir = path;
+            dfd.resolve(true);
+           
+        });
+       return dfd.promise;
     }
 }
 

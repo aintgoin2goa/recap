@@ -3,6 +3,8 @@
 
 interface ITempDir {
 
+	ready: Q.IPromise<any>;
+
     createRecord(url: string, width: number): string;
 
     saveRecords(): void;
