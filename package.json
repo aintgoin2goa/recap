@@ -1,7 +1,7 @@
 {
   "name": "recap",
   "preferGlobal": true,
-  "version": "0.1.2",
+  "version": "0.2.0",
   "author": "aintgoin2goa",
   "description": "creates responsive screenshots using phantomjs",
   "bin": {
@@ -25,7 +25,7 @@
     "prompt": "0.2.X",
     "optimist": "0.6.X",
     "colors": "0.6.X",
-    "tmp" : "0.0.X"
+    "tmp": "0.0.X"
   },
   "analyze": false,
   "devDependencies": {
