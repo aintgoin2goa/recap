@@ -167,4 +167,3 @@ function saveConfig() {
     return dfd.promise;
 }
 
-//# sourceMappingURL=ConfigGenerator.js.map

@@ -1,4 +1,3 @@
-/// <reference path="screenshotAdaptors/IScreenshotAdaptor.ts" />
 var ScreenshotAdaptorFactory = (function () {
     function ScreenshotAdaptorFactory(adtp) {
         this.Adaptor = adtp;
@@ -12,4 +11,3 @@ var ScreenshotAdaptorFactory = (function () {
 
 module.exports = ScreenshotAdaptorFactory;
 
-//# sourceMappingURL=screenshotAdaptorFactory.js.map

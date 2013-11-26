@@ -1,5 +1,3 @@
-/// <reference path="d/node.d.ts" />
-/// <reference path="IConfig.ts" />
 var fs = require("fs");
 var path = require("path");
 
@@ -59,4 +57,3 @@ function getCurrentConfig() {
 }
 exports.getCurrentConfig = getCurrentConfig;
 
-//# sourceMappingURL=Config.js.map

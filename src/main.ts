@@ -55,6 +55,7 @@ function generateConfig(): void {
 }
 
 function fail(...args) {
+    adaptor.exit();
     console.error(args);
     if (terminal) {
         process.exit(1);
@@ -64,6 +65,7 @@ function fail(...args) {
 }
 
 function succeed(...args) {
+    adaptor.exit();
     console.success(args);
     if (terminal) {
         process.exit(0);
