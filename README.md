@@ -3,6 +3,8 @@ recap
 
 A library for taking screenshots of a url at various widths, to aid development of a responsive site.  Uses phantomjs to generate the screenshots.
 
+This module is also available as a [Grunt Plugin](https://github.com/aintgoin2goa/grunt-recap/).
+
 
 Installation
 ---------------
@@ -90,8 +92,3 @@ There's also a verbose mode which will help you to diagnose errors
 
     recap ./config.json --verbose
 
-If recap encounters an error if doesn't delete it current temp directory.  Therefore you many end up with a lot of crap on your filesystem if you have a lot of errors.  If you run
-
-	recap clean
-
-All directories under the current working directory named "tempX" will be deleted.
