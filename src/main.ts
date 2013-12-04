@@ -75,8 +75,8 @@ function succeed(...args) {
 }
 
 function takeScreenshots(): void {
-    urls = cnfg.urls.slice(0);
-    allUrls = cnfg.urls.slice(0);
+    urls = Object.keys(cnfg.urls).slice(0);
+    allUrls = urls.slice(0);
     widths = cnfg.widths.slice(0);
     adaptor.init()
         .then(function () {
@@ -126,14 +126,14 @@ function takeScreenshot(url: string, width: number): Q.IPromise<boolean> {
     .then(
         function(){
             console.log("Navigate to " + url);
-            return adaptor.navigate(url);
+            return adaptor.navigate(url, cnfg.urls[url].waitTime);
         },
         fail
     )
 
     .then(
         function(){
-            if(cnfg.options.crawl && width === cnfg.widths[0]){
+            if(cnfg.urls[url].crawl && width === cnfg.widths[0]){
                 console.log("Crawl page for other urls");
                 return adaptor.crawl();
             }
@@ -150,7 +150,7 @@ function takeScreenshot(url: string, width: number): Q.IPromise<boolean> {
     .then(
         function(urls){
             if(urls && urls instanceof Array){
-                addUrls(urls);
+                addUrls(urls, url);
             }
 
             console.log("Capture page and save to " + filename);
@@ -169,13 +169,16 @@ function takeScreenshot(url: string, width: number): Q.IPromise<boolean> {
     return dfd.promise;
 }
 
-function addUrls(crawledUrls: string[]): void
+function addUrls(crawledUrls: string[], parentUrl: string): void
 {
     var uniqueUrls = crawledUrls.filter(function(url){
         return allUrls.indexOf(url) == -1;
     });
     urls = urls.concat(uniqueUrls);
     allUrls = allUrls.concat(uniqueUrls);
+    crawledUrls.forEach(function(url){
+        cnfg.urls[url] = cnfg.urls[parentUrl];
+    });
 }
 
 function copyFiles() {

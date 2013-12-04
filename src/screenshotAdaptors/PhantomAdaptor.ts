@@ -16,13 +16,10 @@ class PhantomAdaptor implements IScreenshotAdaptor{
 
     private phantom: NP_Phantom;
 
-    private delay: number;
-
     public init(): Q.IPromise<any>
     {
         var dfd: Q.Deferred<any> = Q.defer();
         config = configModule.getCurrentConfig();
-        this.delay = config.options.waitTime;
         nodePhantom.create((err, phantom) => {
             if (err) {
                 dfd.reject(err);
@@ -62,7 +59,7 @@ class PhantomAdaptor implements IScreenshotAdaptor{
         return dfd.promise;
     }
 
-    public navigate(url: string): Q.IPromise<any>
+    public navigate(url: string, waitTime?: number): Q.IPromise<any>
     {
         var dfd: Q.Deferred<any> = Q.defer();
         this.page.open(url, (err, status) =>{
@@ -136,13 +133,18 @@ class PhantomAdaptor implements IScreenshotAdaptor{
         return dfd.promise;
     }
 
-    private delayedResolve(dfd: Q.Deferred<any>): void 
+    private delayedResolve(dfd: Q.Deferred<any>, delay?: number): void 
     {
-
+        delay = delay || 5;
         setTimeout(function () {
             dfd.resolve(true);
-        }, this.delay);
+        }, delay);
     }
+
+    private onExit(code, signal): void{
+        console.error("Sorry, phantom crashed, code: " + code + ", signal: " + signal);
+        process.exit(1);
+     }
 }
 
 export = PhantomAdaptor;

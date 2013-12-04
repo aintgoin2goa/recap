@@ -1,15 +1,18 @@
+/// <reference path="d/node.d.ts" />
+
 var prompt = require("prompt");
 import fs = require("fs");
 import path = require("path");
 import Q = require('q');
 
 var config: IConfig = {
-    urls: [],
+    urls: {},
     widths: [],
     dest: "",
-    options: {
+    defaultOptions: {
         waitTime : 5000,
-        crawl : false
+        crawl : false,
+        login : null
     }
 };
 
@@ -100,7 +103,7 @@ function promptForUrl(dfd?: Q.Deferred<any>): Q.IPromise<any> {
     prompt.get(url, function (err, result) {
         handleError(err);
 
-        config.urls.push(result.url);
+        config.urls[result.url] = config.defaultOptions;
         dfd.resolve(true);
     });
     return dfd.promise;
@@ -133,7 +136,7 @@ function promptForWaitTime(): Q.IPromise<boolean> {
     prompt.get(wait, function (err, result) {
         handleError(err);
 
-        config.options.waitTime = result.wait;
+        config.urls[Object.keys(config.urls)[0]].waitTime = result.wait;
         dfd.resolve(true);
     });
     return dfd.promise;
@@ -144,7 +147,8 @@ function promptForCrawl(): Q.IPromise<boolean> {
     prompt.get(crawl, function(err, result){
         handleError(err);
 
-        config.options.crawl = (result.crawl === "y" || result.crawl === "yes");
+        var crawl = (result.crawl === "y" || result.crawl === "yes");
+        config.urls[Object.keys(config.urls)[0]].crawl = crawl;
         dfd.resolve(true);
     });
     return dfd.promise;

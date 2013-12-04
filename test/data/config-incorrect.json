@@ -10,10 +10,7 @@
     "waitTime": 5000,
     "crawl" : false
   },
-  "urls" : {
-    "https://www.ableton.com/" : null
-  }
+  "urls" : [
+    "http://www.datsun.com/" 
+  ]
 }
-
-
-

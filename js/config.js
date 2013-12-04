@@ -1,14 +1,16 @@
 var fs = require("fs");
 var path = require("path");
+var _ = require("underscore");
 
 var loadedConfig;
 
 var Config = (function () {
     function Config() {
         this.dest = "../dest/";
-        this.options = {
-            waitTime: 5000,
-            crawl: false
+        this.defaultOptions = {
+            waitTime: 50,
+            crawl: false,
+            login: null
         };
     }
     return Config;
@@ -29,21 +31,69 @@ function loadFromFilePath(pth) {
     }
 }
 
+function mergeUrlConfig(cfg) {
+    _.each(cfg.urls, function (value, key) {
+        if (!value) {
+            cfg.urls[key] = cfg.defaultOptions;
+        } else {
+            cfg.urls[key] = _.extend({}, cfg.defaultOptions, cfg.urls[key]);
+        }
+    });
+}
+
+function validate(cfg) {
+    if (typeof (cfg) == "string") {
+        return exports.validate(loadFromFilePath(cfg));
+    }
+
+    cfg = cfg;
+
+    var result = {
+        result: true,
+        message: ""
+    };
+
+    var fail = function (msg) {
+        result.result = false;
+        result.message = msg;
+        return result;
+    };
+
+    if (!cfg.widths || !cfg.widths.push) {
+        return fail("Config file must have an array of widths");
+    }
+
+    if (!cfg.dest || typeof (cfg.dest) !== "string") {
+        return fail("No valid destination given");
+    }
+    if (!cfg.urls || _.isArray(cfg.urls) || (Object.keys(cfg.urls).length) === 0) {
+        return fail("Urls object not present or empty");
+    }
+
+    return result;
+}
+exports.validate = validate;
+
 function load(cfg) {
     if (typeof (cfg) == "string") {
         return exports.load(loadFromFilePath(cfg));
     }
+
+    var validation = exports.validate(cfg);
+    if (!validation.result) {
+        throw new Error(validation.message);
+    }
+
     var config = new Config();
+
+    if (cfg.defaultOptions) {
+        config.defaultOptions = cfg.defaultOptions;
+    }
+
     config.urls = cfg.urls;
     config.widths = cfg.widths;
-    if (cfg.dest) {
-        config.dest = cfg.dest;
-    }
-    if (cfg.options) {
-        for (var option in cfg.options) {
-            config.options[option] = cfg.options[option];
-        }
-    }
+    config.dest = cfg.dest;
+    mergeUrlConfig(config);
     loadedConfig = config;
     return config;
 }

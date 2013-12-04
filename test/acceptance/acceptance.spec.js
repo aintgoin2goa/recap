@@ -3,6 +3,7 @@ var fs = require("fs");
 var rimraf = require("rimraf");
 var path = require("path");
 var exec = require('child_process').exec;
+
 process.chdir("./test/acceptance");
 describe("Recap", function () {
 
@@ -25,10 +26,10 @@ describe("Recap", function () {
             "data.json"
         ];
 
-        var urls = config.urls.slice(0);
+        var urls = Object.keys(config.urls);
         var widths = config.widths.slice(0);
 
-        config.urls.forEach(function (url) {
+        urls.forEach(function (url) {
             url = url.replace(/(http|https):\/\//, '').replace(/\//g, '_');
             config.widths.forEach(function (width) {
                 expectedFiles.push(url + "_" + width + ".jpg");
@@ -76,10 +77,10 @@ describe("Recap", function () {
             "data.json"
         ];
 
-        var urls = config.urls.slice(0);
+        var urls = Object.keys(config.urls);
         var widths = config.widths.slice(0);
 
-        config.urls.forEach(function(url) {
+        urls.forEach(function(url) {
             url = url.replace(/(http|https):\/\//, '').replace(/\//g, '_');
             config.widths.forEach(function(width) {
                 expectedFiles.push(url + "_" + width + ".jpg");

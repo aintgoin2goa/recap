@@ -6,7 +6,7 @@ interface IScreenshotAdaptor{
 
     open(): Q.IPromise<any>;
 
-    navigate(url: string): Q.IPromise<any>;
+    navigate(url: string, waitTime?: number): Q.IPromise<any>
 
     setViewPortSize(width: number, height: number): Q.IPromise<any>;
 

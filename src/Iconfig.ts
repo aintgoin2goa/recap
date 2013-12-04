@@ -1,19 +1,35 @@
 interface IConfig{
 
-    urls: string[];
+    urls: {[url: string]: IUrlOptions};
 
     widths: number[];
 
     dest: string;
 
-    options: IConfigOptions;
+    defaultOptions: IUrlOptions;
 
 }
 
-interface IConfigOptions {
+interface IUrlOptions {
 
     waitTime: number;
 
     crawl: boolean;
 
+    login: ILoginOptions;
+
+}
+
+interface ILoginOptions{
+
+	url: string;
+
+	[key: string] : string;
+}
+
+interface IConfigValidationResult{
+	
+	result: boolean;
+
+	message: string;
 }

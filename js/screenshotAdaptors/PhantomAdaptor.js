@@ -11,7 +11,6 @@ var PhantomAdaptor = (function () {
         var _this = this;
         var dfd = Q.defer();
         config = configModule.getCurrentConfig();
-        this.delay = config.options.waitTime;
         nodePhantom.create(function (err, phantom) {
             if (err) {
                 dfd.reject(err);
@@ -50,7 +49,7 @@ var PhantomAdaptor = (function () {
         return dfd.promise;
     };
 
-    PhantomAdaptor.prototype.navigate = function (url) {
+    PhantomAdaptor.prototype.navigate = function (url, waitTime) {
         var _this = this;
         var dfd = Q.defer();
         this.page.open(url, function (err, status) {
@@ -120,10 +119,16 @@ var PhantomAdaptor = (function () {
         return dfd.promise;
     };
 
-    PhantomAdaptor.prototype.delayedResolve = function (dfd) {
+    PhantomAdaptor.prototype.delayedResolve = function (dfd, delay) {
+        delay = delay || 5;
         setTimeout(function () {
             dfd.resolve(true);
-        }, this.delay);
+        }, delay);
+    };
+
+    PhantomAdaptor.prototype.onExit = function (code, signal) {
+        console.error("Sorry, phantom crashed, code: " + code + ", signal: " + signal);
+        process.exit(1);
     };
     return PhantomAdaptor;
 })();

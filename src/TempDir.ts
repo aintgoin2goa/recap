@@ -25,6 +25,7 @@ class TempDir implements ITempDir {
     {
         this.ready = this.createTempDir();
         this.records = []; 
+        process.on("exit", () =>{ this.remove(); });
     }
 
     public createRecord(url: string, width: number): string {
@@ -65,7 +66,7 @@ class TempDir implements ITempDir {
 
     private createTempDir(): Q.IPromise<any> {
        var dfd = Q.defer<any>();
-       tmp.dir((err, path) =>{
+       tmp.dir({}, (err, path) =>{
             if(err){
                 console.error("Failed to create temporary directory", err);
                 process.exit(1);

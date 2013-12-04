@@ -6,10 +6,14 @@ var rimraf = require("rimraf");
 
 var TempDir = (function () {
     function TempDir() {
+        var _this = this;
         this.dirBase = "temp";
         this.extension = ".jpg";
         this.ready = this.createTempDir();
         this.records = [];
+        process.on("exit", function () {
+            _this.remove();
+        });
     }
     TempDir.prototype.createRecord = function (url, width) {
         var filename = url.replace(/(http|https):\/\//, '').replace(/\//g, '_');
@@ -51,7 +55,7 @@ var TempDir = (function () {
     TempDir.prototype.createTempDir = function () {
         var _this = this;
         var dfd = Q.defer();
-        tmp.dir(function (err, path) {
+        tmp.dir({}, function (err, path) {
             if (err) {
                 console.error("Failed to create temporary directory", err);
                 process.exit(1);
