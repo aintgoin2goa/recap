@@ -1,3 +1,7 @@
+/// <reference path="ITempDir.ts" />
+/// <reference path="d/node.d.ts" />
+/// <reference path="d/Q.d.ts" />
+/// <reference path="d/tmp.d.ts" />
 var fs = require("fs");
 var path = require("path");
 var Q = require('q');
@@ -73,3 +77,4 @@ var TempDir = (function () {
 
 module.exports = TempDir;
 
+//# sourceMappingURL=TempDir.js.map

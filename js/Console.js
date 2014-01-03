@@ -85,3 +85,4 @@ function log() {
 }
 exports.log = log;
 
+//# sourceMappingURL=Console.js.map

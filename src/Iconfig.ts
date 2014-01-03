@@ -16,15 +16,15 @@ interface IUrlOptions {
 
     crawl: boolean;
 
-    login: ILoginOptions;
+    scripts : IScriptOptions;
 
 }
 
-interface ILoginOptions{
+interface IScriptOptions {
 
-	url: string;
+    before: string;
 
-	[key: string] : string;
+    after: string;
 }
 
 interface IConfigValidationResult{

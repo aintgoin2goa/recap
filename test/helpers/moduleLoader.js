@@ -31,7 +31,8 @@ exports.loadModule = function (filePath, mocks) {
             exports: exports
         },
         setTimeout: setTimeout,
-        setImmediate: setImmediate
+        setImmediate: setImmediate,
+        process : process
     };
 
     vm.runInNewContext(fs.readFileSync(filePath), context);

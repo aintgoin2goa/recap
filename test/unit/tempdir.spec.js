@@ -1,4 +1,5 @@
 ﻿var loader = require("../helpers/moduleLoader.js");
+
 var mocks = require("../mocks/nodeMocks.js");
 var fsMock = mocks.getFSMock();
 var rimrafMock = require("../mocks/rimrafMock.js");
@@ -13,7 +14,8 @@ describe("TempDir", function () {
 	
 
 	it("Will create a new directory using the tmp module when initialised", function (done) {
-		new TempDir().ready.then(function(){
+		var tempDir = new TempDir();
+		tempDir.ready.then(function(){
 			expect(tmpMock.dir).toHaveBeenCalled();
 			done();
 		}, function(){ done(false); });
@@ -21,9 +23,11 @@ describe("TempDir", function () {
 
 
 	it("Can add a new record and return the filename", function (done) {
+		debugger;
 		fsMock.reset();
 		var tempDir = new TempDir();
 		tempDir.ready.then(function(){
+			debugger;
 			var filename = tempDir.createRecord(url, 600);
 			expect(filename).toBe(tempDir.dir + path.sep + "www.google.com_600.jpg");
 			done();
@@ -74,3 +78,4 @@ describe("TempDir", function () {
 		});
 	});
 });
+

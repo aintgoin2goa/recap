@@ -1,3 +1,5 @@
+/// <reference path="IDestination.ts" />
+/// <reference path="./FileSystemDestination.ts" />
 (function (DestinationResolver) {
     function resolve(uri) {
         var moduleName = "./FileSystemDestination";
@@ -10,3 +12,4 @@
 })(exports.DestinationResolver || (exports.DestinationResolver = {}));
 var DestinationResolver = exports.DestinationResolver;
 
+//# sourceMappingURL=DestinationResolver.js.map

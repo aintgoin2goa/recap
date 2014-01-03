@@ -1,3 +1,6 @@
+/// <reference path="d/node.d.ts" />
+/// <reference path="IConfig.ts" />
+/// <reference path="d/underscore.d.ts" />
 var fs = require("fs");
 var path = require("path");
 var _ = require("underscore");
@@ -10,7 +13,7 @@ var Config = (function () {
         this.defaultOptions = {
             waitTime: 50,
             crawl: false,
-            login: null
+            scripts: { before: null, after: null }
         };
     }
     return Config;
@@ -107,3 +110,4 @@ function getCurrentConfig() {
 }
 exports.getCurrentConfig = getCurrentConfig;
 
+//# sourceMappingURL=Config.js.map

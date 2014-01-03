@@ -1,3 +1,7 @@
+/// <reference path="ITransport.ts" />
+/// <reference path="../d/Q.d.ts" />
+/// <reference path="../d/node.d.ts" />
+/// <reference path="../destinations/IFileSystemDestination.ts" />
 var fs = require("fs");
 var Q = require("q");
 var console = require("../Console");
@@ -124,3 +128,4 @@ var FileSystemTransport = (function () {
 
 module.exports = FileSystemTransport;
 
+//# sourceMappingURL=FileSystemTransport.js.map

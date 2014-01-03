@@ -19,7 +19,7 @@ export class Config implements IConfig{
     public defaultOptions: IUrlOptions = {
         waitTime : 50,
         crawl : false,
-        login : null
+        scripts : {before: null, after : null}
     }
 
 }
