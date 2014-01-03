@@ -36,15 +36,23 @@ describe("Recap", function () {
             });
         });
           //console.log('expectedFiles', expectedFiles);
-        var prc = exec("recap " + configPath);
+        var prc = exec("recap " + configPath, function(err){
+            if(err){
+                console.error(err);
+                done(false);
+            }
+
+        });
         
         prc.on("close",
             function () {
                 try {
-                    //console.log("Finished, running assertations");
+                    console.log("Finished, running assertations");
                     var files = fs.readdirSync(config.dest);
                      //console.log("files", files);
-                    var data = require(config.dest + "data.json");
+                     var data = require(config.dest + "data.json");
+                    
+                   
                  
                     //console.log('data', data);
                     for (var i = 0, l = expectedFiles.length; i < l; i++) {
@@ -58,7 +66,7 @@ describe("Recap", function () {
 
                 } catch (e) {
                     console.log("ERROR", e);
-                    process.exit(1);
+                    done(false);
                 }
                 done();
             });
