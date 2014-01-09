@@ -17,7 +17,9 @@ exports.getTempDirMock = function() {
 
         listFiles: function() {
 
-        }
+        },
+
+        dir: "dir"
     };
 };
 

@@ -7,11 +7,16 @@ var exec = require('child_process').exec;
 process.chdir("./test/acceptance");
 describe("Recap", function () {
 
-    var configPath = "../data/config.json";
+    var configPaths = [
+        "../data/config.json",
+        "../data/config4.json"
+    ]
     var config;
+    var scriptsConfig;
 
     beforeEach(function() {
-        config = require(configPath);
+        config = require(configPaths[0]);
+        scriptsConfig = require(configPaths[1]);
     });
 
     afterEach(function() {
@@ -20,7 +25,7 @@ describe("Recap", function () {
         config = null;
     });
     
-    it("Can be called via the command line, given a path to a config file", function (done) {
+    xit("Can be called via the command line, given a path to a config file", function (done) {
 
         var expectedFiles = [
             "data.json"
@@ -35,7 +40,6 @@ describe("Recap", function () {
                 expectedFiles.push(url + "_" + width + ".jpg");
             });
         });
-          //console.log('expectedFiles', expectedFiles);
         var prc = exec("recap " + configPath, function(err){
             if(err){
                 console.error(err);
@@ -49,12 +53,8 @@ describe("Recap", function () {
                 try {
                     console.log("Finished, running assertations");
                     var files = fs.readdirSync(config.dest);
-                     //console.log("files", files);
-                     var data = require(config.dest + "data.json");
-                    
-                   
-                 
-                    //console.log('data', data);
+                    var data = require(config.dest + "data.json");
+
                     for (var i = 0, l = expectedFiles.length; i < l; i++) {
                         expect(files).toContain(expectedFiles[i]);
                     }
@@ -116,6 +116,33 @@ describe("Recap", function () {
                //     console.log(e);
               //  }
                 //console.log("done");
+                done();
+            },
+            function() {
+                console.log("FAILED: ", arguments);
+                done(false);
+            }
+        );
+    }, (5 * (60 * 1000)));
+
+    xit("Can execute scripts specified in the config object", function(done) {
+       
+        var expectedFiles = [
+            "data.json"
+        ];
+
+        var urls = Object.keys(scriptsConfig.urls);
+        var widths = scriptsConfig.widths.slice(0);
+
+        urls.forEach(function(url) {
+            url = url.replace(/(http|https):\/\//, '').replace(/\//g, '_');
+            scriptsConfig.widths.forEach(function(width) {
+                expectedFiles.push(url + "_" + width + ".jpg");
+            });
+        });
+
+        recap.run(scriptsConfig).then(
+            function () {
                 done();
             },
             function() {

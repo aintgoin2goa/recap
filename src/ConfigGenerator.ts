@@ -12,7 +12,7 @@ var config: IConfig = {
     defaultOptions: {
         waitTime : 5000,
         crawl : false,
-        scripts : {before:null, after:null}
+        script : null
     }
 };
 

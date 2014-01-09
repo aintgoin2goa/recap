@@ -1,10 +1,3 @@
-/// <reference path="IConfig.ts" />
-/// <reference path="ITempDir.ts" />
-/// <reference path="screenshotAdaptors/IScreenshotAdaptor.ts" />
-/// <reference path="transports/ITransport.ts" />
-/// <reference path="IConsole.ts" />
-/// <reference path="d/node.d.ts" />
-/// <reference path="d/Q.d.ts" />
 var Q = require("q");
 
 var PhantomAdaptor = require("./screenshotAdaptors/PhantomAdaptor");
@@ -132,7 +125,6 @@ function takeScreenshot(url, width) {
             return adaptor.crawl();
         }
 
-        // if we're not crawling the page for urls, simplys move along to next step
         var dfd = Q.defer();
         setImmediate(function () {
             dfd.resolve(true);
@@ -219,4 +211,3 @@ exports.run = init;
 exports.generateConfig = generateConfig;
 exports.clean = clean;
 
-//# sourceMappingURL=main.js.map

@@ -68,6 +68,10 @@
             }, 0);
         },
 
+        writeFileSync: jasmine.createSpy("writeFileSync").andCallFake(function(data, options){
+
+        }),
+
         rmdir: function(dir, cb) {
             setTimeout(function() {
                 cb(null);

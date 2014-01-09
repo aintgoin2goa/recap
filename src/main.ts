@@ -16,7 +16,7 @@ import DestinationResolver = require("destinations/DestinationResolver");
 import transport = require("transportFactory");
 import ConfigGenerator = require("./ConfigGenerator");
 import path = require("path");
-var fs = require("fs");
+import fs = require("fs");
 var rimraf = require("rimraf");
 
 var console: IConsole = require("./Console");
@@ -122,7 +122,6 @@ function takeScreenshot(url: string, width: number): Q.IPromise<boolean> {
     var filename = tempDir.createRecord(url, width);
     console.log("set viewport width to " + width);
     adaptor.setViewPortSize(width, width)
-
     .then(
         function(){
             console.log("Navigate to " + url);
@@ -130,7 +129,6 @@ function takeScreenshot(url: string, width: number): Q.IPromise<boolean> {
         },
         fail
     )
-
     .then(
         function(){
             if(cnfg.urls[url].crawl && width === cnfg.widths[0]){
@@ -146,9 +144,9 @@ function takeScreenshot(url: string, width: number): Q.IPromise<boolean> {
         },
         fail
     )
-
     .then(
         function(urls){
+            // if we crawled the page, save the urls we found
             if(urls && urls instanceof Array){
                 addUrls(urls, url);
             }
@@ -158,7 +156,6 @@ function takeScreenshot(url: string, width: number): Q.IPromise<boolean> {
         },
         fail
     )
-
     .then(
         function(){
             dfd.resolve(true);

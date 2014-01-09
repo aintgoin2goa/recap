@@ -1,6 +1,3 @@
-/// <reference path="d/node.d.ts" />
-/// <reference path="IConfig.ts" />
-/// <reference path="d/underscore.d.ts" />
 var fs = require("fs");
 var path = require("path");
 var _ = require("underscore");
@@ -13,7 +10,7 @@ var Config = (function () {
         this.defaultOptions = {
             waitTime: 50,
             crawl: false,
-            scripts: { before: null, after: null }
+            script: null
         };
     }
     return Config;
@@ -36,11 +33,9 @@ function loadFromFilePath(pth) {
 
 function mergeUrlConfig(cfg) {
     _.each(cfg.urls, function (value, key) {
-        if (!value) {
-            cfg.urls[key] = cfg.defaultOptions;
-        } else {
-            cfg.urls[key] = _.extend({}, cfg.defaultOptions, cfg.urls[key]);
-        }
+        value = value || cfg.defaultOptions;
+        _.defaults(value, cfg.defaultOptions);
+        cfg.urls[key] = value;
     });
 }
 
@@ -110,4 +105,3 @@ function getCurrentConfig() {
 }
 exports.getCurrentConfig = getCurrentConfig;
 
-//# sourceMappingURL=Config.js.map

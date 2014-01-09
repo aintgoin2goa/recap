@@ -12,6 +12,8 @@ interface IScreenshotAdaptor{
 
     capture(filename: string): Q.IPromise<any>;
 
+    runScript(script: string): Q.IPromise<any>;
+
     crawl(): Q.IPromise<any>;
 
     close(): Q.IPromise<any>;

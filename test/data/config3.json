@@ -1,0 +1,28 @@
+{
+   "widths": [
+    "320",
+    "480",
+    "1024",
+    "1900"
+  ],
+  "dest": "./dest/",
+  "defaultOptions": {
+    "waitTime": 5000,
+    "crawl" : false,
+    "scripts" : {"before" : null, "after" : null}
+  },
+  "urls" : {
+    "https://www.ableton.com/" : null,
+    "http://www.datsun.com/" : {
+      "crawl" : true
+    },
+    "http://www.akqa.com/" : {
+      "scripts" : {
+        "after" : "script.js"
+      }
+    }
+  }
+}
+
+
+

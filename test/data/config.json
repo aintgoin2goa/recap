@@ -8,7 +8,8 @@
   "dest": "./dest/",
   "defaultOptions": {
     "waitTime": 5000,
-    "crawl" : false
+    "crawl" : false,
+    "scripts" : {"before": null, "after":null}
   },
   "urls" : {
     "http://www.datsun.com/" : null

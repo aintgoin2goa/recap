@@ -1,8 +1,4 @@
-/// <reference path="../d/node.d.ts" />
-/// <reference path="../d/node-phantom.d.ts" />
-/// <reference path="../d/Q.d.ts" />
-/// <reference path="IScreenshotAdaptor.ts" />
-var nodePhantom = require("node-phantom");
+var nodePhantom = require("node-phantom-simple");
 var console = require("../Console");
 var Q = require("q");
 var configModule = require("../Config");
@@ -106,6 +102,18 @@ var PhantomAdaptor = (function () {
         return dfd.promise;
     };
 
+    PhantomAdaptor.prototype.runScript = function (script) {
+        var dfd = Q.defer();
+        this.page.evaluate(script, function (err) {
+            if (err) {
+                dfd.reject(err);
+            } else {
+                dfd.resolve(true);
+            }
+        });
+        return dfd.promise;
+    };
+
     PhantomAdaptor.prototype.close = function () {
         var dfd = Q.defer();
         this.page.close(function () {
@@ -140,4 +148,3 @@ var PhantomAdaptor = (function () {
 
 module.exports = PhantomAdaptor;
 
-//# sourceMappingURL=PhantomAdaptor.js.map

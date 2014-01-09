@@ -1,4 +1,3 @@
-/// <reference path="d/node.d.ts" />
 var prompt = require("prompt");
 var fs = require("fs");
 var path = require("path");
@@ -11,7 +10,7 @@ var config = {
     defaultOptions: {
         waitTime: 5000,
         crawl: false,
-        scripts: { before: null, after: null }
+        script: null
     }
 };
 
@@ -170,4 +169,3 @@ function saveConfig() {
     return dfd.promise;
 }
 
-//# sourceMappingURL=ConfigGenerator.js.map

@@ -16,15 +16,8 @@ interface IUrlOptions {
 
     crawl: boolean;
 
-    scripts : IScriptOptions;
+    script : string;
 
-}
-
-interface IScriptOptions {
-
-    before: string;
-
-    after: string;
 }
 
 interface IConfigValidationResult{

@@ -4,7 +4,7 @@
 
 /// <reference path="IScreenshotAdaptor.ts" />
 
-import nodePhantom = require("node-phantom");
+import nodePhantom = require("node-phantom-simple");
 var console: IConsole = require("../Console");
 var Q = require("q");
 import configModule = require("../Config");
@@ -108,6 +108,19 @@ class PhantomAdaptor implements IScreenshotAdaptor{
                 console.error("ERROR", err);
                 dfd.reject(err);
             } else {
+                dfd.resolve(true);
+            }
+        });
+        return dfd.promise;
+    }
+
+    public runScript(script: string): Q.IPromise<any>
+    {
+        var dfd: Q.Deferred<any> = Q.defer();
+        this.page.evaluate(script, function(err){
+            if(err){
+                dfd.reject(err);
+            }else{
                 dfd.resolve(true);
             }
         });

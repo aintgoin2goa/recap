@@ -19,7 +19,7 @@ export class Config implements IConfig{
     public defaultOptions: IUrlOptions = {
         waitTime : 50,
         crawl : false,
-        scripts : {before: null, after : null}
+        script : null
     }
 
 }
@@ -41,13 +41,10 @@ function loadFromFilePath(pth: string): Object
 }
 
 function mergeUrlConfig(cfg: IConfig): void{
-
     _.each(cfg.urls, function(value, key){
-        if(!value){
-            cfg.urls[key] = cfg.defaultOptions;
-        }else{
-            cfg.urls[key] = _.extend({}, cfg.defaultOptions, cfg.urls[key]);
-        }
+        value = value || cfg.defaultOptions;
+        _.defaults(value, cfg.defaultOptions);
+        cfg.urls[key] = value;
     });
 }
 

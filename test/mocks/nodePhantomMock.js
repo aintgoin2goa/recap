@@ -21,7 +21,12 @@ exports.getMockPage = function () {
             setTimeout(function () {
                 callback(null);
             }, 0);
-        }
+        },
+        evaluate: jasmine.createSpy("evaluateJavascript").andCallFake(function(script, callback){
+            setTimeout(function () {
+                callback(null);
+            }, 0);
+        })
     };
 };
 

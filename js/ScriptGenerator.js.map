@@ -1,0 +1,1 @@
+{"version":3,"file":"ScriptGenerator.js","sourceRoot":"","sources":["../src/ScriptGenerator.ts"],"names":["ScriptGenerator","ScriptGenerator.constructor","ScriptGenerator.generate"],"mappings":"AAAA,8CAA8C;AAC9C,sCAAsC;AACtC,oCAAoC;AAFpC;;AAMA;IAAAA;QAECC,KAAQA,mBAAmBA,GAAWA,EAAEA,CAAAA;;AAMxCD,IAJAA,qCAAAA,UAAgBA,YAAoBA,EAAEA,OAAiBA;IAEvDE,CAACA;IAEFF;AAACA,CAAAA,IAAA;AAAA"}

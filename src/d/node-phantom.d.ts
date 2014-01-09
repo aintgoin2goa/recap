@@ -10,6 +10,7 @@ interface NP_Page{
     render(filename: string, callback: (err: any) => void): void;
     set(property: string, value: any, callback: (err: any) => void): void;
     evaluate(func: () => void, callback: (err:any, urls:any) => void): void;
+    evaluate(js: string, callback: (err:any) => void): void;
     onLoadFinished: () => void;
 }
 interface NP_Phantom{
@@ -18,6 +19,6 @@ interface NP_Phantom{
     on(event: string, callback: () => void ): void;
 }
 
-declare module "node-phantom" {
+declare module "node-phantom-simple" {
     export function create(callback: (err: any, phantom: NP_Phantom) => void): void;
 }
