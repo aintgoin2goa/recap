@@ -1,3 +1,6 @@
+/// <reference path="d/node.d.ts" />
+/// <reference path="IConfig.ts" />
+/// <reference path="d/underscore.d.ts" />
 var fs = require("fs");
 var path = require("path");
 var _ = require("underscore");
@@ -105,3 +108,4 @@ function getCurrentConfig() {
 }
 exports.getCurrentConfig = getCurrentConfig;
 
+//# sourceMappingURL=Config.js.map

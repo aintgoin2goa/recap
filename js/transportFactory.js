@@ -1,3 +1,4 @@
+/// <reference path="destinations/DestinationType.ts" />
 var FileSystemTransport = require("./transports/FileSystemTransport");
 var DestinationType = require("./destinations/DestinationType");
 
@@ -22,3 +23,4 @@ function transport(from) {
 
 module.exports = transport;
 
+//# sourceMappingURL=transportFactory.js.map

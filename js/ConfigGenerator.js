@@ -1,3 +1,4 @@
+/// <reference path="d/node.d.ts" />
 var prompt = require("prompt");
 var fs = require("fs");
 var path = require("path");
@@ -169,3 +170,4 @@ function saveConfig() {
     return dfd.promise;
 }
 
+//# sourceMappingURL=ConfigGenerator.js.map

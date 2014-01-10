@@ -1,3 +1,7 @@
+/// <reference path="./IScriptGenerator.ts" />
+/// <reference path="./ITempDir.ts" />
+/// <reference path="d/node.d.ts" />
+/// <reference path="d/handlebars.d.ts" />
 var path = require("path");
 var fs = require("fs");
 var Handlebars = require("handlebars");
@@ -50,3 +54,4 @@ var ScriptGenerator = (function () {
 
 module.exports = ScriptGenerator;
 
+//# sourceMappingURL=ScriptGenerator.js.map
