@@ -135,3 +135,57 @@ exports.getMockStream = (function () {
     };
 
 }());
+
+var MockChildProcess = (function(){
+   var handlers = {};
+
+   var on =  jasmine.createSpy("MockChildProcess.on").andCallFake(function(event, cb){
+        handlers[event] ? handlers[event].push(cb) : handlers[event] = [cb];
+    });
+
+   var fire = function(evnt, err, data){
+        if(!handlers[evnt]){
+            return;
+        }
+
+        handlers[evnt].forEach(function(fn){
+            if(evnt == "data"){
+                fn(data);
+            }else{
+                fn(err, data);
+            }
+            
+        });
+    }
+
+    function reset(){
+        handlers = {};
+    }
+
+    return {
+        on : on,
+        fire : fire,
+        stdout : {
+            on : on,
+            fire : fire
+        },
+        reset :reset
+    }
+}());
+
+exports.MockChildProcess = MockChildProcess;
+
+exports.getMockChildProcess = function(){
+
+    return {
+        exec : jasmine.createSpy("exec").andCallFake(function(cmd, options, callback){
+            setImmediate(function(){
+                callback(null, "", "");
+            });
+        }),
+        spawn : jasmine.createSpy("spawn").andCallFake(function(cmd, params){
+            return MockChildProcess;
+        })
+    }
+
+};

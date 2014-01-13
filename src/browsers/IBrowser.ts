@@ -1,4 +1,12 @@
 /// <reference path="../d/Q.d.ts" />
+/// <reference path="./BrowserStatus.ts" />
+
+declare enum BrowserStatus{
+	READY,
+	ACTIVE,
+	COMPLETE,
+	ERROR
+}
 
 interface IBrowserMessage{
 	title : string;
@@ -7,10 +15,14 @@ interface IBrowserMessage{
 
 interface IBrowser{
 
-	messages : IBrowserMessage[];
+	status : Number;
 
-	execute(scriptPath: string) : Q.IPromise<any>;
+	execute(scriptPath: string) : void;
 
 	close() : void;
+
+	on(event: string, handler : (err : any, data : any) => void);
+
+	fire(event : string, err : any, data : any);
 
 }

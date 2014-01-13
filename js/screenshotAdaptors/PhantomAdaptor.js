@@ -1,7 +1,3 @@
-/// <reference path="../d/node.d.ts" />
-/// <reference path="../d/node-phantom.d.ts" />
-/// <reference path="../d/Q.d.ts" />
-/// <reference path="IScreenshotAdaptor.ts" />
 var nodePhantom = require("node-phantom-simple");
 var console = require("../Console");
 var Q = require("q");
@@ -152,4 +148,3 @@ var PhantomAdaptor = (function () {
 
 module.exports = PhantomAdaptor;
 
-//# sourceMappingURL=PhantomAdaptor.js.map

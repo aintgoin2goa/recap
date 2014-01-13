@@ -5,3 +5,7 @@ var BrowserStatus;
     BrowserStatus[BrowserStatus["COMPLETE"] = 2] = "COMPLETE";
     BrowserStatus[BrowserStatus["ERROR"] = 3] = "ERROR";
 })(BrowserStatus || (BrowserStatus = {}));
+
+
+module.exports = BrowserStatus;
+

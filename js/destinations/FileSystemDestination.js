@@ -1,5 +1,3 @@
-/// <reference path="IDestination.ts" />
-/// <reference path="IDestinationType.ts" />
 var path = require("path");
 var fs = require("fs");
 var Q = require('q');
@@ -23,7 +21,6 @@ var FileSystemDestination = (function () {
         }
         var dfd = Q.defer();
 
-        // if destination does not exist, create it
         console.log("initialising destination");
         fs.mkdir(this.uri, "0777", function (err) {
             if (err) {
@@ -34,7 +31,6 @@ var FileSystemDestination = (function () {
                 }
             }
 
-            // if we have a data file already, delete the file but store contents in memory
             fs.readFile(_this.dataFilePath, { encoding: "utf8" }, function (err, data) {
                 if (data) {
                     _this.data = JSON.parse(data);
@@ -108,7 +104,6 @@ var FileSystemDestination = (function () {
     };
 
     FileSystemDestination.prototype.getType = function (uri) {
-        // only one type right now
         return DestinationType.FileSystem;
     };
 
@@ -124,4 +119,3 @@ var FileSystemDestination = (function () {
 
 module.exports = FileSystemDestination;
 
-//# sourceMappingURL=FileSystemDestination.js.map
