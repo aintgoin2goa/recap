@@ -22,6 +22,10 @@ export class Config implements IConfig{
         script : null
     }
 
+    public settings : IConfigSettings = {
+        maxInstances : 4
+    }
+
 }
 
 function loadFromFilePath(pth: string): Object

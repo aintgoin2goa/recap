@@ -26,3 +26,9 @@ interface IConfigValidationResult{
 
 	message: string;
 }
+
+interface IConfigSettings{
+
+    maxInstances : number;
+
+}
