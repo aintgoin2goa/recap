@@ -3,30 +3,31 @@
 
 import child_process = require("child_process");
 import console = require("../Console");
-import BrowserStatus = require("./BrowserStatus");
+import Q = require("q");
 
 class PhantomBrowser implements IBrowser{
 
-	public status : Number;
+	public status : string;
 
-	private instance : any;
+	private instance : child_process.ChildProcess;
 
 	private eventHandlers : {[event : string] : {(err : any, data? : any) :void}[]}
 
 	constructor(){
 		this.eventHandlers = {};
-		this.testPhantom();
+		this.status = "IDLE";
 	}
 
 	public execute(scriptPath : string) : void {
-		var process = child_process.spawn("phantomjs", [scriptPath]);
-		process.on("error", (err:any) => this.onError(err) );
-		process.on("exit", () => this.onExit() );
-		process.stdout.on("data", (data) => this.onMessage(data) );
+		var child = child_process.spawn("phantomjs", [scriptPath]);
+		child.on("error", (err:any) => this.onError(err) );
+		child.on("exit", () => this.onExit() );
+		child.stdout.on("data", (data) => this.onMessage(data) );
+		this.instance = child;
 	}
 
 	public close() : void {
-
+		this.instance.disconnect();
 	}
 
 	public on(event : string, handler : (err:any, data?:any) => void) : void{
@@ -52,12 +53,12 @@ class PhantomBrowser implements IBrowser{
 	}
 
 	private onError(err:any) : void{
-		this.status = BrowserStatus.ERROR;
+		this.status = "ERROR";
 		this.fire("error", err, null);
 	}
 
 	private onExit() : void{
-		this.status = BrowserStatus.COMPLETE;
+		this.status = "COMPLETE";
 		this.fire("complete", null, null);
 	}
 
@@ -72,16 +73,16 @@ class PhantomBrowser implements IBrowser{
 		}
 	}
 
-	private testPhantom() : void{
+	public static test() : Q.IPromise<boolean> {
+		var dfd = Q.defer<boolean>();
 		child_process.exec("phantomjs -v", {}, function(err, stdout, stderr){
 			if(err){
-				console.error("Phantom js not found, please check it is installed and available in your PATH");
-				this.status = BrowserStatus.ERROR;
+				dfd.resolve(false);
 			}else{
-				console.log("Phantom js found - version " + stdout.toString());
-				this.status = BrowserStatus.READY;
+				dfd.resolve(true);
 			}
 		});
+		return dfd.promise;
 	}
 
 }

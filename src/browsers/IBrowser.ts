@@ -1,12 +1,5 @@
 /// <reference path="../d/Q.d.ts" />
-/// <reference path="./BrowserStatus.ts" />
 
-declare enum BrowserStatus{
-	READY,
-	ACTIVE,
-	COMPLETE,
-	ERROR
-}
 
 interface IBrowserMessage{
 	title : string;
@@ -15,7 +8,7 @@ interface IBrowserMessage{
 
 interface IBrowser{
 
-	status : Number;
+	status : string;
 
 	execute(scriptPath: string) : void;
 

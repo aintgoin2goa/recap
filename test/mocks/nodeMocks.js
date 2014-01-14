@@ -169,7 +169,8 @@ var MockChildProcess = (function(){
             on : on,
             fire : fire
         },
-        reset :reset
+        reset :reset,
+        disconnect : jasmine.createSpy("disconnect")
     }
 }());
 

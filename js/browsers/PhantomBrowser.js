@@ -1,27 +1,29 @@
 var child_process = require("child_process");
-var console = require("../Console");
-var BrowserStatus = require("./BrowserStatus");
+
+var Q = require("q");
 
 var PhantomBrowser = (function () {
     function PhantomBrowser() {
         this.eventHandlers = {};
-        this.testPhantom();
+        this.status = "IDLE";
     }
     PhantomBrowser.prototype.execute = function (scriptPath) {
         var _this = this;
-        var process = child_process.spawn("phantomjs", [scriptPath]);
-        process.on("error", function (err) {
+        var child = child_process.spawn("phantomjs", [scriptPath]);
+        child.on("error", function (err) {
             return _this.onError(err);
         });
-        process.on("exit", function () {
+        child.on("exit", function () {
             return _this.onExit();
         });
-        process.stdout.on("data", function (data) {
+        child.stdout.on("data", function (data) {
             return _this.onMessage(data);
         });
+        this.instance = child;
     };
 
     PhantomBrowser.prototype.close = function () {
+        this.instance.disconnect();
     };
 
     PhantomBrowser.prototype.on = function (event, handler) {
@@ -47,12 +49,12 @@ var PhantomBrowser = (function () {
     };
 
     PhantomBrowser.prototype.onError = function (err) {
-        this.status = BrowserStatus.ERROR;
+        this.status = "ERROR";
         this.fire("error", err, null);
     };
 
     PhantomBrowser.prototype.onExit = function () {
-        this.status = BrowserStatus.COMPLETE;
+        this.status = "COMPLETE";
         this.fire("complete", null, null);
     };
 
@@ -67,16 +69,16 @@ var PhantomBrowser = (function () {
         }
     };
 
-    PhantomBrowser.prototype.testPhantom = function () {
+    PhantomBrowser.test = function () {
+        var dfd = Q.defer();
         child_process.exec("phantomjs -v", {}, function (err, stdout, stderr) {
             if (err) {
-                console.error("Phantom js not found, please check it is installed and available in your PATH");
-                this.status = BrowserStatus.ERROR;
+                dfd.resolve(false);
             } else {
-                console.log("Phantom js found - version " + stdout.toString());
-                this.status = BrowserStatus.READY;
+                dfd.resolve(true);
             }
         });
+        return dfd.promise;
     };
     return PhantomBrowser;
 })();

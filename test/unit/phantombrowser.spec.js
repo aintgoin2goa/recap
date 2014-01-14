@@ -14,14 +14,11 @@ describe("PhantomBrowser", function(){
 		MockChildProcess.reset();
 	});
 
-	it("Will check that phantomjs is available when instantiated", function(done){
-		browser = new PhantomBrowser();
+	it("Can check that phantomjs is available", function(done){
+		PhantomBrowser.test()
 
-		waits(500);
-
-		runs(function(){
+		.then(function(){
 			expect(child_processMock.exec).toHaveBeenCalledWith("phantomjs -v", jasmine.any(Object), jasmine.any(Function));
-			expect(browser.status === BrowserStatus.READY);
 			done();
 		});
 	});
@@ -44,7 +41,6 @@ describe("PhantomBrowser", function(){
 		browser.execute(script);
 		browser.on("message", spy);
 
-		debugger;
 		MockChildProcess.stdout.fire("data", null, JSON.stringify(message));
 
 		waits(50);
@@ -56,10 +52,54 @@ describe("PhantomBrowser", function(){
 
 	});
 
-	xit("Will fire the 'error' event and update it's status if the process errors");
+	it("Will fire the 'error' event and update it's status if the process errors", function(done){
+		browser = new PhantomBrowser();
+		var script = "script.js";
+		var spy = jasmine.createSpy("errorCallback");
+		var error = new Error("Some Error");
 
-	xit("Will fire the 'complete' event and update it's status when the process exits");
+		browser.execute(script);
+		browser.on("error", spy);
 
-	xit("Can close the process");
+		MockChildProcess.fire("error", error, null);
 
-});
+		waits(50);
+
+		runs(function(){
+			expect(spy).toHaveBeenCalledWith(error, null);
+			expect(browser.status).toBe("ERROR");
+			done();
+		});
+	});
+
+	it("Will fire the 'complete' event and update it's status when the process exits", function(done){
+		browser = new PhantomBrowser();
+		var script = "script.js";
+		var spy = jasmine.createSpy("completeCallback");
+
+		browser.execute(script);
+		browser.on("complete", spy);
+
+		MockChildProcess.fire("exit", null, null);
+
+		waits(50);
+
+		runs(function(){
+			expect(spy).toHaveBeenCalledWith(null, null);
+			expect(browser.status).toBe("COMPLETE");
+			done();
+		});
+	});
+
+	it("Can close the process", function(){
+		browser = new PhantomBrowser();
+		var script = "script.js";
+
+		browser.execute(script);
+		browser.close();
+
+		expect(MockChildProcess.disconnect).toHaveBeenCalled();
+
+	});
+
+});   
