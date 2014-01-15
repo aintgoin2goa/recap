@@ -1,6 +1,7 @@
 /// <reference path="../d/Q.d.ts" />
 
 
+
 interface IBrowserMessage{
 	title : string;
 	data : any;
@@ -8,11 +9,11 @@ interface IBrowserMessage{
 
 interface IBrowser{
 
-	status : string;
+	status : number;
 
 	execute(scriptPath: string) : void;
 
-	close() : void;
+	close(force? : boolean) : void;
 
 	on(event: string, handler : (err : any, data : any) => void);
 

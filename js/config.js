@@ -12,6 +12,9 @@ var Config = (function () {
             crawl: false,
             script: null
         };
+        this.settings = {
+            maxInstances: 4
+        };
     }
     return Config;
 })();

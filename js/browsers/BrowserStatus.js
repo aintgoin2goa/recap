@@ -1,10 +1,13 @@
-var BrowserStatus;
-(function (BrowserStatus) {
-    BrowserStatus[BrowserStatus["IDLE"] = 0] = "IDLE";
-    BrowserStatus[BrowserStatus["ACTIVE"] = 1] = "ACTIVE";
-    BrowserStatus[BrowserStatus["COMPLETE"] = 2] = "COMPLETE";
-    BrowserStatus[BrowserStatus["ERROR"] = 3] = "ERROR";
-})(BrowserStatus || (BrowserStatus = {}));
+var BrowserStatus = (function () {
+    function BrowserStatus() {
+    }
+    BrowserStatus.IDLE = 0;
+
+    BrowserStatus.ACTIVE = 1;
+
+    BrowserStatus.ERROR = 2;
+    return BrowserStatus;
+})();
 
 
 module.exports = BrowserStatus;

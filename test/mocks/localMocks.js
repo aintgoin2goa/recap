@@ -145,3 +145,31 @@ exports.getMockConfig = function () {
     };
 
 }
+
+exports.getMockBrowser = function(){
+
+    var MockBrowser = jasmine.createSpy("MockBrowser").andCallFake(function(){
+         this.events ={};
+    });
+
+    MockBrowser.prototype = {
+        status : "",
+        execute : jasmine.createSpy("execute").andCallFake(function(s){
+            this.status = "ACTIVE";
+        }),
+        close : jasmine.createSpy("close"),
+        on : jasmine.createSpy("on").andCallFake(function(ev, fn){
+            this.events[ev] ? this.events[ev].push(fn) : this.events[ev][fn];
+        }),
+        fire : function(ev, err, data){
+            if(!this.events[ev]){
+                return;
+            }
+            this.events[ev].forEach(function(fn){
+                fn(err, data);
+            })
+        }
+    }
+
+    return MockBrowser;
+}

@@ -13,6 +13,9 @@ var config: IConfig = {
         waitTime : 5000,
         crawl : false,
         script : null
+    },
+    settings : {
+        maxInstances : 4
     }
 };
 

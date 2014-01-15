@@ -32,7 +32,7 @@ module.exports = function(grunt) {
         specFolders : ["test/unit/"],
         options: {
           forceExit: true,
-          match: "phantombrowser.",
+          match: "browserswarm.",
           colors : true,
           verbose: true,
           matchall: false,

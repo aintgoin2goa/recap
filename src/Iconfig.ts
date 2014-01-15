@@ -8,6 +8,8 @@ interface IConfig{
 
     defaultOptions: IUrlOptions;
 
+    settings: IConfigSettings
+
 }
 
 interface IUrlOptions {

@@ -3,11 +3,12 @@
 
 import child_process = require("child_process");
 import console = require("../Console");
+import BrowserStatus = require("./BrowserStatus");
 import Q = require("q");
 
 class PhantomBrowser implements IBrowser{
 
-	public status : string;
+	public status : number;
 
 	private instance : child_process.ChildProcess;
 
@@ -15,19 +16,24 @@ class PhantomBrowser implements IBrowser{
 
 	constructor(){
 		this.eventHandlers = {};
-		this.status = "IDLE";
+		this.status = BrowserStatus.IDLE;
 	}
 
 	public execute(scriptPath : string) : void {
 		var child = child_process.spawn("phantomjs", [scriptPath]);
 		child.on("error", (err:any) => this.onError(err) );
-		child.on("exit", () => this.onExit() );
+		child.on("exit", (code: number) => this.onExit(code) );
 		child.stdout.on("data", (data) => this.onMessage(data) );
 		this.instance = child;
 	}
 
-	public close() : void {
-		this.instance.disconnect();
+	public close(force?: boolean) : void {
+		if(force){
+			this.instance.kill();
+		}else{
+			this.instance.disconnect();
+		}
+		this.status = BrowserStatus.IDLE;
 	}
 
 	public on(event : string, handler : (err:any, data?:any) => void) : void{
@@ -53,13 +59,17 @@ class PhantomBrowser implements IBrowser{
 	}
 
 	private onError(err:any) : void{
-		this.status = "ERROR";
+		this.status = BrowserStatus.ERROR;
 		this.fire("error", err, null);
 	}
 
-	private onExit() : void{
-		this.status = "COMPLETE";
-		this.fire("complete", null, null);
+	private onExit(code : number) : void{
+		if(code === 0){
+			this.status = BrowserStatus.IDLE;
+			this.fire("complete", null, null);
+		}else{
+			this.onError(null);
+		}
 	}
 
 	private onMessage(message : NodeBuffer) : void{

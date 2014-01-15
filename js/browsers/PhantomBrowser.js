@@ -1,11 +1,12 @@
 var child_process = require("child_process");
 
+var BrowserStatus = require("./BrowserStatus");
 var Q = require("q");
 
 var PhantomBrowser = (function () {
     function PhantomBrowser() {
         this.eventHandlers = {};
-        this.status = "IDLE";
+        this.status = BrowserStatus.IDLE;
     }
     PhantomBrowser.prototype.execute = function (scriptPath) {
         var _this = this;
@@ -13,8 +14,8 @@ var PhantomBrowser = (function () {
         child.on("error", function (err) {
             return _this.onError(err);
         });
-        child.on("exit", function () {
-            return _this.onExit();
+        child.on("exit", function (code) {
+            return _this.onExit(code);
         });
         child.stdout.on("data", function (data) {
             return _this.onMessage(data);
@@ -22,8 +23,13 @@ var PhantomBrowser = (function () {
         this.instance = child;
     };
 
-    PhantomBrowser.prototype.close = function () {
-        this.instance.disconnect();
+    PhantomBrowser.prototype.close = function (force) {
+        if (force) {
+            this.instance.kill();
+        } else {
+            this.instance.disconnect();
+        }
+        this.status = BrowserStatus.IDLE;
     };
 
     PhantomBrowser.prototype.on = function (event, handler) {
@@ -49,13 +55,17 @@ var PhantomBrowser = (function () {
     };
 
     PhantomBrowser.prototype.onError = function (err) {
-        this.status = "ERROR";
+        this.status = BrowserStatus.ERROR;
         this.fire("error", err, null);
     };
 
-    PhantomBrowser.prototype.onExit = function () {
-        this.status = "COMPLETE";
-        this.fire("complete", null, null);
+    PhantomBrowser.prototype.onExit = function (code) {
+        if (code === 0) {
+            this.status = BrowserStatus.IDLE;
+            this.fire("complete", null, null);
+        } else {
+            this.onError(null);
+        }
     };
 
     PhantomBrowser.prototype.onMessage = function (message) {
