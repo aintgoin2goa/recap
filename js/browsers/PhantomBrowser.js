@@ -4,7 +4,7 @@ var BrowserStatus = require("./BrowserStatus");
 var Q = require("q");
 
 var PhantomBrowser = (function () {
-    function PhantomBrowser() {
+    function PhantomBrowser(index) {
         this.eventHandlers = {};
         this.status = BrowserStatus.IDLE;
     }

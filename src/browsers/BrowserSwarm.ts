@@ -8,12 +8,15 @@ class BrowserSwarm implements IBrowserSwarm{
 
 	private browsers: IBrowser[];
 
-	private eventHandlers : {[event: string] : {(err:any, data:any, index:number) : void}[]};
+	private eventHandlers : {[event: string] : {(err?:any, data?:any, index?:number) : void}[]};
 
 	constructor(maxInstances: number){
+		this.eventHandlers = {};
 		this.browsers = [];
 		for(var i = 0; i < maxInstances; i++){
-			this.browsers.push(new Browser());
+			var browser = new Browser(i);
+			this.addListeners(browser,i);
+			this.browsers.push(browser);
 		}
 	}
 
@@ -27,7 +30,7 @@ class BrowserSwarm implements IBrowserSwarm{
 		return -1;
 	}
 
-	public on(event: string, handler: (err:any, data:any, index:number) => void): void{
+	public on(event: string, handler: (err?:any, data?:any, index?:number) => void): void{
 		if(this.eventHandlers[event]){
 			this.eventHandlers[event].push(handler);
 		}else{
@@ -35,13 +38,21 @@ class BrowserSwarm implements IBrowserSwarm{
 		}
 	}
 
-	private trigger(event: string, err: any, data: any, index: number){
+	private trigger(event: string, err?: any, data?: any, index?: number){
 		if(!this.eventHandlers[event]){
 			return;
 		}
 
 		this.eventHandlers[event].forEach(function(handler){
-			handler(err, data, index);
+			if(event === "message"){
+				handler(data, index);
+			}else if(event === "error"){
+				handler(err, index);
+			}else if(event === "available"){
+				handler();
+			}else{
+				handler(err, data, index);
+			}
 		});
 	}
 
@@ -52,15 +63,16 @@ class BrowserSwarm implements IBrowserSwarm{
 	}
 
 	private onMessage(message: IBrowserMessage, browser: IBrowser, index: number){
-
+		this.trigger("message", null, message, index);
 	}
 
 	private onError(error: any, browser: IBrowser, index: number){
-
+		this.trigger("error",error,null,index);
+		browser.close(true);
 	}
 
 	private onExit(browser: IBrowser, index: number){
-
+		this.trigger("available");
 	}
 }
 

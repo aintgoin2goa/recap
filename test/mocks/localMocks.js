@@ -146,20 +146,24 @@ exports.getMockConfig = function () {
 
 }
 
+var mockBrowserInstances = [];
+
 exports.getMockBrowser = function(){
 
-    var MockBrowser = jasmine.createSpy("MockBrowser").andCallFake(function(){
+    var MockBrowser = jasmine.createSpy("MockBrowser").andCallFake(function(index){
+        this.index = index;
          this.events ={};
+         mockBrowserInstances.push(this);
     });
 
     MockBrowser.prototype = {
-        status : "",
+        status : 0,
         execute : jasmine.createSpy("execute").andCallFake(function(s){
-            this.status = "ACTIVE";
+            this.status = 1;
         }),
         close : jasmine.createSpy("close"),
         on : jasmine.createSpy("on").andCallFake(function(ev, fn){
-            this.events[ev] ? this.events[ev].push(fn) : this.events[ev][fn];
+            this.events[ev] ? this.events[ev].push(fn) : this.events[ev] = [fn];
         }),
         fire : function(ev, err, data){
             if(!this.events[ev]){
@@ -167,9 +171,18 @@ exports.getMockBrowser = function(){
             }
             this.events[ev].forEach(function(fn){
                 fn(err, data);
-            })
+            });
         }
     }
 
     return MockBrowser;
 }
+
+exports.getMockBrowserInstance = function(i){
+    return mockBrowserInstances[i];
+}
+
+exports.resetMockBrowserInstances = function(){
+    mockBrowserInstances = [];
+}
+

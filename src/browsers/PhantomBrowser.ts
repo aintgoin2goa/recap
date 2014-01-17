@@ -14,7 +14,7 @@ class PhantomBrowser implements IBrowser{
 
 	private eventHandlers : {[event : string] : {(err : any, data? : any) :void}[]}
 
-	constructor(){
+	constructor(index: number){
 		this.eventHandlers = {};
 		this.status = BrowserStatus.IDLE;
 	}
