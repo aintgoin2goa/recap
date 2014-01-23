@@ -1,7 +1,7 @@
-/// <reference path="destinations/DestinationType.ts" />
+/// <reference path="../destinations/DestinationType.ts" />
 
-import FileSystemTransport = require("transports/FileSystemTransport");
-var DestinationType: DestinationType = require("./destinations/DestinationType");
+import FileSystemTransport = require("./FileSystemTransport");
+var DestinationType: DestinationType = require("../desintations/DestinationType");
 
 function resolveTransport(type: DestinationType): ITransport {
     switch (type) {

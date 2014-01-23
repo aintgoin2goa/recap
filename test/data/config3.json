@@ -9,7 +9,7 @@
   "defaultOptions": {
     "waitTime": 5000,
     "crawl" : false,
-    "scripts" : {"before" : null, "after" : null}
+    "script" : "default"
   },
   "urls" : {
     "https://www.ableton.com/" : null,

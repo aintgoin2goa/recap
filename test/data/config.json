@@ -9,9 +9,12 @@
   "defaultOptions": {
     "waitTime": 5000,
     "crawl" : false,
-    "scripts" : {"before": null, "after":null}
+    "script" : "default"
   },
   "urls" : {
     "http://www.datsun.com/" : null
+  },
+  "settings" : {
+    "maxInstances" : 2
   }
 }

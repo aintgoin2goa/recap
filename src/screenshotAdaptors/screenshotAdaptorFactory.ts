@@ -1,4 +1,4 @@
-/// <reference path="screenshotAdaptors/IScreenshotAdaptor.ts" />
+/// <reference path="./IScreenshotAdaptor.ts" />
 
 class ScreenshotAdaptorFactory<T>{
 

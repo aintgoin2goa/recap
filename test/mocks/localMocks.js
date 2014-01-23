@@ -208,7 +208,16 @@ exports.getBrowserSwarmMock = function(){
         },
         execute : jasmine.createSpy("execute")
     }
+}
 
+exports.getBrowserSwarmMockConstructor = function(){
+    var BrowserSwarmMock = jasmine.createSpy("BrowserSwarmMock").andCallFake(function(size){
+        this.size = size;
+    });
+
+    BrowserSwarmMock.prototype = exports.getBrowserSwarmMock();
+
+    return BrowserSwarmMock;
 }
 
 exports.getMockConsole = function(){

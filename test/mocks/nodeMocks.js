@@ -58,9 +58,9 @@
             }, 0);
         },
 
-        readFileSync: function(file, options){
+        readFileSync: jasmine.createSpy("readFileSync").andCallFake(function(file, options){
             return readFileData;
-        },
+        }),
 
         writeFile: function(path, data, options, cb) {
             setTimeout(function() {

@@ -8,7 +8,9 @@
   "dest": "./dest/",
   "defaultOptions": {
     "waitTime": 5000,
-    "crawl" : false
+    "crawl" : false,
+    "script" : "default"
+
   },
   "urls" : {
     "https://www.ableton.com/" : null
