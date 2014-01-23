@@ -5,4 +5,6 @@ interface IBrowserSwarm{
 
 	on(event: string, handler: Function) : void;
 
+	size: number;
+
 }

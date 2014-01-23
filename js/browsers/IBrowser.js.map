@@ -1,1 +1,1 @@
-{"version":3,"file":"IBrowser.js","sourceRoot":"","sources":["../../src/browsers/IBrowser.ts"],"names":["BrowserStatus"],"mappings":"AAAA,oCAAoC;AAOpC,IAAK,aAAa;AAKjB,CALD,UAAK,aAAa;IACjBA,iDAAIA,CAAAA;IACJA,qDAAMA,CAAAA;IACNA,yDAAQA,CAAAA;IACRA,mDACDA,CAAAA;AAAAA,CAACA,yCAAA"}
+{"version":3,"file":"IBrowser.js","sourceRoot":"","sources":["../../src/browsers/IBrowser.ts"],"names":[],"mappings":"AAAA,oCAAoC"}

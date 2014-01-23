@@ -186,3 +186,52 @@ exports.resetMockBrowserInstances = function(){
     mockBrowserInstances = [];
 }
 
+exports.getBrowserSwarmMock = function(){
+
+    var events ={};
+
+    return {
+        size : 1,
+        on : jasmine.createSpy("on").andCallFake(function(ev, fn){
+            events[ev] ? events[ev].push(fn) : events[ev] = [fn];
+        }),
+        fire : function(ev, err, data){
+            if(!events[ev]){
+                return;
+            }
+            events[ev].forEach(function(fn){
+                fn(err, data);
+            });
+        },
+        reset : function(){
+            events = {};
+        },
+        execute : jasmine.createSpy("execute")
+    }
+
+}
+
+exports.getMockConsole = function(){
+
+    return {
+        log : jasmine.createSpy("console.log"),
+        warn : jasmine.createSpy("console.warn"),
+        error : jasmine.createSpy("console.error"),
+        info : jasmine.createSpy("console.info"),
+    }
+}
+
+exports.getTaskMock = function(){
+    
+    var Task = jasmine.createSpy("Task").andCallFake(function(url, widths, options){
+        this.url = url;
+        this.widths = widths;
+        this.options = options;
+        this.scriptTemplate = this.options.script;
+        this.status = 0;
+    });
+
+    Task.prototype.generateScript = jasmine.createSpy("generateScript");
+
+    return Task;
+}

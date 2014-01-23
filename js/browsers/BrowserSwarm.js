@@ -11,6 +11,14 @@ var BrowserSwarm = (function () {
             this.browsers.push(browser);
         }
     }
+    Object.defineProperty(BrowserSwarm.prototype, "size", {
+        get: function () {
+            return this.browsers.length;
+        },
+        enumerable: true,
+        configurable: true
+    });
+
     BrowserSwarm.prototype.execute = function (script) {
         for (var i = 0, l = this.browsers.length; i < l; i++) {
             if (this.browsers[i].status === BrowserStatus.IDLE) {
@@ -40,7 +48,7 @@ var BrowserSwarm = (function () {
             } else if (event === "error") {
                 handler(err, index);
             } else if (event === "available") {
-                handler();
+                handler(index);
             } else {
                 handler(err, data, index);
             }
@@ -70,7 +78,7 @@ var BrowserSwarm = (function () {
     };
 
     BrowserSwarm.prototype.onExit = function (browser, index) {
-        this.trigger("available");
+        this.trigger("available", null, null, index);
     };
     return BrowserSwarm;
 })();

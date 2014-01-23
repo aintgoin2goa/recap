@@ -32,7 +32,7 @@ module.exports = function(grunt) {
         specFolders : ["test/unit/"],
         options: {
           forceExit: true,
-          match: "browserswarm.",
+          match: "taskqueue.",
           colors : true,
           verbose: true,
           matchall: false,

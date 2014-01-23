@@ -6,6 +6,10 @@ import BrowserStatus = require("BrowserStatus");
 
 class BrowserSwarm implements IBrowserSwarm{
 
+	get size(): number{
+		return this.browsers.length;
+	}
+
 	private browsers: IBrowser[];
 
 	private eventHandlers : {[event: string] : {(err?:any, data?:any, index?:number) : void}[]};
@@ -49,7 +53,7 @@ class BrowserSwarm implements IBrowserSwarm{
 			}else if(event === "error"){
 				handler(err, index);
 			}else if(event === "available"){
-				handler();
+				handler(index);
 			}else{
 				handler(err, data, index);
 			}
@@ -72,7 +76,7 @@ class BrowserSwarm implements IBrowserSwarm{
 	}
 
 	private onExit(browser: IBrowser, index: number){
-		this.trigger("available");
+		this.trigger("available", null, null, index);
 	}
 }
 

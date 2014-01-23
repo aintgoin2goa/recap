@@ -85,7 +85,7 @@ describe("Swarm", function(){
 		waits(10);
 
 		runs(function(){
-			expect(spy).toHaveBeenCalled();
+			expect(spy).toHaveBeenCalledWith(index);
 		})
 	});
 
