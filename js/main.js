@@ -1,9 +1,18 @@
 var Q = require("q");
-var fs = require("fs");
+
 var BrowserSwarm = require("./browsers/BrowserSwarm");
+var Config = require("./Config");
+var TempDir = require("./TempDir");
+var TaskQueue = require("./task/TaskQueue");
+var Task = require("./task/Task");
+var console = require("./Console");
 
 var fail = function fail(message, dfd) {
     throw new Error("Not implemented");
+};
+
+var success = function success(message, dfd) {
+    throw new Error("Not Implemented");
 };
 
 function setupFail(isConsole) {
@@ -19,33 +28,50 @@ function setupFail(isConsole) {
     }
 }
 
-function loadConfig(path) {
-    var configstr = fs.readFileSync(path, { encoding: "utf8" });
-    var config;
-    try  {
-        config = JSON.parse(configstr);
-    } catch (e) {
-        return false;
+function setupSuccess(isConsole) {
+    if (isConsole) {
+        success = function succeed(message, dfd) {
+            console.success(message);
+            process.exit(0);
+        };
+    } else {
+        success = function succeed(message, dfd) {
+            dfd.resolve(message);
+        };
     }
-    return config ? config : false;
+}
+
+function createTasks(config) {
+    var urls = Object.keys(config.urls);
+    var tasks = [];
+    urls.forEach(function (url) {
+        tasks.push(new Task(url, config.widths, config.urls[url]));
+    });
+    return tasks;
 }
 
 function setup(config, dfd) {
     var swarm = new BrowserSwarm(config.settings.maxInstances);
+    var tempDir = new TempDir();
+    var taskQueue = new TaskQueue(swarm, tempDir);
+    var tasks = createTasks(config);
+    tasks.forEach(function (task) {
+        taskQueue.addTask(task);
+    });
+    begin(config, taskQueue, dfd);
 }
 
-function run(config, isConsole) {
+function begin(config, queue, dfd) {
+    queue.on("complete", function () {
+    });
+    queue.process();
+}
+
+function run(cfg, isConsole) {
     var dfd = Q.defer();
     isConsole = isConsole || false;
     setupFail(isConsole);
-
-    if (typeof config === "string") {
-        config = loadConfig(config);
-        if (!config) {
-            fail("Could not parse config object", dfd);
-        }
-    }
-
+    var config = Config.load(cfg);
     setup(config, dfd);
     return dfd.promise;
 }

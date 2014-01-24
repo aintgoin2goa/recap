@@ -2,13 +2,23 @@
 /// <reference path="d/q.d.ts" />
 /// <reference path="./Iconfig.ts" />
 /// <reference path="browsers/IBrowserSwarm.ts" />
+/// <reference path="task/ITask" />
 
 import Q = require("q");
 import fs = require("fs");
 import BrowserSwarm = require("browsers/BrowserSwarm");
+import Config = require("./Config");
+import TempDir = require("./TempDir");
+import TaskQueue = require("task/TaskQueue");
+import Task = require("task/Task");
+import console = require("./Console");
 
 var fail = function fail(message: string, dfd:Q.Deferred<any>): void {
 	throw new Error("Not implemented");
+}
+
+var success = function success(message: string, dfd:Q.Deferred<any>): void {
+	throw new Error("Not Implemented");
 }
 
 function setupFail(isConsole:boolean) : void{
@@ -24,36 +34,54 @@ function setupFail(isConsole:boolean) : void{
 	}
 }
 
-function loadConfig(path: string): IConfig {
-	var configstr =  fs.readFileSync(path, {encoding:"utf8"});
-	var config;
-	try{
-		config = JSON.parse(configstr);
-	}catch(e){
-		return false;
+function setupSuccess(isConsole:boolean): void {
+	if(isConsole){
+		success = function succeed(message:string, dfd:Q.Deferred<any>): void {
+			console.success(message);
+			process.exit(0);
+		}
+	}else{
+		success = function succeed(message:string, dfd:Q.Deferred<any>): void {
+			dfd.resolve(message);
+		}
 	}
-	return config ? config : false;
+}
+
+function createTasks(config:IConfig): ITask[] {
+	var urls = Object.keys(config.urls);
+	var tasks = [];
+	urls.forEach(function(url){
+		tasks.push(new Task(url, config.widths, config.urls[url]));
+	});
+	return tasks;
 }
 
 function setup(config:IConfig, dfd:Q.Deferred<any>): void {
 	var swarm = new BrowserSwarm(config.settings.maxInstances);
+	var tempDir = new TempDir();
+	var taskQueue = new TaskQueue(swarm, tempDir);
+	var tasks = createTasks(config);
+	tasks.forEach(function(task){
+		taskQueue.addTask(task);
+	});
+	begin(config, taskQueue, dfd);
 }
 
-export function run(config:string, isConsole?:boolean): Q.IPromise<any>
-export function run(config:IConfig, isConsole?:boolean): Q.IPromise<any> 
-export function run(config:any, isConsole?:boolean): Q.IPromise<any>
+function begin(config:IConfig, queue: ITaskQueue, dfd:Q.Deferred<any>): void{
+	queue.on("complete", function(){
+		// start copying files across
+	});
+	queue.process();
+}
+
+export function run(cfg:string, isConsole?:boolean): Q.IPromise<any>
+export function run(cfg:IConfig, isConsole?:boolean): Q.IPromise<any> 
+export function run(cfg:any, isConsole?:boolean): Q.IPromise<any>
 {
 	var dfd = Q.defer();
 	isConsole = isConsole || false;
 	setupFail(isConsole);
-
-	if(typeof config === "string"){
-		config = loadConfig(config);
-		if(!config){
-			fail("Could not parse config object", dfd);
-		}
-	}
-
+	var config = Config.load(cfg);
 	setup(config, dfd);
 	return dfd.promise;
 }

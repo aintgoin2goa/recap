@@ -23,6 +23,25 @@ exports.getTempDirMock = function() {
     };
 };
 
+var TempDirMockInstances = [];
+
+exports.getTempDirMockInstance = function(i){
+    return TempDirMockInstances[i];
+}
+
+exports.getTempDirMockConstructor = function(){
+    TempDirMockInstances = [];
+
+    var TempdirMock = jasmine.createSpy("TempdirMock").andCallFake(function(){
+        TempDirMockInstances.push(this);
+    });
+
+    TempdirMock.prototype = exports.getTempDirMock();
+
+    return TempdirMock;
+
+}
+
 exports.getDestDirMock = function () {
 
     var isLocked = false;
@@ -210,9 +229,18 @@ exports.getBrowserSwarmMock = function(){
     }
 }
 
+var BrowserSwarmMockInstances =[];
+
+exports.getBrowserSwarmMockInstance = function(i){
+    return BrowserSwarmMockInstances[i];
+}
+
 exports.getBrowserSwarmMockConstructor = function(){
+    BrowserSwarmMockInstances = [];
+
     var BrowserSwarmMock = jasmine.createSpy("BrowserSwarmMock").andCallFake(function(size){
         this.size = size;
+        BrowserSwarmMockInstances.push(this);
     });
 
     BrowserSwarmMock.prototype = exports.getBrowserSwarmMock();
@@ -243,4 +271,37 @@ exports.getTaskMock = function(){
     Task.prototype.generateScript = jasmine.createSpy("generateScript");
 
     return Task;
+}
+
+var TaskQueueInstances = [];
+
+exports.getTaskQueueMockInstance = function(i){
+    return TaskQueueInstances[i];
+}
+
+exports.getTaskQueueMock = function(){
+
+    TaskQueueInstances = [];
+
+    var TaskQueue = jasmine.createSpy("TaskQueue").andCallFake(function(){
+        TaskQueueInstances.push(this);
+    });
+
+    TaskQueue.prototype = {
+        length : 0,
+        complete : 0,
+        addTask : jasmine.createSpy("addTask"),
+        process : jasmine.createSpy("process"),
+        on : jasmine.createSpy("on")
+    }
+
+    return TaskQueue;
+
+}
+
+exports.reset = function(){
+    TempDirMockInstances = [];
+    TaskQueueInstances = [];
+    mockBrowserInstances = [];
+    BrowserSwarmMockInstances = [];
 }

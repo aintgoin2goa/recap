@@ -9,6 +9,8 @@ interface ITempDir {
 
     createRecord(url: string, width: number): string;
 
+    createRecords(url: string, widths: number[]): void;
+
     saveRecords(): void;
 
     remove(): Q.IPromise<any>;

@@ -28,6 +28,13 @@ var TempDir = (function () {
         return this.dir + path.sep + filename;
     };
 
+    TempDir.prototype.createRecords = function (url, widths) {
+        var _this = this;
+        widths.forEach(function (width) {
+            return _this.createRecord(url, width);
+        });
+    };
+
     TempDir.prototype.saveRecords = function () {
         var data = JSON.stringify(this.records, null, 2);
         fs.writeFile(this.dir + path.sep + "data.json", data, { encoding: 'utf8' });

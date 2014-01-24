@@ -105,10 +105,13 @@ export function load(cfg: any): IConfig
     if(cfg.defaultOptions){
         config.defaultOptions = cfg.defaultOptions;
     }
-
+    if(cfg.settings){
+        config.settings = cfg.settings;
+    }
     config.urls = cfg.urls;
     config.widths = cfg.widths;
     config.dest = cfg.dest;
+
     mergeUrlConfig(config);
     loadedConfig = config;
     return config;

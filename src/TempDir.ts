@@ -41,6 +41,10 @@ class TempDir implements ITempDir {
         return this.dir + path.sep + filename;
     }
 
+    public createRecords(url: string, widths:number[]): void{
+        widths.forEach((width) => this.createRecord(url,width));
+    }
+
     public saveRecords(): void {
         var data = JSON.stringify(this.records, null, 2);
         fs.writeFile(this.dir + path.sep + "data.json", data, { encoding: 'utf8' });
