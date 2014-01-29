@@ -12,8 +12,9 @@ var Task = (function () {
     }
     Task.prototype.generateScript = function (tempDir) {
         var generator = new ScriptGenerator();
-        var widthsString = "[" + this.widths.join(",") + "]";
-        generator.generate(this.scriptTemplate, { url: this.url, widths: widthsString });
+        var widthsString = JSON.stringify(this.widths);
+        var optionsString = JSON.stringify(this.options);
+        generator.generate(this.scriptTemplate, { url: this.url, widths: widthsString, options: optionsString });
         this.generatedScript = generator.save(tempDir);
     };
 

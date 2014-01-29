@@ -15,7 +15,7 @@ interface ITempDir {
 
     remove(): Q.IPromise<any>;
 
-    listFiles(): string[];
+    listFiles(filter?: string[]): string[];
 
 }
 

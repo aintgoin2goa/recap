@@ -1,17 +1,13 @@
 /// <reference path="IDestination.ts" />
-/// <reference path="IDestinationType.ts" />
 
 import path = require("path");
 import fs = require("fs");
 import Q = require('q');
-var DestinationType: DestinationType = require("./DestinationType");
 var console: IConsole = require("../Console");
 
 class FileSystemDestination implements IFileSystemDestination {
 
     public uri: string;
-
-    public type: DestinationType;
 
     public dataFile: string = "data.json";
 
@@ -25,7 +21,6 @@ class FileSystemDestination implements IFileSystemDestination {
 
     constructor(uri: string) {
         this.uri = uri;
-        this.type = this.getType(uri);
         this.dataFilePath = this.uri + path.sep + this.dataFile;
         this.data = [];
         this.dataIndex = {};
@@ -117,11 +112,6 @@ class FileSystemDestination implements IFileSystemDestination {
             }
         });
         return dfd.promise;
-    }
-
-    private getType(uri: string): DestinationType {
-        // only one type right now
-        return DestinationType.FileSystem;
     }
 
     private indexData(): void {

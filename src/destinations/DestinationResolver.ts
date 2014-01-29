@@ -1,7 +1,7 @@
 /// <reference path="IDestination.ts" />
 /// <reference path="./FileSystemDestination.ts" />
 
-export module DestinationResolver{
+module DestinationResolver{
     export function resolve(uri: string): IDestination {
         var moduleName: string = "./FileSystemDestination";
 
@@ -10,3 +10,5 @@ export module DestinationResolver{
         return destination;
     }
 }
+
+export = DestinationResolver;

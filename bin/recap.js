@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+
+
 var argv = require("optimist")
     .options('v', {
     alias : "version",
@@ -17,6 +19,7 @@ if(argv.v){
     process.stdout.write("\n");
     process.exit(0);
 }
+
     
 var console = require("../js/Console");
 console.setConfig("verbose", argv.V);
@@ -25,7 +28,6 @@ console.setConfig("enabled", true);
 var args = argv._;
     
 var main = require("../js/main");
-
 
 switch(args[0]){
     case "demo" :

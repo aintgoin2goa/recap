@@ -1,4 +1,0 @@
-declare enum DestinationType{
-     FileSystem
-}
-

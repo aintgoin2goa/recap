@@ -1,3 +1,4 @@
+var DestinationResolver;
 (function (DestinationResolver) {
     function resolve(uri) {
         var moduleName = "./FileSystemDestination";
@@ -7,6 +8,8 @@
         return destination;
     }
     DestinationResolver.resolve = resolve;
-})(exports.DestinationResolver || (exports.DestinationResolver = {}));
-var DestinationResolver = exports.DestinationResolver;
+})(DestinationResolver || (DestinationResolver = {}));
+
+
+module.exports = DestinationResolver;
 

@@ -62,8 +62,13 @@ class TempDir implements ITempDir {
         return dfd.promise;
     }
 
-    public listFiles(): string[] {
-        return fs.readdirSync(this.dir).map( (file) => {
+    public listFiles(filter?: string[]): string[] {
+        var allFiles = fs.readdirSync(this.dir);
+        var filtered = filter ? allFiles.filter(function(file){
+            var extension = file.split(".").pop();
+            return (!filter.length || filter.indexOf(extension) > -1);
+        }) : allFiles;
+        return filtered.map((file) =>{
             return this.dir + path.sep + file;
         });
     }

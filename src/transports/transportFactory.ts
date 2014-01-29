@@ -1,19 +1,14 @@
-/// <reference path="../destinations/DestinationType.ts" />
 
 import FileSystemTransport = require("./FileSystemTransport");
-var DestinationType: DestinationType = require("../desintations/DestinationType");
 
-function resolveTransport(type: DestinationType): ITransport {
-    switch (type) {
-        case DestinationType.FileSystem: 
-            return new FileSystemTransport(); 
-    }
+function resolveTransport(uri: string): ITransport {
+    return new FileSystemTransport(); 
 }
 
 function transport(from: ITempDir) {
     return {
         to: function (to: IDestination): Q.IPromise<boolean> {
-            var transport = resolveTransport(to.type);
+            var transport = resolveTransport(to.uri);
             transport.from = from;
             transport.to = to;
             return transport.copyFiles();

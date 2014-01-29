@@ -52,9 +52,14 @@ var TempDir = (function () {
         return dfd.promise;
     };
 
-    TempDir.prototype.listFiles = function () {
+    TempDir.prototype.listFiles = function (filter) {
         var _this = this;
-        return fs.readdirSync(this.dir).map(function (file) {
+        var allFiles = fs.readdirSync(this.dir);
+        var filtered = filter ? allFiles.filter(function (file) {
+            var extension = file.split(".").pop();
+            return (!filter.length || filter.indexOf(extension) > -1);
+        }) : allFiles;
+        return filtered.map(function (file) {
             return _this.dir + path.sep + file;
         });
     };

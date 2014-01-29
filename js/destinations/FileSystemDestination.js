@@ -1,14 +1,12 @@
 var path = require("path");
 var fs = require("fs");
 var Q = require('q');
-var DestinationType = require("./DestinationType");
 var console = require("../Console");
 
 var FileSystemDestination = (function () {
     function FileSystemDestination(uri) {
         this.dataFile = "data.json";
         this.uri = uri;
-        this.type = this.getType(uri);
         this.dataFilePath = this.uri + path.sep + this.dataFile;
         this.data = [];
         this.dataIndex = {};
@@ -101,10 +99,6 @@ var FileSystemDestination = (function () {
             }
         });
         return dfd.promise;
-    };
-
-    FileSystemDestination.prototype.getType = function (uri) {
-        return DestinationType.FileSystem;
     };
 
     FileSystemDestination.prototype.indexData = function () {

@@ -6,12 +6,17 @@ var fsMock = nodeMocks.getFSMock();
 var BrowserSwarmMock = localMocks.getBrowserSwarmMockConstructor();
 var TempDirMock = localMocks.getTempDirMockConstructor();
 var TaskQueueMock = localMocks.getTaskQueueMock();
+var destinationMock = localMocks.getMockDestination();
+var destinationResolverMock = localMocks.getMockDestinationResolver(destinationMock);
+var transportMock = localMocks.getMockTransportFactory();
 
 var main = loader.loadModule("./js/main.js", {
 	"fs" : fsMock, 
 	"./browsers/BrowserSwarm" : BrowserSwarmMock, 
 	"./TempDir" : TempDirMock,
-	"./task/TaskQueue" : TaskQueueMock
+	"./task/TaskQueue" : TaskQueueMock,
+	"./destinations/DestinationResolver" : destinationResolverMock,
+	"./transports/transportFactory" : transportMock
 }).module.exports;
 
 var fs = require("fs");
@@ -74,7 +79,24 @@ describe("main", function(){
 		expect(taskQueue.on).toHaveBeenCalledWith("complete", jasmine.any(Function));
 	});
 
-	xit("Will copy over all .jpg files and the data.json file from the temp directory to the location specified in the config");
+	it("Will copy over all .jpg files and the data.json file from the temp directory to the location specified in the config", function(){
+		main.run(config);
 
-	xit("Will delete the temporary directory once copying is complete");
+		var taskQueue = localMocks.getTaskQueueMockInstance(0);
+		var tempDir = localMocks.getTempDirMockInstance(0);
+		taskQueue.trigger("complete");
+
+		expect(transportMock).toHaveBeenCalledWith(tempDir);
+		expect(transportMock.to).toHaveBeenCalledWith(destinationMock);
+	});
+
+	it("Will delete the temporary directory once copying is complete", function(){
+		main.run(config);
+
+		var taskQueue = localMocks.getTaskQueueMockInstance(0);
+		var tempDir = localMocks.getTempDirMockInstance(0);
+		taskQueue.trigger("complete");
+
+		expect(transportMock.to).toHaveBeenCalledWith(destinationMock);
+	});
 });

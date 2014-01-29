@@ -284,6 +284,7 @@ exports.getTaskQueueMock = function(){
     TaskQueueInstances = [];
 
     var TaskQueue = jasmine.createSpy("TaskQueue").andCallFake(function(){
+        this.events = {};
         TaskQueueInstances.push(this);
     });
 
@@ -292,11 +293,65 @@ exports.getTaskQueueMock = function(){
         complete : 0,
         addTask : jasmine.createSpy("addTask"),
         process : jasmine.createSpy("process"),
-        on : jasmine.createSpy("on")
+        on : jasmine.createSpy("on").andCallFake(function(event, cb){
+            if(this.events[event]){
+                this.events[event].push(cb);
+            }else{
+                this.events[event] = [cb];
+            }
+        }),
+        trigger : function(event){
+            if(!this.events[event]){
+                return;
+            }
+
+            this.events[event].forEach(function(func){
+                func();
+            })
+        }
     }
 
     return TaskQueue;
 
+}
+
+exports.getMockDestination = function(){
+
+    return{
+        uri : "uri",
+        setup : function(){
+            return {
+                then : function(success, fail){
+                    success();
+                }
+            }
+        }
+    }
+}
+
+exports.getMockDestinationResolver = function(destination){
+    return{
+        resolve : jasmine.createSpy("resolve").andReturn(destination)
+    }
+}
+
+exports.getMockTransportFactory = function(){
+
+    var to =  jasmine.createSpy("to").andCallFake(function(){
+        return {
+            then : function(success, fail){
+                success();
+            }
+        }
+    })
+
+    var from = jasmine.createSpy("from").andCallFake(function(){
+        return {to : to};
+    });
+
+    from.to = to;
+    
+   return from;
 }
 
 exports.reset = function(){

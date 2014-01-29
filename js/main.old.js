@@ -158,7 +158,7 @@ function addUrls(crawledUrls, parentUrl) {
 function copyFiles() {
     console.log("all screenshots taken, save files to " + cnfg.dest);
     try  {
-        destination = DestinationResolver.DestinationResolver.resolve(cnfg.dest);
+        destination = DestinationResolver.resolve(cnfg.dest);
     } catch (e) {
         fail(e);
     }
