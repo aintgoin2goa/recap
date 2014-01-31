@@ -15,7 +15,8 @@ var config: IConfig = {
         script : null
     },
     settings : {
-        maxInstances : 4
+        maxInstances : 4,
+        template : "default"
     }
 };
 

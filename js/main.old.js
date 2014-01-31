@@ -1,7 +1,7 @@
 var Q = require("q");
 
-var PhantomAdaptor = require("./screenshotAdaptors/PhantomAdaptor");
-var ScreenshotAdaptorFactory = require("./screenshotAdaptors/screenshotAdaptorFactory");
+var PhantomAdaptor = "screenshotAdaptors/PhantomAdaptor";
+var ScreenshotAdaptorFactory = "screenshotAdaptors/screenshotAdaptorFactory";
 var Config = require("./Config");
 var TempDir = require("./TempDir");
 var DestinationResolver = require("./destinations/DestinationResolver");

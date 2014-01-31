@@ -32,7 +32,7 @@ module.exports = function(grunt) {
         specFolders : ["test/unit/"],
         options: {
           forceExit: true,
-          match: "main.",
+          match: ".",
           colors : true,
           verbose: true,
           matchall: false,

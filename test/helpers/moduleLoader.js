@@ -35,6 +35,10 @@ exports.loadModule = function (filePath, mocks) {
         process : process
     };
 
+    context.require.resolve = function(){
+        return "";
+    }
+
     vm.runInNewContext(fs.readFileSync(filePath), context);
     return context;
 };

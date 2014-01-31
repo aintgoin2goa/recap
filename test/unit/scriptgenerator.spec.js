@@ -1,8 +1,10 @@
 var loader = require("../helpers/moduleLoader.js");
 var nodeMocks = require("../mocks/nodeMocks.js");
 var fsMock = nodeMocks.getFSMock();
-var tmpDirMock = require("../mocks/localMocks.js").getTempDirMock();
-var ScriptGenerator = loader.loadModule("./js/ScriptGenerator.js", {"fs" : fsMock}).module.exports;
+var localMocks = require("../mocks/localMocks.js")
+var tmpDirMock = localMocks.getTempDirMock();
+var configMock = localMocks.getMockConfig()
+var ScriptGenerator = loader.loadModule("./js/ScriptGenerator.js", {"fs" : fsMock, "./Config" : configMock}).module.exports;
 
 var fs = require("fs");
 var path = require("path");
@@ -11,7 +13,7 @@ var scriptGenerator;
 describe("ScriptGenerator", function(){
 
 	beforeEach(function(){
-		scriptGenerator = new ScriptGenerator();
+		scriptGenerator = ScriptGenerator.getInstance();
 	})
 
 	it("Can generate a javascript file given a template and a context", function(){

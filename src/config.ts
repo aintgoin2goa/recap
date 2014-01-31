@@ -23,7 +23,8 @@ export class Config implements IConfig{
     }
 
     public settings : IConfigSettings = {
-        maxInstances : 4
+        maxInstances : 4,
+        template : "default"
     }
 
 }

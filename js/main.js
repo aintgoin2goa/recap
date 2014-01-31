@@ -1,7 +1,7 @@
 var Q = require("q");
 
 var BrowserSwarm = require("./browsers/BrowserSwarm");
-
+var Config = require("./Config");
 var TempDir = require("./TempDir");
 var TaskQueue = require("./task/TaskQueue");
 var Task = require("./task/Task");
@@ -94,16 +94,14 @@ function begin(config, queue, tempDir, dfd) {
     queue.process();
 }
 
-function run() {
-    var path = require("path");
-    var installDir;
-    try  {
-        installDir = require.resolve("recap");
-    } catch (e) {
-        var qPath = require.resolve("q");
-        installDir = path.resolve(qPath, "../", "../", "../");
-    }
-    console.log(installDir);
+function run(cfg, isConsole) {
+    var dfd = Q.defer();
+    isConsole = isConsole || false;
+    setupFail(isConsole);
+    setupSuccess(isConsole);
+    var config = Config.load(cfg);
+    setup(config, dfd);
+    return dfd.promise;
 }
 exports.run = run;
 

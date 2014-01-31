@@ -54,14 +54,4 @@ describe("Config", function () {
         expect(cfg.urls["http://www.datsun.com/"].crawl).toBe(obj.urls["http://www.datsun.com/"].crawl);
     });
 
-    it("Should override either script option if specified", function(){
-        var filestr = fs.readFileSync(configPath, { encoding: "utf8" });
-        var obj = JSON.parse(filestr);
-
-        var cfg = config.load(configPath);
-
-        expect(cfg.urls["http://www.akqa.com/"].scripts.after).toBe(obj.urls["http://www.akqa.com/"].scripts.after);
-         expect(cfg.urls["http://www.akqa.com/"].scripts.before).toBe(cfg.defaultOptions.scripts.before);
-    });
-
 });

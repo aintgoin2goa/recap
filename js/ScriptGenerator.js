@@ -2,10 +2,13 @@ var path = require("path");
 var fs = require("fs");
 var Handlebars = require("handlebars");
 var _ = require("underscore");
+var config = require("./Config");
 
 var ScriptGenerator = (function () {
     function ScriptGenerator() {
-        this.templatesFolderPath = path.resolve("./templates/");
+        this.templatesFolderPath = this.installLocation() + "templates" + path.sep;
+        this.templateExtension = ".tmpl";
+        this.config = config.getCurrentConfig();
     }
     ScriptGenerator.prototype.generate = function (templatePath, context) {
         var template = this.loadTemplate(templatePath);
@@ -22,7 +25,7 @@ var ScriptGenerator = (function () {
     };
 
     ScriptGenerator.prototype.loadTemplate = function (templatePath) {
-        var pth = templatePath.indexOf(".") > -1 ? path.resolve(templatePath) : path.resolve(this.templatesFolderPath, templatePath + ".tmpl");
+        var pth = templatePath.indexOf(".") > -1 ? path.resolve(templatePath) : path.resolve(this.templatesFolderPath, templatePath + this.templateExtension);
         return fs.readFileSync(pth, { encoding: "utf8" });
     };
 
@@ -45,8 +48,28 @@ var ScriptGenerator = (function () {
     ScriptGenerator.prototype.generateHexChar = function () {
         return _.random(0, 15).toString(16);
     };
+
+    ScriptGenerator.prototype.installLocation = function () {
+        var location;
+        try  {
+            location = require.resolve("recap");
+        } catch (e) {
+            var qPath = require.resolve("q");
+            location = qPath.split("node_modules")[0];
+        }
+        return location;
+    };
     return ScriptGenerator;
 })();
 
-module.exports = ScriptGenerator;
+var instance;
+
+function getInstance() {
+    if (!instance) {
+        instance = new ScriptGenerator();
+    }
+
+    return instance;
+}
+exports.getInstance = getInstance;
 

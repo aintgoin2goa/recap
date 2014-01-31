@@ -11,10 +11,15 @@ var Task = (function () {
         this.status = TaskStatus.UNKNOWN;
     }
     Task.prototype.generateScript = function (tempDir) {
-        var generator = new ScriptGenerator();
+        var generator = ScriptGenerator.getInstance();
         var widthsString = JSON.stringify(this.widths);
         var optionsString = JSON.stringify(this.options);
-        generator.generate(this.scriptTemplate, { url: this.url, widths: widthsString, options: optionsString });
+        var context = {
+            url: this.url,
+            widths: widthsString,
+            options: optionsString
+        };
+        generator.generate(this.scriptTemplate, context);
         this.generatedScript = generator.save(tempDir);
     };
 

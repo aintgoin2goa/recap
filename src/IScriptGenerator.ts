@@ -2,7 +2,7 @@
 
 interface IScriptGenerator{
 
-	generate(templatePath: string, tempDir: ITempDir) : string;
+	generate(templatePath: string, context: any) : string;
 
 	save(tempDir: ITempDir) : string;
 

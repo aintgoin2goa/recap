@@ -2,23 +2,36 @@
 /// <reference path="./ITempDir.ts" />
 /// <reference path="d/node.d.ts" />
 /// <reference path="d/handlebars.d.ts" />
+/// <reference path="./IConfig.ts" />
 
 import path = require("path");
 import fs = require("fs");
 import Handlebars = require("handlebars");
 import _ = require("underscore");
+import config = require("./Config");
 
 class ScriptGenerator implements IScriptGenerator{
 
-	private templatesFolderPath: string = path.resolve("./templates/");
+	private templatesFolderPath: string = this.installLocation() + "templates" + path.sep;
+
+	private templateExtension: string = ".tmpl";
 
 	private generatedScript: string;
 
 	private compiledTemplate : Function;
 
+	private config: IConfig;
+
+	constructor(){
+		this.config = config.getCurrentConfig();
+	}
+
 	public generate(templatePath: string, context : Object) : string {
-		var template = this.loadTemplate(templatePath);
-		this.compileTemplate(template);
+		if(!this.compiledTemplate){
+			var template = this.loadTemplate(templatePath);
+			this.compileTemplate(template);
+		}
+		
 		this.generatedScript = this.generateTemplate(context);
 		return this.generatedScript;
 	}
@@ -31,7 +44,7 @@ class ScriptGenerator implements IScriptGenerator{
 	}
 
 	private loadTemplate(templatePath: string) : string {
-		var pth = templatePath.indexOf(".") > -1 ? path.resolve(templatePath) : path.resolve(this.templatesFolderPath, templatePath + ".tmpl");
+		var pth = templatePath.indexOf(".") > -1 ? path.resolve(templatePath) : path.resolve(this.templatesFolderPath, templatePath + this.templateExtension);
 		return fs.readFileSync(pth, {encoding : "utf8"});
 	} 
 
@@ -55,5 +68,25 @@ class ScriptGenerator implements IScriptGenerator{
 		return _.random(0, 15).toString(16);
 	}
 
+	private installLocation(): string{
+		var location: string;
+		try{
+			location = require.resolve("recap");
+		}catch(e){
+			var qPath = require.resolve("q");
+			location = qPath.split("node_modules")[0];
+		}
+		return location;
+	}
+
 }
-export = ScriptGenerator;
+
+var instance: IScriptGenerator;
+
+export function getInstance() : IScriptGenerator {
+	if(!instance){
+		instance = new ScriptGenerator();
+	}
+
+	return instance;
+}

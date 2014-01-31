@@ -33,4 +33,6 @@ interface IConfigSettings{
 
     maxInstances : number;
 
+    template : string;
+
 }

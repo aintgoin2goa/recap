@@ -67,7 +67,7 @@ describe("PhantomBrowser", function(){
 
 		runs(function(){
 			expect(spy).toHaveBeenCalledWith(error, null);
-			expect(browser.status).toBe("ERROR");
+			expect(browser.status).toBe(BrowserStatus.ERROR);
 			done();
 		});
 	});
@@ -80,13 +80,13 @@ describe("PhantomBrowser", function(){
 		browser.execute(script);
 		browser.on("complete", spy);
 
-		MockChildProcess.fire("exit", null, null);
+		MockChildProcess.fire("exit", 0);
 
 		waits(50);
 
 		runs(function(){
 			expect(spy).toHaveBeenCalledWith(null, null);
-			expect(browser.status).toBe("COMPLETE");
+			expect(browser.status).toBe(BrowserStatus.IDLE);
 			done();
 		});
 	});

@@ -13,7 +13,8 @@ var Config = (function () {
             script: null
         };
         this.settings = {
-            maxInstances: 4
+            maxInstances: 4,
+            template: "default"
         };
     }
     return Config;
