@@ -1,5 +1,6 @@
 var Browser = require("./PhantomBrowser");
 var BrowserStatus = require("./BrowserStatus");
+var console = require("../Console");
 
 var BrowserSwarm = (function () {
     function BrowserSwarm(maxInstances) {
@@ -63,7 +64,7 @@ var BrowserSwarm = (function () {
         browser.on("error", function (error) {
             return _this.onError(error, browser, index);
         });
-        browser.on("exit", function () {
+        browser.on("complete", function () {
             return _this.onExit(browser, index);
         });
     };
@@ -78,6 +79,7 @@ var BrowserSwarm = (function () {
     };
 
     BrowserSwarm.prototype.onExit = function (browser, index) {
+        console.log("BrowserSwarm: browser at index " + index + "has finished");
         this.trigger("available", null, null, index);
     };
     return BrowserSwarm;

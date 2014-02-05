@@ -19,6 +19,12 @@ exports.getTempDirMock = function() {
 
         },
 
+        ready : {
+            then : function(success){
+                setImmediate(success);
+            }
+        }, 
+
         dir: "dir"
     };
 };

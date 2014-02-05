@@ -13,7 +13,7 @@ import Config = require("./Config");
 import TempDir = require("./TempDir");
 import TaskQueue = require("task/TaskQueue");
 import Task = require("task/Task");
-//import console = require("./Console");
+import console = require("./Console");
 import DestinationResolver = require("destinations/DestinationResolver");
 import transport = require("transports/transportFactory");
 import rimraf = require("rimraf");
@@ -42,7 +42,7 @@ function setupFail(isConsole:boolean) : void{
 function setupSuccess(isConsole:boolean): void {
 	if(isConsole){
 		success = function succeed(message:string, dfd:Q.Deferred<any>): void {
-			//console.success(message);
+			console.success(message);
 			process.exit(0);
 		}
 	}else{
@@ -80,16 +80,21 @@ function copyFiles(config:IConfig, tempDir: ITempDir) : Q.IPromise<any> {
 function setup(config:IConfig, dfd:Q.Deferred<any>): void {
 	var swarm = new BrowserSwarm(config.settings.maxInstances);
 	var tempDir = new TempDir();
-	var taskQueue = new TaskQueue(swarm, tempDir);
-	var tasks = createTasks(config);
-	tasks.forEach(function(task){
-		taskQueue.addTask(task);
+	tempDir.ready.then(function(){
+		console.log("created temporary directory");
+		var taskQueue = new TaskQueue(swarm, tempDir);
+		var tasks = createTasks(config);
+		tasks.forEach(function(task){
+			taskQueue.addTask(task);
+		});
+		console.log("Tasks queued, begin processing");
+		begin(config, taskQueue, tempDir, dfd);
 	});
-	begin(config, taskQueue, tempDir, dfd);
 }
 
 function begin(config:IConfig, queue: ITaskQueue, tempDir: ITempDir, dfd:Q.Deferred<any>): void{
 	queue.on("complete", function(){
+		console.log("All tasks complete - begin copying files");
 		copyFiles(config, tempDir).then(
 			function(){
 				console.log("Files copied, removing temporary directory");
@@ -119,6 +124,15 @@ export function run(cfg:any, isConsole?:boolean): Q.IPromise<any>
 	setupFail(isConsole);
 	setupSuccess(isConsole);
 	var config = Config.load(cfg);
+	console.log("loaded config");
 	setup(config, dfd);
 	return dfd.promise;
+}
+
+export function on(event: string, handler: Function) : void {
+	switch(event){
+		case "console" : 
+			console.on(handler);
+		break;
+	}
 }

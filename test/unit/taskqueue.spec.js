@@ -101,7 +101,7 @@ describe("TaskQueue", function(){
 		taskQueue.addTask(task1);
 		taskQueue.addTask(task2);
 		taskQueue.process();
-		debugger;
+
 		BrowserSwarmMock.fire("available", index);
 
 		waits(10);
@@ -110,6 +110,24 @@ describe("TaskQueue", function(){
 			expect(taskQueue.complete).toBe(1);
 			expect(task1.status).toBe(TaskStatus.COMPLETE);
 			expect(task2.status).toBe(TaskStatus.RUNNING);
+		});
+	});
+
+	it("Will fire a complete event when all tasks are processed", function(){
+		var index = 0;
+		var task1 = createTask("url1");
+		var spy = jasmine.createSpy("complete");
+
+		taskQueue.addTask(task1);
+		taskQueue.on("complete", spy);
+		taskQueue.process();
+
+		BrowserSwarmMock.fire("available", index);
+
+		waits(10);
+
+		runs(function(){
+			expect(spy).toHaveBeenCalled();
 		});
 	});
 

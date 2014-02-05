@@ -24,8 +24,12 @@ describe("Recap", function () {
         rimraf(dest, function () { });
         config = null;
     });
+
+    function log(){
+        //console.log(Array.prototype.slice.apply(arguments));
+    }
     
-    xit("Can be called via the command line, given a path to a config file", function (done) {
+    it("Can be called via the command line, given a path to a config file", function (done) {
 
         var expectedFiles = [
             "data.json"
@@ -40,9 +44,9 @@ describe("Recap", function () {
                 expectedFiles.push(url + "_" + width + ".jpg");
             });
         });
-        var prc = exec("recap " + configPath, function(err){
+        var prc = exec("recap " + configPaths[0], function(err){
             if(err){
-                console.error(err);
+                log(err);
                 done(false);
             }
 
@@ -51,7 +55,7 @@ describe("Recap", function () {
         prc.on("close",
             function () {
                 try {
-                    console.log("Finished, running assertations");
+                    log("Finished, running assertations");
                     var files = fs.readdirSync(config.dest);
                     var data = require(config.dest + "data.json");
 
@@ -65,14 +69,14 @@ describe("Recap", function () {
                     }
 
                 } catch (e) {
-                    console.log("ERROR", e);
+                    log("ERROR", e);
                     done(false);
                 }
                 done();
             });
 
         prc.on("error", function (e) {
-            console.log("process error", e);
+            log("process error", e);
             done(false);
         });
 
@@ -94,16 +98,19 @@ describe("Recap", function () {
                 expectedFiles.push(url + "_" + width + ".jpg");
             });
         });
+         recap.on("console", function(type, content){
+            log(content);
+         });
 
         recap.run(config).then(
             function () {
-                //try {
-                    //console.log("Finished, running assertations");
+                try {
+                    log("Finished, running assertations");
                     var files = fs.readdirSync(config.dest);
                     var data = require(config.dest + "data.json");
-                    //console.log('expectedFiles', expectedFiles);
-                    //console.log("files", files);
-                    //console.log('data', data);
+                    log('expectedFiles', expectedFiles);
+                    log("files", files);
+                    log('data', data);
                     for (var i = 0, l = expectedFiles.length; i < l; i++) {
                         expect(files).toContain(expectedFiles[i]);
                     }
@@ -112,14 +119,14 @@ describe("Recap", function () {
                         expect(urls).toContain(data[j].url);
                         expect(widths).toContain(data[j].width);
                     }
-               // } catch(e) {
-               //     console.log(e);
-              //  }
-                //console.log("done");
+                } catch(e) {
+                    log(e);
+                }
+                log("done");
                 done();
             },
             function() {
-                console.log("FAILED: ", arguments);
+                log("FAILED: ", arguments);
                 done(false);
             }
         );

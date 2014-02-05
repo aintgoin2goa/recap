@@ -52,10 +52,14 @@ describe("main", function(){
 	it("Will instantiate a new TaskQueue", function(){
 		main.run(config);
 
-		var swarm = localMocks.getBrowserSwarmMockInstance(0);
-		var tempDir = localMocks.getTempDirMockInstance(0);
+		waits(10);
 
-		expect(TaskQueueMock).toHaveBeenCalledWith(swarm, tempDir);
+		runs(function(){
+			var swarm = localMocks.getBrowserSwarmMockInstance(0);
+			var tempDir = localMocks.getTempDirMockInstance(0);
+
+			expect(TaskQueueMock).toHaveBeenCalledWith(swarm, tempDir);
+		});
 	});
 
 	it("Will take the config info and create tasks, passing them to the TaskQueue", function(){
@@ -63,40 +67,58 @@ describe("main", function(){
 
 		main.run(config);
 
-		var taskQueue = localMocks.getTaskQueueMockInstance(0);
-		urls.forEach(function(url, index){
-			expect(taskQueue.addTask).toHaveBeenCalled();
-			expect(taskQueue.addTask.argsForCall[index][0].url).toBe(url);
+		waits(10);
+
+		runs(function(){
+			var taskQueue = localMocks.getTaskQueueMockInstance(0);
+			urls.forEach(function(url, index){
+				expect(taskQueue.addTask).toHaveBeenCalled();
+				expect(taskQueue.addTask.argsForCall[index][0].url).toBe(url);
+			});
 		});
+
+		
 	});
 
 	it("Will start the TaskQueue running and listen for the 'complete' event", function(){
 		main.run(config);
 
-		var taskQueue = localMocks.getTaskQueueMockInstance(0);
+		waits(10);
 
-		expect(taskQueue.process).toHaveBeenCalled();
-		expect(taskQueue.on).toHaveBeenCalledWith("complete", jasmine.any(Function));
+		runs(function(){
+			var taskQueue = localMocks.getTaskQueueMockInstance(0);
+
+			expect(taskQueue.process).toHaveBeenCalled();
+			expect(taskQueue.on).toHaveBeenCalledWith("complete", jasmine.any(Function));
+		});
 	});
 
 	it("Will copy over all .jpg files and the data.json file from the temp directory to the location specified in the config", function(){
 		main.run(config);
 
-		var taskQueue = localMocks.getTaskQueueMockInstance(0);
-		var tempDir = localMocks.getTempDirMockInstance(0);
-		taskQueue.trigger("complete");
+		waits(10);
 
-		expect(transportMock).toHaveBeenCalledWith(tempDir);
-		expect(transportMock.to).toHaveBeenCalledWith(destinationMock);
+		runs(function(){
+			var taskQueue = localMocks.getTaskQueueMockInstance(0);
+			var tempDir = localMocks.getTempDirMockInstance(0);
+			taskQueue.trigger("complete");
+
+			expect(transportMock).toHaveBeenCalledWith(tempDir);
+			expect(transportMock.to).toHaveBeenCalledWith(destinationMock);
+		});
 	});
 
 	it("Will delete the temporary directory once copying is complete", function(){
 		main.run(config);
 
-		var taskQueue = localMocks.getTaskQueueMockInstance(0);
-		var tempDir = localMocks.getTempDirMockInstance(0);
-		taskQueue.trigger("complete");
+		waits(10);
 
-		expect(transportMock.to).toHaveBeenCalledWith(destinationMock);
+		runs(function(){
+			var taskQueue = localMocks.getTaskQueueMockInstance(0);
+			var tempDir = localMocks.getTempDirMockInstance(0);
+			taskQueue.trigger("complete");
+
+			expect(transportMock.to).toHaveBeenCalledWith(destinationMock);
+		});
 	});
 });

@@ -80,7 +80,7 @@ describe("Swarm", function(){
 		
 		swarm.on("available",spy);
 
-		mockBrowser.fire("exit");
+		mockBrowser.fire("complete");
 
 		waits(10);
 

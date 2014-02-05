@@ -20,10 +20,12 @@ class PhantomBrowser implements IBrowser{
 	}
 
 	public execute(scriptPath : string) : void {
+		console.log("about to execute phantomjs " + scriptPath);
 		var child = child_process.spawn("phantomjs", [scriptPath]);
 		child.on("error", (err:any) => this.onError(err) );
 		child.on("exit", (code: number) => this.onExit(code) );
 		child.stdout.on("data", (data) => this.onMessage(data) );
+		child.stderr.on("data", (data) => this.onError(data) );
 		this.instance = child;
 	}
 
@@ -60,10 +62,16 @@ class PhantomBrowser implements IBrowser{
 
 	private onError(err:any) : void{
 		this.status = BrowserStatus.ERROR;
+		if(Buffer.isBuffer(err)){
+			err = err.toString();
+		}
+
+		console.log("PhantomBrowser: process errored, " + (err.message || err));
 		this.fire("error", err, null);
 	}
 
 	private onExit(code : number) : void{
+		console.log("PhantomBrowser: process exited with code " + code);
 		if(code === 0){
 			this.status = BrowserStatus.IDLE;
 			this.fire("complete", null, null);

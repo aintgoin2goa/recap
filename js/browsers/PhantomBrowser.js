@@ -1,5 +1,5 @@
 var child_process = require("child_process");
-
+var console = require("../Console");
 var BrowserStatus = require("./BrowserStatus");
 var Q = require("q");
 
@@ -10,6 +10,7 @@ var PhantomBrowser = (function () {
     }
     PhantomBrowser.prototype.execute = function (scriptPath) {
         var _this = this;
+        console.log("about to execute phantomjs " + scriptPath);
         var child = child_process.spawn("phantomjs", [scriptPath]);
         child.on("error", function (err) {
             return _this.onError(err);
@@ -19,6 +20,9 @@ var PhantomBrowser = (function () {
         });
         child.stdout.on("data", function (data) {
             return _this.onMessage(data);
+        });
+        child.stderr.on("data", function (data) {
+            return _this.onError(data);
         });
         this.instance = child;
     };
@@ -56,10 +60,16 @@ var PhantomBrowser = (function () {
 
     PhantomBrowser.prototype.onError = function (err) {
         this.status = BrowserStatus.ERROR;
+        if (Buffer.isBuffer(err)) {
+            err = err.toString();
+        }
+
+        console.log("PhantomBrowser: process errored, " + (err.message || err));
         this.fire("error", err, null);
     };
 
     PhantomBrowser.prototype.onExit = function (code) {
+        console.log("PhantomBrowser: process exited with code " + code);
         if (code === 0) {
             this.status = BrowserStatus.IDLE;
             this.fire("complete", null, null);

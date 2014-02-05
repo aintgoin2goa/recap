@@ -5,6 +5,20 @@ var settings = {
     enabled: false
 };
 
+var eventHandlers;
+eventHandlers = [];
+
+function on(handler) {
+    eventHandlers.push(handler);
+}
+exports.on = on;
+
+function trigger(type, content) {
+    eventHandlers.forEach(function (handler) {
+        handler(type, content);
+    });
+}
+
 function setConfig(name, value) {
     settings[name] = value;
 }
@@ -54,6 +68,7 @@ function warn() {
     for (var _i = 0; _i < (arguments.length - 0); _i++) {
         args[_i] = arguments[_i + 0];
     }
+    trigger("warn", args);
     printToScreen(parseArgs(args), "yellow");
 }
 exports.warn = warn;
@@ -63,6 +78,7 @@ function error() {
     for (var _i = 0; _i < (arguments.length - 0); _i++) {
         args[_i] = arguments[_i + 0];
     }
+    trigger("error", args);
     printToScreen(parseArgs(args), "red");
 }
 exports.error = error;
@@ -72,6 +88,7 @@ function success() {
     for (var _i = 0; _i < (arguments.length - 0); _i++) {
         args[_i] = arguments[_i + 0];
     }
+    trigger("success", args);
     printToScreen(parseArgs(args), "green");
 }
 exports.success = success;
@@ -81,6 +98,7 @@ function log() {
     for (var _i = 0; _i < (arguments.length - 0); _i++) {
         args[_i] = arguments[_i + 0];
     }
+    trigger("log", args);
     exports.info.apply(this, args);
 }
 exports.log = log;

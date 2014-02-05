@@ -6,6 +6,7 @@
 import TaskStatus = require("./TaskStatus");
 import ScriptGenerator = require("../ScriptGenerator");
 import fs = require("fs");
+import path = require("path");
 
 class Task implements ITask{
 	
@@ -36,10 +37,12 @@ class Task implements ITask{
 		var context = {
 			url : this.url,
 			widths : widthsString,
-			options : optionsString
-		}
-		generator.generate(this.scriptTemplate, context);
-		this.generatedScript = generator.save(tempDir);
+			options : optionsString,
+			tempDirPath : encodeURI(tempDir.dir + path.sep)
+		};
+
+		var script = generator.generate(this.scriptTemplate, context);
+		this.generatedScript = generator.save(script, tempDir);
 	}
 
 	public removeScript(): void {

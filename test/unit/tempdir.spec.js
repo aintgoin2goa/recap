@@ -65,7 +65,7 @@ describe("TempDir", function () {
 	});
 
 
-	it("Will return an array of files", function (done) {
+	it("Will return an array of files in the directory", function (done) {
 		var files = ["file1.jpg", "file2.jpg", "file3.jpg"];
        
 		fsMock.setDirFiles(files);
@@ -74,6 +74,19 @@ describe("TempDir", function () {
 			var expected = files.map(function (file) { return tempDir.dir + path.sep + file; });
 			var result = tempDir.listFiles();
 			expect(result).toEqual(expected);
+			done();
+		});
+	});
+
+	it("Will return an array of files in the directory which match a given file extension", function (done) {
+		var files = ["file1.jpg", "file2.jpg", "file3.jpg", "data.json", "script.js"];
+       
+		fsMock.setDirFiles(files);
+		var tempDir = new TempDir();
+		tempDir.ready.then(function(){
+			var result = tempDir.listFiles(["jpg", "json"]);
+			expect(result.length).toBe(4);
+			expect(result).not.toContain(tempDir.dir + path.sep + "script.js")
 			done();
 		});
 	});

@@ -3,6 +3,7 @@
 
 import Browser = require("PhantomBrowser");
 import BrowserStatus = require("BrowserStatus");
+import console = require("../Console");
 
 class BrowserSwarm implements IBrowserSwarm{
 
@@ -63,7 +64,7 @@ class BrowserSwarm implements IBrowserSwarm{
 	private addListeners(browser: IBrowser, index: number){
 		browser.on("message", (message) => this.onMessage(message, browser, index) );
 		browser.on("error", (error) => this.onError(error, browser, index) );
-		browser.on("exit", () => this.onExit(browser,index) );
+		browser.on("complete", () => this.onExit(browser,index) );
 	}
 
 	private onMessage(message: IBrowserMessage, browser: IBrowser, index: number){
@@ -76,6 +77,7 @@ class BrowserSwarm implements IBrowserSwarm{
 	}
 
 	private onExit(browser: IBrowser, index: number){
+		console.log("BrowserSwarm: browser at index " + index + "has finished");
 		this.trigger("available", null, null, index);
 	}
 }

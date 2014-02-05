@@ -16,8 +16,6 @@ class ScriptGenerator implements IScriptGenerator{
 
 	private templateExtension: string = ".tmpl";
 
-	private generatedScript: string;
-
 	private compiledTemplate : Function;
 
 	private config: IConfig;
@@ -32,15 +30,14 @@ class ScriptGenerator implements IScriptGenerator{
 			this.compileTemplate(template);
 		}
 		
-		this.generatedScript = this.generateTemplate(context);
-		return this.generatedScript;
+		return this.generateScript(context);
 	}
 
-	public save(tempDir : ITempDir) : string {
+	public save(script: string, tempDir : ITempDir) : string {
 		var filename = this.generateUniqueFileName()
 		var pth = path.resolve(tempDir.dir, filename);
-		fs.writeFileSync(pth, this.generatedScript, {encoding : "utf8"});
-		return filename;
+		fs.writeFileSync(pth, script, {encoding : "utf8"});
+		return pth;
 	}
 
 	private loadTemplate(templatePath: string) : string {
@@ -52,7 +49,7 @@ class ScriptGenerator implements IScriptGenerator{
 		this.compiledTemplate =  Handlebars.compile(template);
 	}
 
-	private generateTemplate(context : any) : string {
+	private generateScript(context : any) : string {
 		return this.compiledTemplate(context);
 	}
 

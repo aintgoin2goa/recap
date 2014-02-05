@@ -58,7 +58,7 @@ class FileSystemTransport implements ITransport {
         console.log("Attempting to lock destination");
         this.to.lock().then(() => {
             console.log("Destination locked succesfully, proceeding...");
-            this.files = this.from.listFiles(["jpg, json"]);
+            this.files = this.from.listFiles(["jpg", "json"]);
             this.nextFile(dfd);
         }, (err) => {
             console.error("Failed to lock destination", err);

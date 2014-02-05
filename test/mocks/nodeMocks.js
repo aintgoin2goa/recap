@@ -169,6 +169,10 @@ var MockChildProcess = (function(){
             on : on,
             fire : fire
         },
+        stderr : {
+            on : on,
+            fire : fire
+        },
         reset :reset,
         disconnect : jasmine.createSpy("disconnect")
     }

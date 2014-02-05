@@ -4,6 +4,6 @@ interface IScriptGenerator{
 
 	generate(templatePath: string, context: any) : string;
 
-	save(tempDir: ITempDir) : string;
+	save(script: string, tempDir: ITempDir) : string;
 
 }

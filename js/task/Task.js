@@ -1,6 +1,7 @@
 var TaskStatus = require("./TaskStatus");
 var ScriptGenerator = require("../ScriptGenerator");
 var fs = require("fs");
+var path = require("path");
 
 var Task = (function () {
     function Task(url, widths, options) {
@@ -17,10 +18,12 @@ var Task = (function () {
         var context = {
             url: this.url,
             widths: widthsString,
-            options: optionsString
+            options: optionsString,
+            tempDirPath: encodeURI(tempDir.dir + path.sep)
         };
-        generator.generate(this.scriptTemplate, context);
-        this.generatedScript = generator.save(tempDir);
+
+        var script = generator.generate(this.scriptTemplate, context);
+        this.generatedScript = generator.save(script, tempDir);
     };
 
     Task.prototype.removeScript = function () {

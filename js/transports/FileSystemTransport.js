@@ -46,7 +46,7 @@ var FileSystemTransport = (function () {
         console.log("Attempting to lock destination");
         this.to.lock().then(function () {
             console.log("Destination locked succesfully, proceeding...");
-            _this.files = _this.from.listFiles(["jpg, json"]);
+            _this.files = _this.from.listFiles(["jpg", "json"]);
             _this.nextFile(dfd);
         }, function (err) {
             console.error("Failed to lock destination", err);

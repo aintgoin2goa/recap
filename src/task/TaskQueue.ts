@@ -55,7 +55,7 @@ class TaskQueue implements ITaskQueue{
 	}
 
 	public process(): void {
-		for(var i=0, l=this.running.length; i<l; i++){
+		for(var i=0, l=this.queue.length; i<l; i++){
 			this.next(i);
 		}
 	}
@@ -69,7 +69,8 @@ class TaskQueue implements ITaskQueue{
 	}
 
 	private next(index: number):  void{
-		if(this.length === 0){
+		if(this.queue.length === 0){
+			console.log("TaskQueue: complete");
 			this.trigger("complete");
 			return;
 		}
@@ -112,6 +113,7 @@ class TaskQueue implements ITaskQueue{
 	}
 
 	private onAvailable(index:number): void{
+		console.log("TaskQueue: browser available, process next task");
 		this.taskSucceeded(index);
 		this.next(index);
 	}

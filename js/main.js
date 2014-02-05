@@ -5,7 +5,7 @@ var Config = require("./Config");
 var TempDir = require("./TempDir");
 var TaskQueue = require("./task/TaskQueue");
 var Task = require("./task/Task");
-
+var console = require("./Console");
 var DestinationResolver = require("./destinations/DestinationResolver");
 var transport = require("./transports/transportFactory");
 var rimraf = require("rimraf");
@@ -34,6 +34,7 @@ function setupFail(isConsole) {
 function setupSuccess(isConsole) {
     if (isConsole) {
         success = function succeed(message, dfd) {
+            console.success(message);
             process.exit(0);
         };
     } else {
@@ -68,16 +69,21 @@ function copyFiles(config, tempDir) {
 function setup(config, dfd) {
     var swarm = new BrowserSwarm(config.settings.maxInstances);
     var tempDir = new TempDir();
-    var taskQueue = new TaskQueue(swarm, tempDir);
-    var tasks = createTasks(config);
-    tasks.forEach(function (task) {
-        taskQueue.addTask(task);
+    tempDir.ready.then(function () {
+        console.log("created temporary directory");
+        var taskQueue = new TaskQueue(swarm, tempDir);
+        var tasks = createTasks(config);
+        tasks.forEach(function (task) {
+            taskQueue.addTask(task);
+        });
+        console.log("Tasks queued, begin processing");
+        begin(config, taskQueue, tempDir, dfd);
     });
-    begin(config, taskQueue, tempDir, dfd);
 }
 
 function begin(config, queue, tempDir, dfd) {
     queue.on("complete", function () {
+        console.log("All tasks complete - begin copying files");
         copyFiles(config, tempDir).then(function () {
             console.log("Files copied, removing temporary directory");
             rimraf(tempDir.dir, function (err) {
@@ -100,8 +106,18 @@ function run(cfg, isConsole) {
     setupFail(isConsole);
     setupSuccess(isConsole);
     var config = Config.load(cfg);
+    console.log("loaded config");
     setup(config, dfd);
     return dfd.promise;
 }
 exports.run = run;
+
+function on(event, handler) {
+    switch (event) {
+        case "console":
+            console.on(handler);
+            break;
+    }
+}
+exports.on = on;
 

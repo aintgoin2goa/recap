@@ -11,17 +11,19 @@ var ScriptGenerator = (function () {
         this.config = config.getCurrentConfig();
     }
     ScriptGenerator.prototype.generate = function (templatePath, context) {
-        var template = this.loadTemplate(templatePath);
-        this.compileTemplate(template);
-        this.generatedScript = this.generateTemplate(context);
-        return this.generatedScript;
+        if (!this.compiledTemplate) {
+            var template = this.loadTemplate(templatePath);
+            this.compileTemplate(template);
+        }
+
+        return this.generateScript(context);
     };
 
-    ScriptGenerator.prototype.save = function (tempDir) {
+    ScriptGenerator.prototype.save = function (script, tempDir) {
         var filename = this.generateUniqueFileName();
         var pth = path.resolve(tempDir.dir, filename);
-        fs.writeFileSync(pth, this.generatedScript, { encoding: "utf8" });
-        return filename;
+        fs.writeFileSync(pth, script, { encoding: "utf8" });
+        return pth;
     };
 
     ScriptGenerator.prototype.loadTemplate = function (templatePath) {
@@ -33,7 +35,7 @@ var ScriptGenerator = (function () {
         this.compiledTemplate = Handlebars.compile(template);
     };
 
-    ScriptGenerator.prototype.generateTemplate = function (context) {
+    ScriptGenerator.prototype.generateScript = function (context) {
         return this.compiledTemplate(context);
     };
 

@@ -34,8 +34,8 @@ describe("ScriptGenerator", function(){
 		var url = "http://www.paul.com";
 		var expectedPath = path.resolve(tmpDirMock.dir);
 		
-		scriptGenerator.generate(templatePath, {"url" : url});
-		scriptGenerator.save(tmpDirMock);
+		var script = scriptGenerator.generate(templatePath, {"url" : url});
+		scriptGenerator.save(script, tmpDirMock);
 
 		expect(fsMock.writeFileSync.mostRecentCall.args[0]).toContain(expectedPath);
 
