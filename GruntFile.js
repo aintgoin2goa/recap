@@ -72,7 +72,7 @@ module.exports = function(grunt) {
   // Default task(s).
   grunt.registerTask('dev', ['ts:dev']);
   grunt.registerTask('build', ['ts:build']);
-  grunt.registerTask('test', ['jasmine_node']);
+  grunt.registerTask('test', ['ts:build', 'jasmine_node', 'jasmine_node:acceptance']);
   grunt.registerTask('test:unit', ['ts:build', 'jasmine_node:unit']);
   grunt.registerTask('test:acceptance', ['ts:build', 'jasmine_node:acceptance']);
   grunt.registerTask('ci', ['ts:build', 'jasmine_node:unit', 'jasmine_node:acceptance']);

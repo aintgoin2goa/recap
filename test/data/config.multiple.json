@@ -1,0 +1,21 @@
+{
+  "widths" : [
+    320,
+    480,
+    640,
+    1024,
+    1900
+  ],
+  "urls" : [
+    "http://www.datsun.com",
+    "http://aneventapart.com/",
+    "http://contentsmagazine.com/"
+  ],
+  "dest" : "dest/",
+  "options" : {
+  	"crawl" : true,
+  	"http://contentsmagazine.com/" : {
+  		"crawl" : false
+  	}
+  }
+}

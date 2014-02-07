@@ -1,12 +1,12 @@
 interface IConfig{
 
-    urls: {[url: string]: IUrlOptions};
+    urls: {[url: string] : IUrlOptions}
 
     widths: number[];
 
-    dest: string;
+    dest : string;
 
-    defaultOptions: IUrlOptions;
+    options : IUrlOptions;
 
     settings: IConfigSettings
 
@@ -14,11 +14,13 @@ interface IConfig{
 
 interface IUrlOptions {
 
-    waitTime: number;
+    waitTime?: number;
 
-    crawl: boolean;
+    crawl?: boolean;
 
-    script : string;
+    script? : string;
+
+    [url: string] : IUrlOptions;
 
 }
 

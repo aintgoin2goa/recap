@@ -22,7 +22,7 @@ var main = loader.loadModule("./js/main.js", {
 var fs = require("fs");
 var path = require("path");
 
-var config = require("../data/config.json");
+var config = require("../data/config.instances.json");
 
 describe("main", function(){
 
@@ -63,7 +63,7 @@ describe("main", function(){
 	});
 
 	it("Will take the config info and create tasks, passing them to the TaskQueue", function(){
-		var urls = Object.keys(config.urls);
+		var urls = config.urls;
 
 		main.run(config);
 

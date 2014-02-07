@@ -60,8 +60,12 @@ class PhantomBrowser implements IBrowser{
 		});
 	}
 
-	private onError(err:any) : void{
+	private onError(err?:any) : void{
 		this.status = BrowserStatus.ERROR;
+		if(!err){
+			err = new Error("Unknown Error");
+		}
+
 		if(Buffer.isBuffer(err)){
 			err = err.toString();
 		}

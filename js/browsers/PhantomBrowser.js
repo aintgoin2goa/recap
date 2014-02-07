@@ -60,6 +60,10 @@ var PhantomBrowser = (function () {
 
     PhantomBrowser.prototype.onError = function (err) {
         this.status = BrowserStatus.ERROR;
+        if (!err) {
+            err = new Error("Unknown Error");
+        }
+
         if (Buffer.isBuffer(err)) {
             err = err.toString();
         }

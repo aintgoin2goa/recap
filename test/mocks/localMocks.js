@@ -158,7 +158,7 @@ exports.getDestDirMock = function () {
 
 exports.getMockConfig = function () {
 
-    var config = { urls: [], widths: [], dest: '', options: { waitTime: 1000, crawl: false} };
+    var config = { urls: [], widths: [], dest: '', options: { waitTime: 1000, crawl: false}, settings : {template : "default"} };
 
     return {
         load: (function() {

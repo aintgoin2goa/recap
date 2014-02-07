@@ -92,18 +92,22 @@ class TaskQueue implements ITaskQueue{
 	}
 
 	private addEventListeners(): void{
-		this.swarm.on("message",(message, index) => this.onMessage(message));
+		this.swarm.on("message",(message, index) => this.onMessage(message, index));
 		this.swarm.on("error", (error, index) => this.onError(error,index));
 		this.swarm.on("available", (index) => this.onAvailable(index));
 	}
 
-	private onMessage(message: {title:string; content:any}): void{
+	private onMessage(message: {title:string; content:any}, index): void{
 		if(console[message.title]){
 			console[message.title](message.content);
 		}
 
 		if(message.title === "crawlresult" && message.content.forEach){
 			message.content.forEach((url) => this.addUrl(url));
+		}
+
+		if(message.title === "filesaved"){
+			this.tempDir.createRecord(message.content.url,message.content.width);
 		}
 	}
 

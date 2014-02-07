@@ -24,9 +24,9 @@ class ScriptGenerator implements IScriptGenerator{
 		this.config = config.getCurrentConfig();
 	}
 
-	public generate(templatePath: string, context : Object) : string {
+	public generate(context : Object) : string {
 		if(!this.compiledTemplate){
-			var template = this.loadTemplate(templatePath);
+			var template = this.loadTemplate();
 			this.compileTemplate(template);
 		}
 		
@@ -40,8 +40,8 @@ class ScriptGenerator implements IScriptGenerator{
 		return pth;
 	}
 
-	private loadTemplate(templatePath: string) : string {
-		var pth = templatePath.indexOf(".") > -1 ? path.resolve(templatePath) : path.resolve(this.templatesFolderPath, templatePath + this.templateExtension);
+	private loadTemplate() : string {
+		var pth = path.resolve(this.templatesFolderPath, this.config.settings.template + this.templateExtension);
 		return fs.readFileSync(pth, {encoding : "utf8"});
 	} 
 

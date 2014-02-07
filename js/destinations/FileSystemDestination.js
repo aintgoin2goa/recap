@@ -45,7 +45,7 @@ var FileSystemDestination = (function () {
 
     FileSystemDestination.prototype.getFilename = function (tempName) {
         var name = tempName.split(path.sep).pop();
-        return this.uri + path.sep + name;
+        return path.resolve(this.uri + path.sep + name);
     };
 
     FileSystemDestination.prototype.isLocked = function () {

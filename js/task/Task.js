@@ -8,7 +8,6 @@ var Task = (function () {
         this.url = url;
         this.widths = widths;
         this.options = options;
-        this.scriptTemplate = this.options.script;
         this.status = TaskStatus.UNKNOWN;
     }
     Task.prototype.generateScript = function (tempDir) {
@@ -22,7 +21,7 @@ var Task = (function () {
             tempDirPath: encodeURI(tempDir.dir + path.sep)
         };
 
-        var script = generator.generate(this.scriptTemplate, context);
+        var script = generator.generate(context);
         this.generatedScript = generator.save(script, tempDir);
     };
 

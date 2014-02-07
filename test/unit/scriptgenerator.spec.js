@@ -17,24 +17,22 @@ describe("ScriptGenerator", function(){
 	})
 
 	it("Can generate a javascript file given a template and a context", function(){
-		var templatePath = "./test/templates/testTemplate1.tmpl";
-		var template = fs.readFileSync(templatePath, {encoding:"utf8"});
-		fsMock.setReadFileData(template);
 		var url = "http://www.paul.com";
+		var template = fs.readFileSync(path.resolve("./test/templates/testTemplate1.tmpl"), {encoding : "utf8"});
+		fsMock.setReadFileData(template);
 		
-		var script = scriptGenerator.generate(templatePath, {"url" : url});
+		var script = scriptGenerator.generate({"url" : url});
 
 		expect(script).toContain(url);
 	});
 
 	it("Can save the file with a random name in the tmp directory", function(){
-		var templatePath = "./test/templates/testTemplate1.tmpl";
-		var template = fs.readFileSync(templatePath, {encoding:"utf8"});
-		fsMock.setReadFileData(template);
 		var url = "http://www.paul.com";
 		var expectedPath = path.resolve(tmpDirMock.dir);
+		var template = fs.readFileSync(path.resolve("./test/templates/testTemplate1.tmpl"), {encoding : "utf8"});
+		fsMock.setReadFileData(template);
 		
-		var script = scriptGenerator.generate(templatePath, {"url" : url});
+		var script = scriptGenerator.generate({"url" : url});
 		scriptGenerator.save(script, tmpDirMock);
 
 		expect(fsMock.writeFileSync.mostRecentCall.args[0]).toContain(expectedPath);

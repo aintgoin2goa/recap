@@ -4,7 +4,7 @@ var fs = require("fs");
 
 describe("Config", function () {
 
-    var configPath ="test/data/config3.json";
+    var configPath ="test/data/config.multiple.json";
 
     it("Can be loaded correctly", function () {
         expect(config).not.toBeNull();
@@ -31,27 +31,28 @@ describe("Config", function () {
 
         var cfg = config.load(configPath);
 
-        expect(Object.keys(cfg.urls)).toEqual(Object.keys(obj.urls));
+        expect(Object.keys(cfg.urls)).toEqual(obj.urls);
         expect(cfg.widths).toEqual(obj.widths);
         expect(cfg.dest).toEqual(obj.dest);
     });
 
-    it("Should use default options if no others specified", function(){
+    it("Should set any options specificed in the options object", function(){
         var filestr = fs.readFileSync(configPath, { encoding: "utf8" });
         var obj = JSON.parse(filestr);
-
+        debugger;
         var cfg = config.load(configPath);
 
-        expect(cfg.urls["https://www.ableton.com/"]).toEqual(cfg.defaultOptions);
+        expect(cfg.urls["http://www.datsun.com"].crawl).toBe(obj.options.crawl);
     });
 
-    it("Should override default options with any specified", function(){
+    it("Should override any options for a url as specified", function(){
         var filestr = fs.readFileSync(configPath, { encoding: "utf8" });
+        var url = "http://contentsmagazine.com/";
         var obj = JSON.parse(filestr);
 
         var cfg = config.load(configPath);
 
-        expect(cfg.urls["http://www.datsun.com/"].crawl).toBe(obj.urls["http://www.datsun.com/"].crawl);
+        expect(cfg.urls[url].crawl).toBe(obj.options[url].crawl);
     });
 
 });

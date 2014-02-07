@@ -26,7 +26,6 @@ class Task implements ITask{
 		this.url = url;
 		this.widths = widths;
 		this.options = options;
-		this.scriptTemplate = this.options.script;
 		this.status = TaskStatus.UNKNOWN;
 	}
 
@@ -41,7 +40,7 @@ class Task implements ITask{
 			tempDirPath : encodeURI(tempDir.dir + path.sep)
 		};
 
-		var script = generator.generate(this.scriptTemplate, context);
+		var script = generator.generate(context);
 		this.generatedScript = generator.save(script, tempDir);
 	}
 

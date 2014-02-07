@@ -10,9 +10,9 @@ var ScriptGenerator = (function () {
         this.templateExtension = ".tmpl";
         this.config = config.getCurrentConfig();
     }
-    ScriptGenerator.prototype.generate = function (templatePath, context) {
+    ScriptGenerator.prototype.generate = function (context) {
         if (!this.compiledTemplate) {
-            var template = this.loadTemplate(templatePath);
+            var template = this.loadTemplate();
             this.compileTemplate(template);
         }
 
@@ -26,8 +26,8 @@ var ScriptGenerator = (function () {
         return pth;
     };
 
-    ScriptGenerator.prototype.loadTemplate = function (templatePath) {
-        var pth = templatePath.indexOf(".") > -1 ? path.resolve(templatePath) : path.resolve(this.templatesFolderPath, templatePath + this.templateExtension);
+    ScriptGenerator.prototype.loadTemplate = function () {
+        var pth = path.resolve(this.templatesFolderPath, this.config.settings.template + this.templateExtension);
         return fs.readFileSync(pth, { encoding: "utf8" });
     };
 

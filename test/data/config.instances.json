@@ -1,0 +1,16 @@
+{
+  "widths" : [
+    320,
+    480,
+    640,
+    1024,
+    1900
+  ],
+  "urls" : [
+    "http://www.datsun.com"
+  ],
+  "dest" : "dest/",
+  "settings" : {
+    "maxInstances" : 4
+  }
+}

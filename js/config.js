@@ -7,7 +7,7 @@ var loadedConfig;
 var Config = (function () {
     function Config() {
         this.dest = "../dest/";
-        this.defaultOptions = {
+        this.options = {
             waitTime: 50,
             crawl: false,
             script: null
@@ -35,12 +35,18 @@ function loadFromFilePath(pth) {
     }
 }
 
-function mergeUrlConfig(cfg) {
-    _.each(cfg.urls, function (value, key) {
-        value = value || cfg.defaultOptions;
-        _.defaults(value, cfg.defaultOptions);
-        cfg.urls[key] = value;
-    });
+function mergeUrlConfig(config, options) {
+    for (var option in config.options) {
+        if (options[option]) {
+            config.options[option] = options[option];
+        }
+    }
+    for (var url in config.urls) {
+        config.urls[url] = Object.create(config.options);
+        if (options[url]) {
+            _.extend(config.urls[url], options[url]);
+        }
+    }
 }
 
 function validate(cfg) {
@@ -68,8 +74,9 @@ function validate(cfg) {
     if (!cfg.dest || typeof (cfg.dest) !== "string") {
         return fail("No valid destination given");
     }
-    if (!cfg.urls || _.isArray(cfg.urls) || (Object.keys(cfg.urls).length) === 0) {
-        return fail("Urls object not present or empty");
+
+    if (!cfg.urls || !cfg.urls.push) {
+        return fail("Config must have an array of urls");
     }
 
     return result;
@@ -88,17 +95,19 @@ function load(cfg) {
 
     var config = new Config();
 
-    if (cfg.defaultOptions) {
-        config.defaultOptions = cfg.defaultOptions;
-    }
     if (cfg.settings) {
         config.settings = cfg.settings;
     }
-    config.urls = cfg.urls;
+
     config.widths = cfg.widths;
     config.dest = cfg.dest;
+    config.urls = Object.create(null);
+    cfg.urls.forEach(function (url) {
+        config.urls[url] = Object.create(null);
+    });
 
-    mergeUrlConfig(config);
+    mergeUrlConfig(config, (cfg.options || Object.create(null)));
+
     loadedConfig = config;
     return config;
 }

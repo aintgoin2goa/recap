@@ -82,7 +82,7 @@ var TaskQueue = (function () {
     TaskQueue.prototype.addEventListeners = function () {
         var _this = this;
         this.swarm.on("message", function (message, index) {
-            return _this.onMessage(message);
+            return _this.onMessage(message, index);
         });
         this.swarm.on("error", function (error, index) {
             return _this.onError(error, index);
@@ -92,7 +92,7 @@ var TaskQueue = (function () {
         });
     };
 
-    TaskQueue.prototype.onMessage = function (message) {
+    TaskQueue.prototype.onMessage = function (message, index) {
         var _this = this;
         if (console[message.title]) {
             console[message.title](message.content);
@@ -102,6 +102,10 @@ var TaskQueue = (function () {
             message.content.forEach(function (url) {
                 return _this.addUrl(url);
             });
+        }
+
+        if (message.title === "filesaved") {
+            this.tempDir.createRecord(message.content.url, message.content.width);
         }
     };
 

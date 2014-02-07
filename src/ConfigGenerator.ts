@@ -9,7 +9,7 @@ var config: IConfig = {
     urls: {},
     widths: [],
     dest: "",
-    defaultOptions: {
+    options: {
         waitTime : 5000,
         crawl : false,
         script : null
@@ -107,7 +107,7 @@ function promptForUrl(dfd?: Q.Deferred<any>): Q.IPromise<any> {
     prompt.get(url, function (err, result) {
         handleError(err);
 
-        config.urls[result.url] = config.defaultOptions;
+        config.urls[result.url] = config.options;
         dfd.resolve(true);
     });
     return dfd.promise;

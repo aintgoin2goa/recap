@@ -59,7 +59,7 @@ class FileSystemDestination implements IFileSystemDestination {
 
     public getFilename(tempName: string): string {
         var name = tempName.split(path.sep).pop();
-        return this.uri + path.sep + name;
+        return path.resolve(this.uri + path.sep + name);
     }
 
     public isLocked(): boolean {
