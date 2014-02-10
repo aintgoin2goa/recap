@@ -7,6 +7,7 @@ import fs = require("fs");
 import path = require("path");
 import Q = require('q');
 import tmp = require('tmp');
+import console = require("./Console");
 var rimraf = require("rimraf");
 
 class TempDir implements ITempDir {
@@ -31,13 +32,19 @@ class TempDir implements ITempDir {
     public createRecord(url: string, width: number): string {
         var filename = url.replace(/(http|https):\/\//, '').replace(/\//g, '_');
         filename = filename + "_" + width.toString() + this.extension;
-        var record: ITempDirRecord = {
-            filename: filename,
-            url: url,
-            width: width,
-            date : new Date()
+        if(this.hasRecordFor(filename)){
+            this.updateRecord(filename, new Date());
+        }else{
+            var record: ITempDirRecord = {
+                filename: filename,
+                url: url,
+                width: width,
+                date : new Date()
+            }
+            this.records.push(record);
         }
-        this.records.push(record);
+
+        this.saveRecords();
         return this.dir + path.sep + filename;
     }
 
@@ -70,6 +77,22 @@ class TempDir implements ITempDir {
         }) : allFiles;
         return filtered.map((file) =>{
             return this.dir + path.sep + file;
+        });
+    }
+
+    private hasRecordFor(filename: string): boolean {
+        return this.records.some(function(record){
+            return record.filename === filename;
+        });
+    }
+
+    private updateRecord(filename: string, date: Date): void {
+        this.records.some(function(record){
+            if(record.filename === filename){
+                record.date = date;
+                return true;
+            }
+            return false;
         });
     }
 

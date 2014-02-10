@@ -6,7 +6,7 @@ var console = require("../Console");
 var FileSystemDestination = (function () {
     function FileSystemDestination(uri) {
         this.dataFile = "data.json";
-        this.uri = uri;
+        this.uri = path.resolve(uri);
         this.dataFilePath = this.uri + path.sep + this.dataFile;
         this.data = [];
         this.dataIndex = {};

@@ -74,12 +74,12 @@ var BrowserSwarm = (function () {
     };
 
     BrowserSwarm.prototype.onError = function (error, browser, index) {
-        this.trigger("error", error, null, index);
         browser.close(true);
+        this.trigger("error", error, null, index);
     };
 
     BrowserSwarm.prototype.onExit = function (browser, index) {
-        console.log("BrowserSwarm: browser at index " + index + "has finished");
+        console.log("BrowserSwarm: browser at index " + index + " has finished");
         this.trigger("available", null, null, index);
     };
     return BrowserSwarm;

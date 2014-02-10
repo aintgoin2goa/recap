@@ -63,6 +63,7 @@ function createTasks(config:IConfig): ITask[] {
 
 function copyFiles(config:IConfig, tempDir: ITempDir) : Q.IPromise<any> {
 	var dfd = Q.defer<any>();
+	tempDir.saveRecords();
 	var destination: IDestination = DestinationResolver.resolve(config.dest);
 	destination.setup().then(function(){
 		transport(tempDir).to(destination).then(

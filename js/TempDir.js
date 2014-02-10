@@ -2,6 +2,7 @@ var fs = require("fs");
 var path = require("path");
 var Q = require('q');
 var tmp = require('tmp');
+var console = require("./Console");
 var rimraf = require("rimraf");
 
 var TempDir = (function () {
@@ -18,13 +19,19 @@ var TempDir = (function () {
     TempDir.prototype.createRecord = function (url, width) {
         var filename = url.replace(/(http|https):\/\//, '').replace(/\//g, '_');
         filename = filename + "_" + width.toString() + this.extension;
-        var record = {
-            filename: filename,
-            url: url,
-            width: width,
-            date: new Date()
-        };
-        this.records.push(record);
+        if (this.hasRecordFor(filename)) {
+            this.updateRecord(filename, new Date());
+        } else {
+            var record = {
+                filename: filename,
+                url: url,
+                width: width,
+                date: new Date()
+            };
+            this.records.push(record);
+        }
+
+        this.saveRecords();
         return this.dir + path.sep + filename;
     };
 
@@ -61,6 +68,22 @@ var TempDir = (function () {
         }) : allFiles;
         return filtered.map(function (file) {
             return _this.dir + path.sep + file;
+        });
+    };
+
+    TempDir.prototype.hasRecordFor = function (filename) {
+        return this.records.some(function (record) {
+            return record.filename === filename;
+        });
+    };
+
+    TempDir.prototype.updateRecord = function (filename, date) {
+        this.records.some(function (record) {
+            if (record.filename === filename) {
+                record.date = date;
+                return true;
+            }
+            return false;
         });
     };
 

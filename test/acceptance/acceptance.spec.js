@@ -10,7 +10,7 @@ describe("Recap", function () {
     var configPaths = {
         simple : "../data/config.simple.json",
         multiple : "../data/config.multiple.json",
-        crawl : "../data/config/multiple"
+        crawl : "../data/config.crawl.json"
     }
        
     
@@ -32,7 +32,16 @@ describe("Recap", function () {
         console.log(Array.prototype.slice.apply(arguments));
     }
 
-    it("Can be called programatically, passing in a config object", function(done) {
+    function gethostnameFromUrl(url){
+        url = url.replace(/http(s?):\/\//, "");
+        if(url.indexOf("/") == -1){
+            return url;
+        }
+
+        return url.split("/")[0];
+    }
+
+    xit("Can be called programatically, passing in a config object", function(done) {
 
         config = require(configPaths.simple);
         log(config);
@@ -86,7 +95,7 @@ describe("Recap", function () {
         );
     }, timeout);
     
-   it("Can be called via the command line, given a path to a config file", function (done) {
+   xit("Can be called via the command line, given a path to a config file", function (done) {
 
         config = require(configPaths.simple);
 
@@ -141,30 +150,45 @@ describe("Recap", function () {
         });
 
 
-    }, (5 * (60 * 1000)));
+    }, timeout);
 
   
 
-    xit("Can can crawl for additional urls if the config specifies it", function(done) {
+    it("Can can crawl for additional urls if the config specifies it", function(done) {
 
-        config = require(configPaths[1]);
+        config = require(configPaths.crawl);
        
         var expectedFiles = [
             "data.json"
         ];
 
-        var urls = Object.keys(scriptsConfig.urls);
-        var widths = scriptsConfig.widths.slice(0);
+        var urls = config.urls.slice(0);
+        var widths = config.widths.slice(0);
+        var hostnames = [];
 
-        urls.forEach(function(url) {
-            url = url.replace(/(http|https):\/\//, '').replace(/\//g, '_');
-            scriptsConfig.widths.forEach(function(width) {
-                expectedFiles.push(url + "_" + width + ".jpg");
-            });
+        urls.forEach(function(url){
+            var hostname = gethostnameFromUrl(url);
+            if(hostnames.indexOf(hostname) === -1){
+                hostnames.push(hostname);
+            }
         });
 
-        recap.run(scriptsConfig).then(
+        recap.on("console", function(type, content){
+            log(content);
+         });
+
+        recap.run(config).then(
             function () {
+                log("Finished, running assertations");
+                var files = fs.readdirSync(config.dest);
+                var data = require(path.resolve(config.dest + "data.json"));
+                log("files", files);
+                log("data", data);
+                expect(data.length).toEqual(files.length - 1);
+                expect(files.length).toBeGreaterThan((urls.length * widths.length) + 1);
+                data.forEach(function(item){
+                    expect(hostnames).toContain(gethostnameFromUrl(item.url));
+                })
                 done();
             },
             function() {
@@ -172,7 +196,5 @@ describe("Recap", function () {
                 done(false);
             }
         );
-    }, (5 * (60 * 1000)));
-    
-  
+    }, timeout);
 });

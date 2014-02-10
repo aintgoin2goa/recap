@@ -55,6 +55,7 @@ function createTasks(config) {
 
 function copyFiles(config, tempDir) {
     var dfd = Q.defer();
+    tempDir.saveRecords();
     var destination = DestinationResolver.resolve(config.dest);
     destination.setup().then(function () {
         transport(tempDir).to(destination).then(function () {

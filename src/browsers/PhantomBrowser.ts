@@ -22,10 +22,11 @@ class PhantomBrowser implements IBrowser{
 	public execute(scriptPath : string) : void {
 		console.log("about to execute phantomjs " + scriptPath);
 		var child = child_process.spawn("phantomjs", [scriptPath]);
-		child.on("error", (err:any) => this.onError(err) );
-		child.on("exit", (code: number) => this.onExit(code) );
 		child.stdout.on("data", (data) => this.onMessage(data) );
 		child.stderr.on("data", (data) => this.onError(data) );
+		child.on("error", (err:any) => this.onError(err) );
+		child.on("exit", (code: number) => this.onExit(code) );
+		
 		this.instance = child;
 	}
 
@@ -35,6 +36,7 @@ class PhantomBrowser implements IBrowser{
 		}else{
 			this.instance.disconnect();
 		}
+		
 		this.status = BrowserStatus.IDLE;
 	}
 
@@ -85,14 +87,18 @@ class PhantomBrowser implements IBrowser{
 	}
 
 	private onMessage(message : NodeBuffer) : void{
-		var msg;
-		try{
-			msg = JSON.parse(message.toString());
-			this.fire("message", null, msg);
-		}catch(e){
-			msg = message.toString();
-			this.fire("log", null, msg);
-		}
+		var messages = message.toString().split("\n")
+			.map(function(msg){
+				return msg.replace("\r", "");
+			});
+		messages.forEach((msg) =>{
+			try{
+				msg = JSON.parse(msg);
+				this.fire("message", null, msg);
+			}catch(e){
+				this.fire("log", null, msg);
+			}
+		});
 	}
 
 	public static test() : Q.IPromise<boolean> {

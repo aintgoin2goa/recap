@@ -20,7 +20,7 @@ class FileSystemDestination implements IFileSystemDestination {
     private dataIndex: { [file: string] : number };
 
     constructor(uri: string) {
-        this.uri = uri;
+        this.uri = path.resolve(uri);
         this.dataFilePath = this.uri + path.sep + this.dataFile;
         this.data = [];
         this.dataIndex = {};

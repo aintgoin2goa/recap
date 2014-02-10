@@ -12,18 +12,19 @@ var PhantomBrowser = (function () {
         var _this = this;
         console.log("about to execute phantomjs " + scriptPath);
         var child = child_process.spawn("phantomjs", [scriptPath]);
-        child.on("error", function (err) {
-            return _this.onError(err);
-        });
-        child.on("exit", function (code) {
-            return _this.onExit(code);
-        });
         child.stdout.on("data", function (data) {
             return _this.onMessage(data);
         });
         child.stderr.on("data", function (data) {
             return _this.onError(data);
         });
+        child.on("error", function (err) {
+            return _this.onError(err);
+        });
+        child.on("exit", function (code) {
+            return _this.onExit(code);
+        });
+
         this.instance = child;
     };
 
@@ -33,6 +34,7 @@ var PhantomBrowser = (function () {
         } else {
             this.instance.disconnect();
         }
+
         this.status = BrowserStatus.IDLE;
     };
 
@@ -83,14 +85,18 @@ var PhantomBrowser = (function () {
     };
 
     PhantomBrowser.prototype.onMessage = function (message) {
-        var msg;
-        try  {
-            msg = JSON.parse(message.toString());
-            this.fire("message", null, msg);
-        } catch (e) {
-            msg = message.toString();
-            this.fire("log", null, msg);
-        }
+        var _this = this;
+        var messages = message.toString().split("\n").map(function (msg) {
+            return msg.replace("\r", "");
+        });
+        messages.forEach(function (msg) {
+            try  {
+                msg = JSON.parse(msg);
+                _this.fire("message", null, msg);
+            } catch (e) {
+                _this.fire("log", null, msg);
+            }
+        });
     };
 
     PhantomBrowser.test = function () {

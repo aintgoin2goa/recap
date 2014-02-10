@@ -56,7 +56,7 @@ class TaskQueue implements ITaskQueue{
 
 	public process(): void {
 		for(var i=0, l=this.queue.length; i<l; i++){
-			this.next(i);
+			this.next();
 		}
 	}
 
@@ -68,7 +68,7 @@ class TaskQueue implements ITaskQueue{
 		}
 	}
 
-	private next(index: number):  void{
+	private next():  void{
 		if(this.queue.length === 0){
 			console.log("TaskQueue: complete");
 			this.trigger("complete");
@@ -77,8 +77,8 @@ class TaskQueue implements ITaskQueue{
 
 		var task = this.queue.shift();
 		task.status = TaskStatus.RUNNING;
+		var index = this.swarm.execute(task.generatedScript);
 		this.running[index] = task;
-		this.swarm.execute(task.generatedScript);
 	}
 
 	private trigger(event: string): void{
@@ -98,11 +98,13 @@ class TaskQueue implements ITaskQueue{
 	}
 
 	private onMessage(message: {title:string; content:any}, index): void{
+
 		if(console[message.title]){
 			console[message.title](message.content);
 		}
 
 		if(message.title === "crawlresult" && message.content.forEach){
+			console.log("crawl result", message.content);
 			message.content.forEach((url) => this.addUrl(url));
 		}
 
@@ -114,22 +116,26 @@ class TaskQueue implements ITaskQueue{
 	private onError(error: Error, index:number): void{
 		console.error(error.message);
 		this.taskFailed(index);
+		this.next();
 	}
 
 	private onAvailable(index:number): void{
-		console.log("TaskQueue: browser available, process next task");
+		console.log("TaskQueue: browser " + index  + " available, process next task");
 		this.taskSucceeded(index);
-		this.next(index);
+		this.next();
 	}
 
 	private taskFailed(index:number): void{
+		console.log("task at index " + index + " failed");
 		var task = this.running[index];
+		console.log(task);
 		task.status = TaskStatus.FAILED;
 		this.queue.push(task);
 		this.running[index] = null;
 	}
 
 	private taskSucceeded(index:number): void{
+		console.log("task at index " + index + " succeeded");
 		var task = this.running[index];
 		task.status = TaskStatus.COMPLETE;
 		this.completed.push(task);

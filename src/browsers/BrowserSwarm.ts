@@ -72,12 +72,12 @@ class BrowserSwarm implements IBrowserSwarm{
 	}
 
 	private onError(error: any, browser: IBrowser, index: number){
-		this.trigger("error",error,null,index);
 		browser.close(true);
+		this.trigger("error",error,null,index);
 	}
 
 	private onExit(browser: IBrowser, index: number){
-		console.log("BrowserSwarm: browser at index " + index + "has finished");
+		console.log("BrowserSwarm: browser at index " + index + " has finished");
 		this.trigger("available", null, null, index);
 	}
 }

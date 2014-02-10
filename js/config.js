@@ -41,8 +41,9 @@ function mergeUrlConfig(config, options) {
             config.options[option] = options[option];
         }
     }
+
     for (var url in config.urls) {
-        config.urls[url] = Object.create(config.options);
+        config.urls[url] = _.clone(config.options);
         if (options[url]) {
             _.extend(config.urls[url], options[url]);
         }
@@ -105,7 +106,6 @@ function load(cfg) {
     cfg.urls.forEach(function (url) {
         config.urls[url] = Object.create(null);
     });
-
     mergeUrlConfig(config, (cfg.options || Object.create(null)));
 
     loadedConfig = config;

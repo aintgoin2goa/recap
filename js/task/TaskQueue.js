@@ -44,7 +44,7 @@ var TaskQueue = (function () {
 
     TaskQueue.prototype.process = function () {
         for (var i = 0, l = this.queue.length; i < l; i++) {
-            this.next(i);
+            this.next();
         }
     };
 
@@ -56,7 +56,7 @@ var TaskQueue = (function () {
         }
     };
 
-    TaskQueue.prototype.next = function (index) {
+    TaskQueue.prototype.next = function () {
         if (this.queue.length === 0) {
             console.log("TaskQueue: complete");
             this.trigger("complete");
@@ -65,8 +65,8 @@ var TaskQueue = (function () {
 
         var task = this.queue.shift();
         task.status = TaskStatus.RUNNING;
+        var index = this.swarm.execute(task.generatedScript);
         this.running[index] = task;
-        this.swarm.execute(task.generatedScript);
     };
 
     TaskQueue.prototype.trigger = function (event) {
@@ -99,6 +99,7 @@ var TaskQueue = (function () {
         }
 
         if (message.title === "crawlresult" && message.content.forEach) {
+            console.log("crawl result", message.content);
             message.content.forEach(function (url) {
                 return _this.addUrl(url);
             });
@@ -112,22 +113,26 @@ var TaskQueue = (function () {
     TaskQueue.prototype.onError = function (error, index) {
         console.error(error.message);
         this.taskFailed(index);
+        this.next();
     };
 
     TaskQueue.prototype.onAvailable = function (index) {
-        console.log("TaskQueue: browser available, process next task");
+        console.log("TaskQueue: browser " + index + " available, process next task");
         this.taskSucceeded(index);
-        this.next(index);
+        this.next();
     };
 
     TaskQueue.prototype.taskFailed = function (index) {
+        console.log("task at index " + index + " failed");
         var task = this.running[index];
+        console.log(task);
         task.status = TaskStatus.FAILED;
         this.queue.push(task);
         this.running[index] = null;
     };
 
     TaskQueue.prototype.taskSucceeded = function (index) {
+        console.log("task at index " + index + " succeeded");
         var task = this.running[index];
         task.status = TaskStatus.COMPLETE;
         this.completed.push(task);
