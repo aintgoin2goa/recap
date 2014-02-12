@@ -21,6 +21,7 @@ class PhantomBrowser implements IBrowser{
 
 	public execute(scriptPath : string) : void {
 		console.log("about to execute phantomjs " + scriptPath);
+		this.status = BrowserStatus.ACTIVE;
 		var child = child_process.spawn("phantomjs", [scriptPath]);
 		child.stdout.on("data", (data) => this.onMessage(data) );
 		child.stderr.on("data", (data) => this.onError(data) );

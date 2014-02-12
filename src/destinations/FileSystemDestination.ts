@@ -11,6 +11,8 @@ class FileSystemDestination implements IFileSystemDestination {
 
     public dataFile: string = "data.json";
 
+    private lockFilePath: string;
+
     private lockFile: string;
 
     private dataFilePath: string;
@@ -24,14 +26,12 @@ class FileSystemDestination implements IFileSystemDestination {
         this.dataFilePath = this.uri + path.sep + this.dataFile;
         this.data = [];
         this.dataIndex = {};
-        this.lockFile = this.uri + "LOCKED";
+        this.lockFilePath = path.resolve(this.uri + path.sep +  "LOCKED");
     }
 
     public setup(): Q.IPromise<any> {
-        if (this.isLocked()) {
-            return;
-        }
         var dfd = Q.defer<any>();
+
         // if destination does not exist, create it
         console.log("initialising destination");
         fs.mkdir(this.uri, "0777", (err) => {
@@ -40,18 +40,12 @@ class FileSystemDestination implements IFileSystemDestination {
                     console.warn("Destination directory already exists, will attempt to merge");
                 } else {
                     console.error("Failed to create destination directory", err);
+                    dfd.reject(false);
+                    return;
                 }
-                
             }
-            // if we have a data file already, delete the file but store contents in memory
-            fs.readFile(this.dataFilePath, { encoding: "utf8" }, (err: Error, data: string) => {
-                if (data) {
-                    this.data = JSON.parse(data);
-                    fs.unlink(this.dataFilePath, function () { });
-                    this.indexData();
-                }
-                dfd.resolve(null);
-            });
+
+            dfd.resolve(true);
         });
 
         return dfd.promise;
@@ -63,31 +57,25 @@ class FileSystemDestination implements IFileSystemDestination {
     }
 
     public isLocked(): boolean {
-        return fs.existsSync(this.uri + "LOCKED");
+        return fs.existsSync(this.lockFilePath);
     }
 
     public lock(): Q.IPromise<any> {
         var dfd = Q.defer<any>();
-        fs.open(this.lockFile, "wx+", "0777", function (err) {
+        fs.open(this.lockFilePath, "wx+", "0777", (err, fd) => {
             if (err) {
                 dfd.reject(err);
             } else {
+                this.lockFile = fd;
                 dfd.resolve(null);
             }
         });
         return dfd.promise;
     }
 
-    public unlock(): Q.IPromise<any>  {
-        var dfd = Q.defer<any>();
-        fs.unlink(this.lockFile, function (err) {
-            if (err) {
-                dfd.reject(err);
-            } else {
-                dfd.resolve(null);
-            }
-        });
-        return dfd.promise;
+    public unlock()  {
+       fs.closeSync(this.lockFile);
+       fs.unlinkSync(this.lockFilePath);
     }
 
     public updateData(data: ITempDirRecord[]): void {
@@ -110,6 +98,19 @@ class FileSystemDestination implements IFileSystemDestination {
             } else {
                 dfd.resolve(null);
             }
+        });
+        return dfd.promise;
+    }
+
+    public readData() : Q.IPromise<any> {
+        var dfd = Q.defer<any>();
+        fs.readFile(this.dataFilePath, { encoding: "utf8" }, (err: Error, data: string) => {
+            if (data) {
+                this.data = JSON.parse(data);
+                fs.unlink(this.dataFilePath, function () { });
+                this.indexData();
+            }
+            dfd.resolve(null);
         });
         return dfd.promise;
     }

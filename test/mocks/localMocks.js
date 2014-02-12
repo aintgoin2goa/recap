@@ -152,6 +152,14 @@ exports.getDestDirMock = function () {
             return dfd.promise;
         }),
 
+        readData: jasmine.createSpy("readData").andCallFake(function(){
+             var dfd = Q.defer();
+            setImmediate(function () {
+                dfd.resolve();
+            });
+            return dfd.promise;
+        }),
+
         dataFile : "data.json"
     };
 };
@@ -215,6 +223,8 @@ exports.getBrowserSwarmMock = function(){
 
     var events ={};
 
+    var executeReturn = 0;
+
     return {
         size : 1,
         on : jasmine.createSpy("on").andCallFake(function(ev, fn){
@@ -230,8 +240,14 @@ exports.getBrowserSwarmMock = function(){
         },
         reset : function(){
             events = {};
+            executeReturn = 0;
         },
-        execute : jasmine.createSpy("execute")
+        setExecuteReturn: function(val){
+            executeReturn = val;
+        },
+        execute : jasmine.createSpy("execute").andCallFake(function(){
+            return executeReturn;
+        })
     }
 }
 

@@ -64,7 +64,9 @@
 
         writeFile: function(path, data, options, cb) {
             setTimeout(function() {
-                cb(null);
+                if(cb){
+                   cb(null); 
+                }
             }, 0);
         },
 

@@ -4,7 +4,7 @@ var console = require("../Console");
 
 var FileSystemTransport = (function () {
     function FileSystemTransport() {
-        this.waitTime = 5000;
+        this.waitTime = 10000;
         this.maxAttempts = 5;
         this.attempts = 0;
     }
@@ -46,11 +46,13 @@ var FileSystemTransport = (function () {
         console.log("Attempting to lock destination");
         this.to.lock().then(function () {
             console.log("Destination locked succesfully, proceeding...");
-            _this.files = _this.from.listFiles(["jpg", "json"]);
-            _this.nextFile(dfd);
+            _this.to.readData().then(function () {
+                _this.files = _this.from.listFiles(["jpg", "json"]);
+                _this.nextFile(dfd);
+            });
         }, function (err) {
             console.error("Failed to lock destination", err);
-            process.exit(1);
+            dfd.reject(false);
         });
     };
 
@@ -60,8 +62,7 @@ var FileSystemTransport = (function () {
             console.log("All files copied, writing data.json file");
             this.to.writeData().then(function () {
                 console.log("unlock destination directory");
-                return _this.to.unlock();
-            }).then(function () {
+                _this.to.unlock();
                 dfd.resolve(true);
             });
             return;

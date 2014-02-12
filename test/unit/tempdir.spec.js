@@ -26,8 +26,8 @@ describe("TempDir", function () {
 		debugger;
 		fsMock.reset();
 		var tempDir = new TempDir();
+
 		tempDir.ready.then(function(){
-			debugger;
 			var filename = tempDir.createRecord(url, 600);
 			expect(filename).toBe(tempDir.dir + path.sep + "www.google.com_600.jpg");
 			done();

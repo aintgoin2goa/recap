@@ -44,19 +44,21 @@ class TaskQueue implements ITaskQueue{
 	}
 
 	public addTask(task: ITask): void{
-		if(this.urls.indexOf(task.url) != -1){
+		if(this.hasUrl(task.url)){
 			return;
 		}
 
 		task.status = TaskStatus.QUEUED;
 		task.generateScript(this.tempDir);
-		this.urls.push(task.url);
+		this.urls.push(task.url );
 		this.queue.push(task);
 	}
 
 	public process(): void {
-		for(var i=0, l=this.queue.length; i<l; i++){
+		var i = 0;
+		while(i < this.running.length && i< this.queue.length){
 			this.next();
+			i++;
 		}
 	}
 
@@ -69,16 +71,24 @@ class TaskQueue implements ITaskQueue{
 	}
 
 	private next():  void{
+
 		if(this.queue.length === 0){
-			console.log("TaskQueue: complete");
-			this.trigger("complete");
+			if(!this.hasRunningTasks() ){
+				console.log("TaskQueue: complete");
+				this.trigger("complete");
+			}
+
 			return;
 		}
 
 		var task = this.queue.shift();
-		task.status = TaskStatus.RUNNING;
 		var index = this.swarm.execute(task.generatedScript);
-		this.running[index] = task;
+		if(index > -1){
+			task.status = TaskStatus.RUNNING;
+			this.running[index] = task;
+		}else{
+			this.queue.push(task);
+		}
 	}
 
 	private trigger(event: string): void{
@@ -97,7 +107,7 @@ class TaskQueue implements ITaskQueue{
 		this.swarm.on("available", (index) => this.onAvailable(index));
 	}
 
-	private onMessage(message: {title:string; content:any}, index): void{
+	private onMessage(message: {title:string; content:any}, index: number): void{
 
 		if(console[message.title]){
 			console[message.title](message.content);
@@ -105,7 +115,7 @@ class TaskQueue implements ITaskQueue{
 
 		if(message.title === "crawlresult" && message.content.forEach){
 			console.log("crawl result", message.content);
-			message.content.forEach((url) => this.addUrl(url));
+			message.content.forEach((url) => this.addUrl(url, index));
 		}
 
 		if(message.title === "filesaved"){
@@ -126,28 +136,66 @@ class TaskQueue implements ITaskQueue{
 	}
 
 	private taskFailed(index:number): void{
-		console.log("task at index " + index + " failed");
 		var task = this.running[index];
-		console.log(task);
+		if(task == null){
+			console.error("No task found at index " + index);
+			return;
+		}
 		task.status = TaskStatus.FAILED;
 		this.queue.push(task);
 		this.running[index] = null;
 	}
 
 	private taskSucceeded(index:number): void{
-		console.log("task at index " + index + " succeeded");
 		var task = this.running[index];
+		if(task == null){
+			console.error("No task found at index " + index);
+			return;
+		}
 		task.status = TaskStatus.COMPLETE;
 		this.completed.push(task);
 		this.running[index] = null;
 	}
 
-	private addUrl(url: string) : void{
-		var baseTask = this.completed.length ? this.completed[0] : this.queue[0];
+	private addUrl(url: string, index?: number) : void{
+		index = index || 0;
+		var baseTask = this.getBaseTask(index);
 		var task = new Task(url, baseTask.widths, baseTask.options);
 		this.addTask(task);
+		if(this.queue.length){
+			this.next();
+		}
 	}
 
+	private getBaseTask(index: number): ITask {
+		if(this.running[index]){
+			return this.running[index];
+		}
+
+		if(this.completed.length){
+			return this.completed[this.completed.length-1];
+		}
+
+		return this.queue[0];
+	}
+
+	private hasUrl(testUrl: string) : boolean {
+		return this.urls.some((url) =>{
+			return this.matchUrls(url, testUrl);
+		});
+	}
+
+	private matchUrls(url1: string, url2: string): boolean {
+		url1 = url1.replace(/\/$/,"");
+		url2 = url2.replace(/\/$/,"");
+		return (url1 === url2);
+	}
+
+	private hasRunningTasks(): boolean {
+		return this.running.some(function(task){
+			return task != null;
+		});
+	}
 }
 
 export = TaskQueue;

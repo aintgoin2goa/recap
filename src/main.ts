@@ -65,16 +65,22 @@ function copyFiles(config:IConfig, tempDir: ITempDir) : Q.IPromise<any> {
 	var dfd = Q.defer<any>();
 	tempDir.saveRecords();
 	var destination: IDestination = DestinationResolver.resolve(config.dest);
-	destination.setup().then(function(){
-		transport(tempDir).to(destination).then(
-			function(){
-				dfd.resolve(true);
-			},
-			function(){
-				dfd.reject(false);
-			}
-		);
-	});
+	destination.setup().then(
+		function(){
+			transport(tempDir).to(destination).then(
+				function(){
+					dfd.resolve(true);
+				},
+				function(){
+					dfd.reject(false);
+				}
+			);
+		},
+		function(){
+			console.error("Failed to setup destination directory, is it already locked?");
+			dfd.reject(false);
+		}
+	);
 	return dfd.promise;
 }
 

@@ -10,13 +10,9 @@ var FileSystemDestination = (function () {
         this.dataFilePath = this.uri + path.sep + this.dataFile;
         this.data = [];
         this.dataIndex = {};
-        this.lockFile = this.uri + "LOCKED";
+        this.lockFilePath = path.resolve(this.uri + path.sep + "LOCKED");
     }
     FileSystemDestination.prototype.setup = function () {
-        var _this = this;
-        if (this.isLocked()) {
-            return;
-        }
         var dfd = Q.defer();
 
         console.log("initialising destination");
@@ -26,18 +22,12 @@ var FileSystemDestination = (function () {
                     console.warn("Destination directory already exists, will attempt to merge");
                 } else {
                     console.error("Failed to create destination directory", err);
+                    dfd.reject(false);
+                    return;
                 }
             }
 
-            fs.readFile(_this.dataFilePath, { encoding: "utf8" }, function (err, data) {
-                if (data) {
-                    _this.data = JSON.parse(data);
-                    fs.unlink(_this.dataFilePath, function () {
-                    });
-                    _this.indexData();
-                }
-                dfd.resolve(null);
-            });
+            dfd.resolve(true);
         });
 
         return dfd.promise;
@@ -49,15 +39,17 @@ var FileSystemDestination = (function () {
     };
 
     FileSystemDestination.prototype.isLocked = function () {
-        return fs.existsSync(this.uri + "LOCKED");
+        return fs.existsSync(this.lockFilePath);
     };
 
     FileSystemDestination.prototype.lock = function () {
+        var _this = this;
         var dfd = Q.defer();
-        fs.open(this.lockFile, "wx+", "0777", function (err) {
+        fs.open(this.lockFilePath, "wx+", "0777", function (err, fd) {
             if (err) {
                 dfd.reject(err);
             } else {
+                _this.lockFile = fd;
                 dfd.resolve(null);
             }
         });
@@ -65,15 +57,8 @@ var FileSystemDestination = (function () {
     };
 
     FileSystemDestination.prototype.unlock = function () {
-        var dfd = Q.defer();
-        fs.unlink(this.lockFile, function (err) {
-            if (err) {
-                dfd.reject(err);
-            } else {
-                dfd.resolve(null);
-            }
-        });
-        return dfd.promise;
+        fs.closeSync(this.lockFile);
+        fs.unlinkSync(this.lockFilePath);
     };
 
     FileSystemDestination.prototype.updateData = function (data) {
@@ -89,6 +74,7 @@ var FileSystemDestination = (function () {
     };
 
     FileSystemDestination.prototype.writeData = function () {
+        debugger;
         var dfd = Q.defer();
         var data = JSON.stringify(this.data, null, 2);
         fs.writeFile(this.dataFilePath, data, { encoding: "utf8" }, function (err) {
@@ -97,6 +83,21 @@ var FileSystemDestination = (function () {
             } else {
                 dfd.resolve(null);
             }
+        });
+        return dfd.promise;
+    };
+
+    FileSystemDestination.prototype.readData = function () {
+        var _this = this;
+        var dfd = Q.defer();
+        fs.readFile(this.dataFilePath, { encoding: "utf8" }, function (err, data) {
+            if (data) {
+                _this.data = JSON.parse(data);
+                fs.unlink(_this.dataFilePath, function () {
+                });
+                _this.indexData();
+            }
+            dfd.resolve(null);
         });
         return dfd.promise;
     };

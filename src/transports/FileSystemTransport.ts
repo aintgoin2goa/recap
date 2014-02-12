@@ -15,7 +15,7 @@ class FileSystemTransport implements ITransport {
 
     private files: string[];
 
-    private waitTime: number = 5000;
+    private waitTime: number = 10000;
 
     private maxAttempts: number = 5;
 
@@ -56,14 +56,19 @@ class FileSystemTransport implements ITransport {
 
     private start(dfd: Q.Deferred<boolean>): void {
         console.log("Attempting to lock destination");
-        this.to.lock().then(() => {
-            console.log("Destination locked succesfully, proceeding...");
-            this.files = this.from.listFiles(["jpg", "json"]);
-            this.nextFile(dfd);
-        }, (err) => {
-            console.error("Failed to lock destination", err);
-            process.exit(1);
-            });
+        this.to.lock().then(
+            () => {
+                console.log("Destination locked succesfully, proceeding...");
+                this.to.readData().then(()=> {
+                    this.files = this.from.listFiles(["jpg", "json"]);
+                    this.nextFile(dfd); 
+                });
+            }, 
+            (err) => {
+                console.error("Failed to lock destination", err);
+                dfd.reject(false);
+            }
+        );
     }
 
     private nextFile(dfd: Q.Deferred<boolean>): void {
@@ -73,12 +78,10 @@ class FileSystemTransport implements ITransport {
             .then(
                 () => {
                     console.log("unlock destination directory");
-                    return this.to.unlock();
+                    this.to.unlock();
+                    dfd.resolve(true);
                 }
-            )
-            .then(function () {
-                dfd.resolve(true);
-            });
+            );
             return;
         }
 

@@ -32,7 +32,7 @@ var TaskQueue = (function () {
     });
 
     TaskQueue.prototype.addTask = function (task) {
-        if (this.urls.indexOf(task.url) != -1) {
+        if (this.hasUrl(task.url)) {
             return;
         }
 
@@ -43,8 +43,10 @@ var TaskQueue = (function () {
     };
 
     TaskQueue.prototype.process = function () {
-        for (var i = 0, l = this.queue.length; i < l; i++) {
+        var i = 0;
+        while (i < this.running.length && i < this.queue.length) {
             this.next();
+            i++;
         }
     };
 
@@ -58,15 +60,22 @@ var TaskQueue = (function () {
 
     TaskQueue.prototype.next = function () {
         if (this.queue.length === 0) {
-            console.log("TaskQueue: complete");
-            this.trigger("complete");
+            if (!this.hasRunningTasks()) {
+                console.log("TaskQueue: complete");
+                this.trigger("complete");
+            }
+
             return;
         }
 
         var task = this.queue.shift();
-        task.status = TaskStatus.RUNNING;
         var index = this.swarm.execute(task.generatedScript);
-        this.running[index] = task;
+        if (index > -1) {
+            task.status = TaskStatus.RUNNING;
+            this.running[index] = task;
+        } else {
+            this.queue.push(task);
+        }
     };
 
     TaskQueue.prototype.trigger = function (event) {
@@ -101,7 +110,7 @@ var TaskQueue = (function () {
         if (message.title === "crawlresult" && message.content.forEach) {
             console.log("crawl result", message.content);
             message.content.forEach(function (url) {
-                return _this.addUrl(url);
+                return _this.addUrl(url, index);
             });
         }
 
@@ -123,26 +132,66 @@ var TaskQueue = (function () {
     };
 
     TaskQueue.prototype.taskFailed = function (index) {
-        console.log("task at index " + index + " failed");
         var task = this.running[index];
-        console.log(task);
+        if (task == null) {
+            console.error("No task found at index " + index);
+            return;
+        }
         task.status = TaskStatus.FAILED;
         this.queue.push(task);
         this.running[index] = null;
     };
 
     TaskQueue.prototype.taskSucceeded = function (index) {
-        console.log("task at index " + index + " succeeded");
         var task = this.running[index];
+        if (task == null) {
+            console.error("No task found at index " + index);
+            return;
+        }
         task.status = TaskStatus.COMPLETE;
         this.completed.push(task);
         this.running[index] = null;
     };
 
-    TaskQueue.prototype.addUrl = function (url) {
-        var baseTask = this.completed.length ? this.completed[0] : this.queue[0];
+    TaskQueue.prototype.addUrl = function (url, index) {
+        index = index || 0;
+        var baseTask = this.getBaseTask(index);
         var task = new Task(url, baseTask.widths, baseTask.options);
         this.addTask(task);
+        if (this.queue.length) {
+            this.next();
+        }
+    };
+
+    TaskQueue.prototype.getBaseTask = function (index) {
+        if (this.running[index]) {
+            return this.running[index];
+        }
+
+        if (this.completed.length) {
+            return this.completed[this.completed.length - 1];
+        }
+
+        return this.queue[0];
+    };
+
+    TaskQueue.prototype.hasUrl = function (testUrl) {
+        var _this = this;
+        return this.urls.some(function (url) {
+            return _this.matchUrls(url, testUrl);
+        });
+    };
+
+    TaskQueue.prototype.matchUrls = function (url1, url2) {
+        url1 = url1.replace(/\/$/, "");
+        url2 = url2.replace(/\/$/, "");
+        return (url1 === url2);
+    };
+
+    TaskQueue.prototype.hasRunningTasks = function () {
+        return this.running.some(function (task) {
+            return task != null;
+        });
     };
     return TaskQueue;
 })();

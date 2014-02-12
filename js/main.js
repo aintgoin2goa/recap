@@ -63,6 +63,9 @@ function copyFiles(config, tempDir) {
         }, function () {
             dfd.reject(false);
         });
+    }, function () {
+        console.error("Failed to setup destination directory, is it already locked?");
+        dfd.reject(false);
     });
     return dfd.promise;
 }

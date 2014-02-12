@@ -28,7 +28,7 @@ describe("FileSystemDestination", function () {
 
     it("Will create the directory on initialisation", function(done) {
         destination.setup().then(function() {
-            expect(fsMock.mkdir.mostRecentCall.args[0]).toBe(uri);
+            expect(fsMock.mkdir.mostRecentCall.args[0]).toBe(path.resolve(uri));
             done();
         });
        
@@ -39,13 +39,16 @@ describe("FileSystemDestination", function () {
         fsMock.setReadFileData(JSON.stringify(data, null, 2));
        
         destination.setup()
+            .then(function(){
+                return destination.readData();
+            })
             .then(function () {
                 return destination.writeData();
             })
         
             .then(function () {
                 expect(fsMock.writeFile.mostRecentCall.args[1]).toBe(JSON.stringify(data, null, 2));
-                expect(fsMock.unlink.mostRecentCall.args[0]).toBe(uri + path.sep + "data.json");
+                expect(fsMock.unlink.mostRecentCall.args[0]).toBe(path.resolve(uri + path.sep + "data.json"));
                 done();
             });
 
@@ -58,7 +61,7 @@ describe("FileSystemDestination", function () {
                 return destination.lock();
             })
             .then(function () {
-                expect(fsMock.open.mostRecentCall.args[0]).toBe(uri + "LOCKED");
+                expect(fsMock.open.mostRecentCall.args[0]).toBe(path.resolve(uri + "LOCKED"));
                 expect(fsMock.open.mostRecentCall.args[1]).toBe("wx+");
                 done();
             });
@@ -77,18 +80,6 @@ describe("FileSystemDestination", function () {
            });
     });
 
-    it("Will not perform setup if the directory is locked", function(done) {
-
-        destination.lock()
-            .then(function() {
-                return destination.setup();
-            })
-            .then(function() {
-                expect(fsMock.mkdir).not.toHaveBeenCalled();
-                done();
-            });
-
-    });
 
     it("Can update the data held in memory", function (done) {
         var data = [{ filename: "file", width: 300, date: new Date(), url: "http:google.com" }];

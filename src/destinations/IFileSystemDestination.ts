@@ -8,10 +8,12 @@ interface IFileSystemDestination extends IDestination {
 
     lock(): Q.IPromise<any>;
 
-    unlock(): Q.IPromise<any>;
+    unlock(): void;
 
     updateData(data: ITempDirRecord[]): void;
 
     writeData(): Q.IPromise<any>;
+
+    readData(): Q.IPromise<any>;
 
 }

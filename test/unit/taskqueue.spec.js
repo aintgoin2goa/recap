@@ -68,12 +68,15 @@ describe("TaskQueue", function(){
 		var task = createTask("url", 0);
 		taskQueue.addTask(task);
 
+		taskQueue.process();
+		BrowserSwarmMock.setExecuteReturn(-1);
+
 		BrowserSwarmMock.fire("message", message);
 
 		waits(10);
 
 		runs(function(){
-			expect(taskQueue.length).toBe(3);
+			expect(taskQueue.length).toBe(2);
 		});
 
 	});
@@ -82,7 +85,9 @@ describe("TaskQueue", function(){
 		var err = new Error("Error");
 		var task = createTask("url");
 		taskQueue.addTask(task);
+
 		taskQueue.process();
+		BrowserSwarmMock.setExecuteReturn(-1);
 
 		BrowserSwarmMock.fire("error", err, 0);
 

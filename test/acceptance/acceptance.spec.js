@@ -23,13 +23,13 @@ describe("Recap", function () {
     });
 
     afterEach(function() {
-        var dest = config.dest;
+        var dest = path.resolve(config.dest);
         rimraf(dest, function () { });
         config = null;
     });
 
     function log(){
-        console.log(Array.prototype.slice.apply(arguments));
+        //console.log(Array.prototype.slice.apply(arguments));
     }
 
     function gethostnameFromUrl(url){
@@ -41,7 +41,12 @@ describe("Recap", function () {
         return url.split("/")[0];
     }
 
-    xit("Can be called programatically, passing in a config object", function(done) {
+    function getData(path){
+        var dataStr = fs.readFileSync(path, {encoding : "utf8"});
+        return JSON.parse(dataStr);
+    }
+
+    it("Can be called programatically, passing in a config object", function(done) {
 
         config = require(configPaths.simple);
         log(config);
@@ -69,7 +74,7 @@ describe("Recap", function () {
                 try {
                     log("Finished, running assertations");
                     var files = fs.readdirSync(config.dest);
-                    var data = require(path.resolve(config.dest + "data.json"));
+                    var data = getData(path.resolve(config.dest + "data.json"));
                     log('expectedFiles', expectedFiles);
                     log("files", files);
                     log('data', data);
@@ -95,7 +100,7 @@ describe("Recap", function () {
         );
     }, timeout);
     
-   xit("Can be called via the command line, given a path to a config file", function (done) {
+   it("Can be called via the command line, given a path to a config file", function (done) {
 
         config = require(configPaths.simple);
 
@@ -126,7 +131,7 @@ describe("Recap", function () {
                 try {
                     log("Finished, running assertations");
                     var files = fs.readdirSync(config.dest);
-                    var data = require(path.resolve(config.dest + "data.json"));
+                    var data = getData(path.resolve(config.dest + "data.json"));
 
                     for (var i = 0, l = expectedFiles.length; i < l; i++) {
                         expect(files).toContain(expectedFiles[i]);
@@ -154,7 +159,7 @@ describe("Recap", function () {
 
   
 
-    it("Can can crawl for additional urls if the config specifies it", function(done) {
+   it("Can can crawl for additional urls if the config specifies it", function(done) {
 
         config = require(configPaths.crawl);
        
@@ -181,9 +186,11 @@ describe("Recap", function () {
             function () {
                 log("Finished, running assertations");
                 var files = fs.readdirSync(config.dest);
-                var data = require(path.resolve(config.dest + "data.json"));
+                var data = getData(path.resolve(config.dest + "data.json"));
                 log("files", files);
                 log("data", data);
+                debugger;
+                expect(files).not.toContain("LOCKED");
                 expect(data.length).toEqual(files.length - 1);
                 expect(files.length).toBeGreaterThan((urls.length * widths.length) + 1);
                 data.forEach(function(item){

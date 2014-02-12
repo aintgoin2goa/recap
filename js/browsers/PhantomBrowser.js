@@ -11,6 +11,7 @@ var PhantomBrowser = (function () {
     PhantomBrowser.prototype.execute = function (scriptPath) {
         var _this = this;
         console.log("about to execute phantomjs " + scriptPath);
+        this.status = BrowserStatus.ACTIVE;
         var child = child_process.spawn("phantomjs", [scriptPath]);
         child.stdout.on("data", function (data) {
             return _this.onMessage(data);
