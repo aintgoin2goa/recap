@@ -1,0 +1,16 @@
+{
+  "widths" : [
+    320,
+    480,
+    640,
+    1024,
+    1900
+  ],
+  "urls" : [
+    "https://uat-infiniti-gb.ngcss.akqa.net/en-gb/Admin/Customer/UserDetails?username=customer.service4%40nissanqa.akqa.com&searchterm=customer"
+  ],
+  "dest" : "dest/",
+  "options" : {
+    "script" : "../scripts/test.nissanLogin.js"
+  }
+}

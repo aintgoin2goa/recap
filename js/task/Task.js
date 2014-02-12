@@ -11,6 +11,7 @@ var Task = (function () {
         this.status = TaskStatus.UNKNOWN;
     }
     Task.prototype.generateScript = function (tempDir) {
+        debugger;
         var generator = ScriptGenerator.getInstance();
         var widthsString = JSON.stringify(this.widths);
         var optionsString = JSON.stringify(this.options);
@@ -21,7 +22,7 @@ var Task = (function () {
             tempDirPath: encodeURI(tempDir.dir + path.sep)
         };
 
-        var script = generator.generate(context);
+        var script = generator.generate(context, this.options.script);
         this.generatedScript = generator.save(script, tempDir);
     };
 

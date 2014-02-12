@@ -24,12 +24,14 @@ class ScriptGenerator implements IScriptGenerator{
 		this.config = config.getCurrentConfig();
 	}
 
-	public generate(context : Object) : string {
+	public generate(context : Object, userScript?: string) : string {
 		if(!this.compiledTemplate){
 			var template = this.loadTemplate();
-			this.compileTemplate(template);
+			this.compiledTemplate = this.compileTemplate(template);
 		}
 		
+		this.addUserScript(userScript);
+
 		return this.generateScript(context);
 	}
 
@@ -45,8 +47,8 @@ class ScriptGenerator implements IScriptGenerator{
 		return fs.readFileSync(pth, {encoding : "utf8"});
 	} 
 
-	private compileTemplate(template: string) : void {
-		this.compiledTemplate =  Handlebars.compile(template);
+	private compileTemplate(template: string) : Function {
+		return  Handlebars.compile(template);
 	}
 
 	private generateScript(context : any) : string {
@@ -74,6 +76,22 @@ class ScriptGenerator implements IScriptGenerator{
 			location = qPath.split("node_modules")[0];
 		}
 		return location;
+	}
+
+	private loadUserScript(userScriptPath: string): string {
+		debugger;
+		var pth = path.resolve(userScriptPath);
+		return fs.readFileSync(pth, {encoding : "utf8"});
+	}
+
+	private addUserScript(script?: string): void {
+		if(!script){
+			Handlebars.registerPartial("userscript","");
+			return
+		}
+		
+		var partial = this.compileTemplate(this.loadUserScript(script) );
+		Handlebars.registerPartial("userscript",partial);
 	}
 
 }

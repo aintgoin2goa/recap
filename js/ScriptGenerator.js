@@ -10,11 +10,13 @@ var ScriptGenerator = (function () {
         this.templateExtension = ".tmpl";
         this.config = config.getCurrentConfig();
     }
-    ScriptGenerator.prototype.generate = function (context) {
+    ScriptGenerator.prototype.generate = function (context, userScript) {
         if (!this.compiledTemplate) {
             var template = this.loadTemplate();
-            this.compileTemplate(template);
+            this.compiledTemplate = this.compileTemplate(template);
         }
+
+        this.addUserScript(userScript);
 
         return this.generateScript(context);
     };
@@ -32,7 +34,7 @@ var ScriptGenerator = (function () {
     };
 
     ScriptGenerator.prototype.compileTemplate = function (template) {
-        this.compiledTemplate = Handlebars.compile(template);
+        return Handlebars.compile(template);
     };
 
     ScriptGenerator.prototype.generateScript = function (context) {
@@ -60,6 +62,22 @@ var ScriptGenerator = (function () {
             location = qPath.split("node_modules")[0];
         }
         return location;
+    };
+
+    ScriptGenerator.prototype.loadUserScript = function (userScriptPath) {
+        debugger;
+        var pth = path.resolve(userScriptPath);
+        return fs.readFileSync(pth, { encoding: "utf8" });
+    };
+
+    ScriptGenerator.prototype.addUserScript = function (script) {
+        if (!script) {
+            Handlebars.registerPartial("userscript", "");
+            return;
+        }
+
+        var partial = this.compileTemplate(this.loadUserScript(script));
+        Handlebars.registerPartial("userscript", partial);
     };
     return ScriptGenerator;
 })();

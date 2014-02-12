@@ -74,7 +74,6 @@ var FileSystemDestination = (function () {
     };
 
     FileSystemDestination.prototype.writeData = function () {
-        debugger;
         var dfd = Q.defer();
         var data = JSON.stringify(this.data, null, 2);
         fs.writeFile(this.dataFilePath, data, { encoding: "utf8" }, function (err) {

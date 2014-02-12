@@ -30,6 +30,7 @@ class Task implements ITask{
 	}
 
 	public generateScript(tempDir: ITempDir): void {
+		debugger;
 		var generator = ScriptGenerator.getInstance();
 		var widthsString = JSON.stringify(this.widths);
 		var optionsString = JSON.stringify(this.options);
@@ -40,7 +41,7 @@ class Task implements ITask{
 			tempDirPath : encodeURI(tempDir.dir + path.sep)
 		};
 
-		var script = generator.generate(context);
+		var script = generator.generate(context, this.options.script);
 		this.generatedScript = generator.save(script, tempDir);
 	}
 
