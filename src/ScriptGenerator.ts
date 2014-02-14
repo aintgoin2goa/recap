@@ -79,7 +79,6 @@ class ScriptGenerator implements IScriptGenerator{
 	}
 
 	private loadUserScript(userScriptPath: string): string {
-		debugger;
 		var pth = path.resolve(userScriptPath);
 		return fs.readFileSync(pth, {encoding : "utf8"});
 	}

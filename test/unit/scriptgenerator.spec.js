@@ -40,15 +40,16 @@ describe("ScriptGenerator", function(){
 	});
 
 	it("Can include a user script as a partial", function(){
+		debugger;
 		var url = "http://www.paul.com";
 		var say = "hello";
 		var template = fs.readFileSync(path.resolve("./test/templates/testTemplate1.tmpl"), {encoding : "utf8"});
-		var partial = fs.readFileSync(path.resolve("./test/templates/testUserScript.tmpl"), {encoding : "utf8"});
+		var partial = "./test/templates/testUserScript.tmpl"
+		var partialContent = fs.readFileSync(path.resolve(partial), {encoding : "utf8"});
 		fsMock.setReadFileData(template);
-		
 		var script = scriptGenerator.generate({"url" : url}, partial);
 
-		expect(script).toContain(partial);
+		expect(script).toContain(partialContent);
 	});
 
 	it("Can also work fine without a user script", function(){

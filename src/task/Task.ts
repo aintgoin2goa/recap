@@ -30,7 +30,6 @@ class Task implements ITask{
 	}
 
 	public generateScript(tempDir: ITempDir): void {
-		debugger;
 		var generator = ScriptGenerator.getInstance();
 		var widthsString = JSON.stringify(this.widths);
 		var optionsString = JSON.stringify(this.options);

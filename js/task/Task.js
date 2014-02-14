@@ -11,7 +11,6 @@ var Task = (function () {
         this.status = TaskStatus.UNKNOWN;
     }
     Task.prototype.generateScript = function (tempDir) {
-        debugger;
         var generator = ScriptGenerator.getInstance();
         var widthsString = JSON.stringify(this.widths);
         var optionsString = JSON.stringify(this.options);

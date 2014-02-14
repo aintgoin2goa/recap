@@ -3,6 +3,7 @@ var fs = require("fs");
 var rimraf = require("rimraf");
 var path = require("path");
 var exec = require('child_process').exec;
+require("../helpers/matchers.js");
 
 process.chdir("./test/acceptance");
 describe("Recap", function () {
@@ -47,7 +48,7 @@ describe("Recap", function () {
         return JSON.parse(dataStr);
     }
 
-    xit("Can be called programatically, passing in a config object", function(done) {
+    it("Can be called programatically, passing in a config object", function(done) {
 
         config = require(configPaths.simple);
         log(config);
@@ -101,7 +102,7 @@ describe("Recap", function () {
         );
     }, timeout);
     
-   xit("Can be called via the command line, given a path to a config file", function (done) {
+   it("Can be called via the command line, given a path to a config file", function (done) {
 
         config = require(configPaths.simple);
 
@@ -158,7 +159,7 @@ describe("Recap", function () {
 
     }, timeout);
 
-   xit("Can can crawl for additional urls if the config specifies it", function(done) {
+   it("Can can crawl for additional urls if the config specifies it", function(done) {
 
         config = require(configPaths.crawl);
        
@@ -214,12 +215,23 @@ describe("Recap", function () {
 
         recap.run(config).then(
             function(){
-                log("Finished, running assertations");
-                var files = fs.readdirSync(config.dest);
-                var data = getData(path.resolve(config.dest + "data.json"));
-                data.forEach(function(item){
-                    expect(item.url).toEqual(config.urls[0]);
-                });
+                try{
+                    log("Finished, running assertations");
+                    var files = fs.readdirSync(config.dest);
+                    var data = getData(path.resolve(config.dest + "data.json"));
+                    log("files", files);
+                    log("data", data);
+                    expect(data.length).toEqual(files.length - 1);
+                    data.forEach(function(item){
+                        expect(item.url).toMatchUrl(config.urls[0]);
+                        log("expect " + item.url + " to match " + config.urls[0]);
+                    });
+                    done();
+                }catch(e){
+                    log(e);
+                    done(false);
+                }
+              
             }
         );
     }, timeout);

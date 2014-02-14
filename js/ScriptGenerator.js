@@ -65,7 +65,6 @@ var ScriptGenerator = (function () {
     };
 
     ScriptGenerator.prototype.loadUserScript = function (userScriptPath) {
-        debugger;
         var pth = path.resolve(userScriptPath);
         return fs.readFileSync(pth, { encoding: "utf8" });
     };
