@@ -57,6 +57,7 @@ var ScriptGenerator = (function () {
         var location;
         try  {
             location = require.resolve("recap");
+            location = location.split("recap")[0] + "recap" + path.sep;
         } catch (e) {
             var qPath = require.resolve("q");
             location = qPath.split("node_modules")[0];
