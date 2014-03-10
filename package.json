@@ -16,7 +16,8 @@
     "js/",
     "test/",
     "src/",
-    "templates/"
+    "templates/",
+    "files"
   ],
   "keywords": [
     "screenshot",
