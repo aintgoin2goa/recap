@@ -16,8 +16,8 @@
     "js/",
     "test/",
     "src/",
-    "templates/",
-    "bin"
+    "templates/default.tmpl",
+    "bin/"
   ],
   "keywords": [
     "screenshot",
