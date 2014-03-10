@@ -104,3 +104,7 @@ export function getInstance() : IScriptGenerator {
 
 	return instance;
 }
+
+export function reset(): void {
+	instance = null;
+}

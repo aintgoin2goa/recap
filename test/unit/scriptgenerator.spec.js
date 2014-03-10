@@ -13,6 +13,7 @@ var scriptGenerator;
 describe("ScriptGenerator", function(){
 
 	beforeEach(function(){
+		ScriptGenerator.reset();
 		scriptGenerator = ScriptGenerator.getInstance();
 	})
 
@@ -47,6 +48,7 @@ describe("ScriptGenerator", function(){
 		var partial = "./test/templates/testUserScript.tmpl"
 		var partialContent = fs.readFileSync(path.resolve(partial), {encoding : "utf8"});
 		fsMock.setReadFileData(template);
+		fsMock.setReadFileData(partialContent);
 		var script = scriptGenerator.generate({"url" : url}, partial);
 
 		expect(script).toContain(partialContent);
@@ -56,7 +58,6 @@ describe("ScriptGenerator", function(){
 		var url = "http://www.paul.com";
 		var template = fs.readFileSync(path.resolve("./test/templates/testTemplate1.tmpl"), {encoding : "utf8"});
 		fsMock.setReadFileData(template);
-		
 		var script = scriptGenerator.generate({"url" : url});
 
 		expect(script).not.toContain("userscript");

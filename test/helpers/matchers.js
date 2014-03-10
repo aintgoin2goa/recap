@@ -1,9 +1,10 @@
 var url = require("url");
 var querystring = require("querystring");
 
-jasmine.Matchers.prototype.toMatchUrl = function(urlToTest){
-	var actual = url.parse(this.actual);
-	var test = url.parse(urlToTest);
+function matchUrls(url1, url2){
+	url2 = url2.replace(/\/$/, "");
+	var actual = url.parse(url1);
+	var test = url.parse(url2);
 	var actualSearch;
 	var testSearch;
 
@@ -15,8 +16,8 @@ jasmine.Matchers.prototype.toMatchUrl = function(urlToTest){
 		return false;
 	}
 
-	actualSearch = querystring.parse(actual.search.replace(/&amp;/g, "&"));
-	testSearch = querystring.parse(test.search.replace(/&amp;/g, "&"));
+	actualSearch = actual.search == null ? "" : querystring.parse(actual.search.replace(/&amp;/g, "&"));
+	testSearch = test.search == null ? "" : querystring.parse(test.search.replace(/&amp;/g, "&"));
 
 	for(var prop in testSearch){
 		if(!actualSearch[prop] || actualSearch[prop] !== testSearch[prop]){
@@ -25,4 +26,17 @@ jasmine.Matchers.prototype.toMatchUrl = function(urlToTest){
 	}
 
 	return true;
+}
+jasmine.Matchers.prototype.toMatchUrl = function(urlToTest){
+	return matchUrls(this.actual, urlToTest);	
+}
+
+jasmine.Matchers.prototype.toContainUrl = function(urlToTest){
+	for(var i=0, l=this.actual.length; i<l; i++){
+		if( matchUrls(this.actual[i], urlToTest) ){
+			return true;
+		}
+	}
+
+	return false;
 }

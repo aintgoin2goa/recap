@@ -17,8 +17,7 @@ var TempDir = (function () {
         });
     }
     TempDir.prototype.createRecord = function (url, width) {
-        var filename = url.replace(/(http|https):\/\//, '').replace(/\//g, '_');
-        filename = filename + "_" + width.toString() + this.extension;
+        var filename = this.transformUrl(url, width);
         if (this.hasRecordFor(filename)) {
             this.updateRecord(filename, new Date());
         } else {
@@ -101,6 +100,12 @@ var TempDir = (function () {
             dfd.resolve(true);
         });
         return dfd.promise;
+    };
+
+    TempDir.prototype.transformUrl = function (url, width) {
+        var filename = url.replace(/(http|https):\/\//, '').replace(/\/$/, '').replace(/\//g, '_');
+
+        return filename + "_" + width.toString() + this.extension;
     };
     return TempDir;
 })();

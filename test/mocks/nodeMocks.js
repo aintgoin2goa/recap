@@ -4,7 +4,7 @@
     var fileCount = 0;
     var mockStream = exports.getMockStream();
     var files = [];
-    var readFileData = "";
+    var readFileData = [];
 
     return {
         addExisting: function(e) {
@@ -29,7 +29,7 @@
         },
 
         setReadFileData: function(d) {
-            readFileData = d;
+            readFileData.push(d);
         },
 
         existsSync: function(filename) {
@@ -54,12 +54,12 @@
 
         readFile: function(file, options, cb) {
             setTimeout(function() {
-                cb(null, readFileData);
+                cb(null, readFileData.shift());
             }, 0);
         },
 
         readFileSync: jasmine.createSpy("readFileSync").andCallFake(function(file, options){
-            return readFileData;
+            return readFileData.shift();
         }),
 
         writeFile: function(path, data, options, cb) {

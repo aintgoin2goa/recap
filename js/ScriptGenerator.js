@@ -92,3 +92,8 @@ function getInstance() {
 }
 exports.getInstance = getInstance;
 
+function reset() {
+    instance = null;
+}
+exports.reset = reset;
+

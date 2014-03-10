@@ -7,7 +7,7 @@
     1900
   ],
   "urls" : [
-    "https://uat-infiniti-gb.ngcss.akqa.net/en-gb/Admin/Customer/UserDetails?username=customer.service@nissanqa.akqa.com&searchterm=customer"
+    "https://uat-infiniti-gb.ngcss.akqa.net/en-gb/Admin/Customer?SearchTerm=customer"
   ],
   "dest" : "dest/",
   "options" : {

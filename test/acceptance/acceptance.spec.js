@@ -31,7 +31,7 @@ describe("Recap", function () {
     });
 
     function log(){
-        console.log(Array.prototype.slice.apply(arguments));
+        //console.log(Array.prototype.slice.apply(arguments));
     }
 
     function gethostnameFromUrl(url){
@@ -85,7 +85,7 @@ describe("Recap", function () {
                     }
                     for (var j = 0, m = data.length; j < m; j++) {
                         expect(expectedFiles).toContain(data[j].filename);
-                        expect(urls).toContain(data[j].url);
+                        expect(urls).toContainUrl(data[j].url);
                         expect(widths).toContain(data[j].width);
                     }
                      log("done");
@@ -140,7 +140,7 @@ describe("Recap", function () {
                     }
                     for (var j = 0, m = data.length; j < m; j++) {
                         expect(expectedFiles).toContain(data[j].filename);
-                        expect(urls).toContain(data[j].url);
+                        expect(urls).toContainUrl(data[j].url);
                         expect(widths).toContain(data[j].width);
                     }
 

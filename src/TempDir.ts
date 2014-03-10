@@ -30,8 +30,7 @@ class TempDir implements ITempDir {
     }
 
     public createRecord(url: string, width: number): string {
-        var filename = url.replace(/(http|https):\/\//, '').replace(/\//g, '_');
-        filename = filename + "_" + width.toString() + this.extension;
+       var filename = this.transformUrl(url,width);
         if(this.hasRecordFor(filename)){
             this.updateRecord(filename, new Date());
         }else{
@@ -110,6 +109,15 @@ class TempDir implements ITempDir {
            
         });
        return dfd.promise;
+    }
+
+    private transformUrl(url: string, width: number): string{
+        var filename = url
+            .replace(/(http|https):\/\//, '')
+            .replace(/\/$/, '')
+            .replace(/\//g, '_');
+
+        return filename + "_" + width.toString() + this.extension;
     }
 }
 
