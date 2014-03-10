@@ -12,6 +12,12 @@
     "type": "git",
     "url": "https://github.com/aintgoin2goa/recap.git"
   },
+  "files" : [
+    "js/",
+    "test/",
+    "src/",
+    "templates/"
+  ],
   "keywords": [
     "screenshot",
     "responsive",
