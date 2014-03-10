@@ -1,7 +1,7 @@
 {
   "name": "recap",
   "preferGlobal": true,
-  "version": "0.3.0-rc3",
+  "version": "0.3.0-rc4",
   "author": "aintgoin2goa",
   "description": "creates responsive screenshots using phantomjs",
   "bin": {
@@ -12,7 +12,7 @@
     "type": "git",
     "url": "https://github.com/aintgoin2goa/recap.git"
   },
-  "files" : [
+  "files": [
     "js/",
     "test/",
     "src/",
