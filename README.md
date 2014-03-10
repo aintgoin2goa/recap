@@ -15,19 +15,9 @@ You will need [node > 0.8](http://nodejs.org/) and [PhantomJS](http://phantomjs.
 	
 If this doesn't work, then read the phantomjs installation docs to find out why.
 
-Once once you have these dependencies up and running run the following command to install reshot 
+Once once you have these dependencies up and running run the following command to install recap
     
     npm install -g recap
-
-
-Quickstart
-------------
-
-If you just want to see what recap can do run this command to get going immediately
-
-	recap demo
-
-This will walk you through the process a creating a config file, suggesting some defaults.
 
 
 Usage
@@ -83,6 +73,35 @@ If crawl mode is enabled each url will be scanned for links.  Any link found poi
 
 You can use this to capture an entire site simply by giving the homepage.
 	
+Overriding Options
+---------------------
+
+In the options field you can also override options for an individual url like so:
+
+	{
+	  "widths" : [
+	    320,
+	    480,
+	    640,
+	    1024,
+	    1900
+	  ],
+	  "urls" : [
+	    "http://www.datsun.com",
+	    "http://aneventapart.com/",
+	    "http://contentsmagazine.com/"
+	  ],
+	  "dest" : "dest/",
+	  "options" : {
+	  	"crawl" : true,
+	  	"http://contentsmagazine.com/" : {
+	  		"crawl" : false
+	  	}
+	  }
+	}
+
+In this example all urls have the crawl option set to `true` except contentsmagazine.com, where it is overridden to `false`.
+
 TroubleShooting
 ------------------
 

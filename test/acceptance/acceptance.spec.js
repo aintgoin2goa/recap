@@ -31,7 +31,7 @@ describe("Recap", function () {
     });
 
     function log(){
-        //console.log(Array.prototype.slice.apply(arguments));
+        console.log(Array.prototype.slice.apply(arguments));
     }
 
     function gethostnameFromUrl(url){
@@ -48,7 +48,7 @@ describe("Recap", function () {
         return JSON.parse(dataStr);
     }
 
-    it("Can be called programatically, passing in a config object", function(done) {
+    xit("Can be called programatically, passing in a config object", function(done) {
 
         config = require(configPaths.simple);
         log(config);
@@ -121,7 +121,7 @@ describe("Recap", function () {
         });
 
         log("Running...");
-        var prc = exec("recap " + configPaths.simple, function(err){
+        var prc = exec("recap " + configPaths.simple + " --verbose", function(err){
             if(err){
                 log(err);
                 done(false);
@@ -159,7 +159,7 @@ describe("Recap", function () {
 
     }, timeout);
 
-   it("Can can crawl for additional urls if the config specifies it", function(done) {
+   xit("Can can crawl for additional urls if the config specifies it", function(done) {
 
         config = require(configPaths.crawl);
        
@@ -205,7 +205,7 @@ describe("Recap", function () {
         );
     }, timeout);
 
-    it("Can run a script to access pages that require a login", function(done){
+    xit("Can run a script to access pages that require a login", function(done){
 
         config = require(configPaths.login);
 

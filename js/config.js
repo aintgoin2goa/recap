@@ -24,7 +24,6 @@ exports.Config = Config;
 function loadFromFilePath(pth) {
     pth = path.normalize(pth);
     var file = fs.readFileSync(pth, { encoding: "utf8" });
-    var contents;
     try  {
         return JSON.parse(file);
     } catch (e) {
@@ -56,6 +55,8 @@ function validate(cfg) {
     }
 
     cfg = cfg;
+
+    console.log("loaded", cfg);
 
     var result = {
         result: true,

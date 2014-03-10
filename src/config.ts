@@ -32,7 +32,6 @@ function loadFromFilePath(pth: string): Object
 {
     pth = path.normalize(pth);
     var file = fs.readFileSync(pth, { encoding: "utf8" });
-    var contents;
     try {
         return JSON.parse(file);
     } catch (e) {
@@ -69,6 +68,8 @@ export function validate(cfg: any): IConfigValidationResult
     }
 
     cfg = <IConfig>cfg;
+
+    console.log("loaded", cfg);
 
     var result : IConfigValidationResult = {
         result: true,
