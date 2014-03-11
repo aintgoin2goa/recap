@@ -69,8 +69,6 @@ export function validate(cfg: any): IConfigValidationResult
 
     cfg = <IConfig>cfg;
 
-    console.log("loaded", cfg);
-
     var result : IConfigValidationResult = {
         result: true,
         message: ""

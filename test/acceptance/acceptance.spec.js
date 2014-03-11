@@ -31,7 +31,7 @@ describe("Recap", function () {
     });
 
     function log(){
-        console.log(Array.prototype.slice.apply(arguments));
+        //console.log(Array.prototype.slice.apply(arguments));
     }
 
     function gethostnameFromUrl(url){
@@ -159,7 +159,7 @@ describe("Recap", function () {
 
     }, timeout);
 
-   xit("Can can crawl for additional urls if the config specifies it", function(done) {
+   it("Can can crawl for additional urls if the config specifies it", function(done) {
 
         config = require(configPaths.crawl);
        
@@ -205,7 +205,7 @@ describe("Recap", function () {
         );
     }, timeout);
 
-    xit("Can run a script to access pages that require a login", function(done){
+    it("Can run a script to access pages that require a login", function(done){
 
         config = require(configPaths.login);
 

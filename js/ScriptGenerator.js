@@ -6,7 +6,7 @@ var config = require("./Config");
 
 var ScriptGenerator = (function () {
     function ScriptGenerator() {
-        this.templatesFolderPath = this.installLocation() + "templates" + path.sep;
+        this.templatesFolderPath = this.installLocation() + "tmpl" + path.sep;
         this.templateExtension = ".tmpl";
         this.config = config.getCurrentConfig();
     }
