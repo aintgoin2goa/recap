@@ -56,8 +56,6 @@ function validate(cfg) {
 
     cfg = cfg;
 
-    console.log("loaded", cfg);
-
     var result = {
         result: true,
         message: ""
