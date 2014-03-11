@@ -16,7 +16,7 @@
     "js/",
     "test/",
     "src/",
-    "templates/default.tmpl",
+    "tmpl/",
     "bin/"
   ],
   "keywords": [

@@ -12,7 +12,7 @@ import config = require("./Config");
 
 class ScriptGenerator implements IScriptGenerator{
 
-	private templatesFolderPath: string = this.installLocation() + "templates" + path.sep;
+	private templatesFolderPath: string = this.installLocation() + "tmpl" + path.sep;
 
 	private templateExtension: string = ".tmpl";
 
