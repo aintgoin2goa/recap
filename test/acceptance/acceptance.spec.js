@@ -48,7 +48,7 @@ describe("Recap", function () {
         return JSON.parse(dataStr);
     }
 
-    xit("Can be called programatically, passing in a config object", function(done) {
+    it("Can be called programatically, passing in a config object", function(done) {
 
         config = require(configPaths.simple);
         log(config);
