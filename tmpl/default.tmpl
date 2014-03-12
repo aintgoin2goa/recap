@@ -1,0 +1,165 @@
+var page = require("webpage").create();
+var system = require("system");
+
+var url = "{{url}}";
+var widths = {{{widths}}};
+var widthsCount = widths.length;
+var options = {{{options}}};
+var tempDirPath = "{{{tempDirPath}}}";
+
+function dummy(done){
+	done();
+}
+
+var recap = {
+	
+	url : url,
+
+	width : null,
+
+	message : function message(title, content){
+		var message = {title : title, content: content};
+		console.log(JSON.stringify(message));
+	},
+
+	capture : function capture(name, callback){
+		log("phantomjs: capture");
+	    if(typeof(name) === "function"){
+			callback = name;
+			name = "";
+		}
+		var filename = recap.generateFilename(name);
+		window.setTimeout(function(){
+			page.render(filename);
+			log("phantomjs: saved as " + filename);
+			recap.message("filesaved", {url:page.url,width:recap.width});
+			callback();
+		}, options.waitTime);
+	
+	},
+	
+	generateFilename : function generateFilename(name){
+		var url = page.url
+			.replace(/^http(s?):\/\//, "")
+			.replace(/\/$/, "")
+			.replace(/\//g, "_")
+			.replace(/(&|;|=|\?|@)/g, "");
+
+		var filename = url + "_" + recap.width;
+		if(name){
+			filename += ("_" + name); 
+		}
+		filename += ".jpg";
+		log(filename);
+		return (decodeURI(tempDirPath) + filename);
+	},
+
+	beforeAll : dummy,
+
+	afterAll : dummy,
+
+	beforeEach : dummy,
+
+	afterEach : dummy
+}
+
+page.onResourceError = function(resourceError) {
+	page.error = {};
+    page.error.text = resourceError.errorString;
+    page.error.code = resourceError.errorCode;
+    page.error.url = resourceError.url;
+};
+
+function fatalError(message){
+	recap.message("error", message);
+	phantom.exit(1);
+}
+
+function log(message){
+	recap.message("log", message);
+}
+
+function handleError(err){
+	if(err){
+		fatalError(err.message);
+	}
+}
+
+function begin(err){
+	handleError(err);
+	log("phantomjs: begining");
+	log("options: " + JSON.stringify(options));
+	next();
+}
+
+function next(){
+	log("phantomjs: next width");
+	if(!widths.length){
+		end();
+		return;
+	}
+	var width = widths.shift();
+	recap.width = width;
+	page.viewportSize = {width : width, height : width};
+	page.open(url, onOpen);
+}
+
+function onOpen(result){
+	if(result === "fail"){
+		log(recap.errors);
+		fatalError("phantomjs: failed to get " + page.error.url + " due to " + page.error.text + ". Error code was " + page.error.code);
+		return;
+	}
+	log("phantomjs: loaded " + page.url);
+	log(options);
+	if(widths.length === (widthsCount - 1) && options.crawl){
+		crawl();
+	}
+	doCapture();
+}
+
+function crawl(){
+	log("phantomjs: about to crawl");
+	var urls = page.evaluate(doCrawl);
+	recap.message("crawlresult", urls);
+}
+
+function doCrawl(){
+	var host = location.hostname;
+	var foundUrls = [];
+	var links = document.querySelectorAll("a");
+	for(var i=0, l=links.length; i<l; i++){
+		if(links[i].hostname === host){
+			foundUrls.push(links[i].href.split("#")[0]);
+		}
+	}
+	return foundUrls;
+}
+
+function doCapture(){
+	recap.beforeEach(function(err){
+		handleError(err);
+		recap.capture(afterCapture);
+	});
+}
+
+function afterCapture(){
+	log("phantomjs: captured " + recap.url + " at " + recap.width + "px");
+	recap.afterEach(function(err){
+		handleError(err);
+		next();
+	});
+}
+
+function end(){
+	log("phantomjs: all done");
+	recap.afterAll(function(err){
+		handleError(err);
+		log("phantomjs: about to exit");
+		phantom.exit(0);
+	});
+}
+
+{{> userscript}}
+
+recap.beforeAll(begin);

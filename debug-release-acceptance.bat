@@ -1,0 +1,1 @@
+node --debug-brk C:\Users\paul.wilson\AppData\Roaming\npm\node_modules\recap/node_modules/grunt-jasmine-node-coverage/node_modules/jasmine-node/lib/jasmine-node/cli.js --captureExceptions C:\Users\paul.wilson\AppData\Roaming\npm\node_modules\recap\test/acceptance/acceptance.spec.js
