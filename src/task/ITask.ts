@@ -1,4 +1,4 @@
-/// <reference path="../Iconfig.ts" />
+/// <reference path="../IConfig.ts" />
 /// <reference path="../ITempDir.ts" />
 
 interface ITask{
