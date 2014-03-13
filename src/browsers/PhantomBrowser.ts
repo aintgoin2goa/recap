@@ -106,7 +106,7 @@ class PhantomBrowser implements IBrowser{
 		var dfd = Q.defer<boolean>();
 		child_process.exec("phantomjs -v", {}, function(err, stdout, stderr){
 			if(err){
-				dfd.resolve(false);
+				dfd.reject(false);
 			}else{
 				dfd.resolve(true);
 			}

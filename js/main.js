@@ -1,6 +1,7 @@
 var Q = require("q");
 
 var BrowserSwarm = require("./browsers/BrowserSwarm");
+var PhantomBrowser = require("./browsers/PhantomBrowser");
 var Config = require("./Config");
 var TempDir = require("./TempDir");
 var TaskQueue = require("./task/TaskQueue");
@@ -109,9 +110,15 @@ function run(cfg, isConsole) {
     isConsole = isConsole || false;
     setupFail(isConsole);
     setupSuccess(isConsole);
-    var config = Config.load(cfg);
-    console.log("loaded config");
-    setup(config, dfd);
+
+    PhantomBrowser.test().then(function () {
+        var config = Config.load(cfg);
+        console.log("loaded config");
+        setup(config, dfd);
+    }, function () {
+        fail("Phantomjs not found.  Is it installed and available in your path?", dfd);
+    });
+
     return dfd.promise;
 }
 exports.run = run;

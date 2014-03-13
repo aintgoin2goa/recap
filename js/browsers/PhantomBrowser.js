@@ -104,7 +104,7 @@ var PhantomBrowser = (function () {
         var dfd = Q.defer();
         child_process.exec("phantomjs -v", {}, function (err, stdout, stderr) {
             if (err) {
-                dfd.resolve(false);
+                dfd.reject(false);
             } else {
                 dfd.resolve(true);
             }

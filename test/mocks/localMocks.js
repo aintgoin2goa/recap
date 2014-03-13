@@ -208,6 +208,14 @@ exports.getMockBrowser = function(){
         }
     }
 
+    MockBrowser.test = jasmine.createSpy("test").andCallFake(function(){
+        var dfd = Q.defer();
+        setImmediate(function(){
+            dfd.resolve(true);
+        });
+        return dfd.promise;
+    });
+
     return MockBrowser;
 }
 

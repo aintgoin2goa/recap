@@ -9,6 +9,7 @@
 import Q = require("q");
 import fs = require("fs");
 import BrowserSwarm = require("browsers/BrowserSwarm");
+import PhantomBrowser = require("browsers/PhantomBrowser");
 import Config = require("./Config");
 import TempDir = require("./TempDir");
 import TaskQueue = require("task/TaskQueue");
@@ -130,9 +131,18 @@ export function run(cfg:any, isConsole?:boolean): Q.IPromise<any>
 	isConsole = isConsole || false;
 	setupFail(isConsole);
 	setupSuccess(isConsole);
-	var config = Config.load(cfg);
-	console.log("loaded config");
-	setup(config, dfd);
+
+	PhantomBrowser.test().then(
+		function(){
+			var config = Config.load(cfg);
+			console.log("loaded config");
+			setup(config, dfd);		
+		},
+		function(){
+			fail("Phantomjs not found.  Is it installed and available in your path?", dfd);
+		}
+	);
+	
 	return dfd.promise;
 }
 
