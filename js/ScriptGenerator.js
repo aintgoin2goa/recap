@@ -3,6 +3,7 @@ var fs = require("fs");
 var Handlebars = require("handlebars");
 var _ = require("underscore");
 var config = require("./Config");
+var FileNotFoundError = require("./error/FileNotFoundError");
 
 var ScriptGenerator = (function () {
     function ScriptGenerator() {
@@ -30,7 +31,11 @@ var ScriptGenerator = (function () {
 
     ScriptGenerator.prototype.loadTemplate = function () {
         var pth = path.resolve(this.templatesFolderPath, this.config.settings.template + this.templateExtension);
-        return fs.readFileSync(pth, { encoding: "utf8" });
+        try  {
+            return fs.readFileSync(pth, { encoding: "utf8" });
+        } catch (e) {
+            throw new FileNotFoundError("Template not found, path:" + pth);
+        }
     };
 
     ScriptGenerator.prototype.compileTemplate = function (template) {

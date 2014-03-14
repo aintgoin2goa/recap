@@ -3,12 +3,14 @@
 /// <reference path="d/node.d.ts" />
 /// <reference path="d/handlebars.d.ts" />
 /// <reference path="./IConfig.ts" />
+/// <reference path="./error/FileNotFoundError.ts" />
 
 import path = require("path");
 import fs = require("fs");
 import Handlebars = require("handlebars");
 import _ = require("underscore");
 import config = require("./Config");
+import FileNotFoundError = require("error/FileNotFoundError");
 
 class ScriptGenerator implements IScriptGenerator{
 
@@ -44,7 +46,11 @@ class ScriptGenerator implements IScriptGenerator{
 
 	private loadTemplate() : string {
 		var pth = path.resolve(this.templatesFolderPath, this.config.settings.template + this.templateExtension);
-		return fs.readFileSync(pth, {encoding : "utf8"});
+		try{
+			return fs.readFileSync(pth, {encoding : "utf8"});
+		}catch(e){
+			throw new FileNotFoundError("Template not found, path:" + pth);
+		}
 	} 
 
 	private compileTemplate(template: string) : Function {

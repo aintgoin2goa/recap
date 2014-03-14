@@ -59,6 +59,10 @@
         },
 
         readFileSync: jasmine.createSpy("readFileSync").andCallFake(function(file, options){
+            if(readFileData.length === 0){
+                throw new Error("ENOENT");
+            }
+            
             return readFileData.shift();
         }),
 
