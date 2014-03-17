@@ -1,6 +1,7 @@
 var Q = require("q");
 
 var BrowserSwarm = require("./browsers/BrowserSwarm");
+var PhantomBrowser = require("./browsers/PhantomBrowser");
 var Config = require("./Config");
 var TempDir = require("./TempDir");
 var TaskQueue = require("./task/TaskQueue");
@@ -90,17 +91,16 @@ function begin(config, queue, tempDir, dfd) {
         console.log("All tasks complete - begin copying files");
         copyFiles(config, tempDir).then(function () {
             console.log("Files copied, removing temporary directory");
-            rimraf(tempDir.dir, function (err) {
-                if (err) {
-                    console.error("Failed to remove temporary directory");
-                }
-
+            tempDir.remove().then(function () {
                 success("Operation complete!", dfd);
+            }, function () {
+                console.error("Failed to remove temporary directory");
             });
         }, function () {
             fail("Failed to copy files to destination " + config.dest, dfd);
         });
     });
+    console.info("Setup complete, begin processing...");
     queue.process();
 }
 
@@ -109,9 +109,19 @@ function run(cfg, isConsole) {
     isConsole = isConsole || false;
     setupFail(isConsole);
     setupSuccess(isConsole);
-    var config = Config.load(cfg);
-    console.log("loaded config");
-    setup(config, dfd);
+
+    PhantomBrowser.test().then(function () {
+        var config = Config.load(cfg);
+        console.log("loaded config");
+        setup(config, dfd);
+    }, function (version) {
+        if (!version) {
+            fail("Phantomjs not found.  Is it installed and available in your path?", dfd);
+        } else {
+            fail("Your phantom version appears to be " + version + "1.7 or greater is required", dfd);
+        }
+    });
+
     return dfd.promise;
 }
 exports.run = run;

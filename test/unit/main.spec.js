@@ -5,6 +5,7 @@ var localMocks = require("../mocks/localMocks.js");
 var fsMock = nodeMocks.getFSMock();
 var BrowserSwarmMock = localMocks.getBrowserSwarmMockConstructor();
 var TempDirMock = localMocks.getTempDirMockConstructor();
+var PhantomBrowserMock = localMocks.getMockBrowser();
 var TaskQueueMock = localMocks.getTaskQueueMock();
 var destinationMock = localMocks.getMockDestination();
 var destinationResolverMock = localMocks.getMockDestinationResolver(destinationMock);
@@ -16,7 +17,8 @@ var main = loader.loadModule("./js/main.js", {
 	"./TempDir" : TempDirMock,
 	"./task/TaskQueue" : TaskQueueMock,
 	"./destinations/DestinationResolver" : destinationResolverMock,
-	"./transports/transportFactory" : transportMock
+	"./transports/transportFactory" : transportMock,
+	"./browsers/PhantomBrowser" : PhantomBrowserMock
 }).module.exports;
 
 var fs = require("fs");
@@ -31,6 +33,16 @@ describe("main", function(){
 		localMocks.reset();
 	});	
 
+	it("Will check if phantomjs is avaiable before performing setup", function(){
+		main.run(config);
+
+		waits(10);
+
+		runs(function(){
+			expect(PhantomBrowserMock.test).toHaveBeenCalled();
+		});
+	});
+
 	it("can be called with a config object and will return a promise", function(){
 		var promise = main.run(config);
 		
@@ -40,7 +52,11 @@ describe("main", function(){
 	it("Will instantiate a new BrowserSwarm with the number of instances given in config file", function(){
 		main.run(config);
 
-		expect(BrowserSwarmMock).toHaveBeenCalledWith(config.settings.maxInstances);
+		waits(10);
+
+		runs(function(){
+			expect(BrowserSwarmMock).toHaveBeenCalledWith(config.settings.maxInstances);
+		});
 	});
 
 	it("Will create a temporary directory", function(){

@@ -33,6 +33,7 @@ var recap = {
 			page.render(filename);
 			log("phantomjs: saved as " + filename);
 			recap.message("filesaved", {url:page.url,width:recap.width});
+			recap.message("info", "captured " + page.url + " at " + recap.width + "px");
 			callback();
 		}, options.waitTime);
 	

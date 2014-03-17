@@ -3,6 +3,8 @@ var fs = require("fs");
 var Handlebars = require("handlebars");
 var _ = require("underscore");
 var config = require("./Config");
+var FileNotFoundError = require("./error/FileNotFoundError");
+var installLocation = require("./installLocation");
 
 var ScriptGenerator = (function () {
     function ScriptGenerator() {
@@ -30,7 +32,11 @@ var ScriptGenerator = (function () {
 
     ScriptGenerator.prototype.loadTemplate = function () {
         var pth = path.resolve(this.templatesFolderPath, this.config.settings.template + this.templateExtension);
-        return fs.readFileSync(pth, { encoding: "utf8" });
+        try  {
+            return fs.readFileSync(pth, { encoding: "utf8" });
+        } catch (e) {
+            throw new FileNotFoundError("Template not found, path:" + pth);
+        }
     };
 
     ScriptGenerator.prototype.compileTemplate = function (template) {
@@ -54,20 +60,16 @@ var ScriptGenerator = (function () {
     };
 
     ScriptGenerator.prototype.installLocation = function () {
-        var location;
-        try  {
-            location = require.resolve("recap");
-            location = location.split("recap")[0] + "recap" + path.sep;
-        } catch (e) {
-            var qPath = require.resolve("q");
-            location = qPath.split("node_modules")[0];
-        }
-        return location;
+        return installLocation();
     };
 
     ScriptGenerator.prototype.loadUserScript = function (userScriptPath) {
         var pth = path.resolve(userScriptPath);
-        return fs.readFileSync(pth, { encoding: "utf8" });
+        try  {
+            return fs.readFileSync(pth, { encoding: "utf8" });
+        } catch (e) {
+            throw new FileNotFoundError("User script not found, path:" + pth);
+        }
     };
 
     ScriptGenerator.prototype.addUserScript = function (script) {

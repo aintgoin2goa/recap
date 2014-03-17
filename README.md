@@ -9,7 +9,7 @@ This module is also available as a [Grunt Plugin](https://github.com/aintgoin2go
 Installation
 ---------------
 
-You will need [node > 0.8](http://nodejs.org/) and [PhantomJS](http://phantomjs.org/) installed. Windows users will need to make sure that phantomjs is accessible in the PATH.  You should be able to do this:
+You will need [node > 0.8](http://nodejs.org/) and [PhantomJS > 1.7](http://phantomjs.org/) installed. Windows users will need to make sure that phantomjs is accessible in the PATH.  You should be able to do this:
 
     phantomjs -v
 	

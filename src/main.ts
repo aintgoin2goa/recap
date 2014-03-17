@@ -4,11 +4,11 @@
 /// <reference path="browsers/IBrowserSwarm.ts" />
 /// <reference path="task/ITask" />
 /// <reference path="destinations/IDestination" />
-/// <reference path="d/rimraf.d.ts" />
 
 import Q = require("q");
 import fs = require("fs");
 import BrowserSwarm = require("browsers/BrowserSwarm");
+import PhantomBrowser = require("browsers/PhantomBrowser");
 import Config = require("./Config");
 import TempDir = require("./TempDir");
 import TaskQueue = require("task/TaskQueue");
@@ -16,7 +16,7 @@ import Task = require("task/Task");
 import console = require("./Console");
 import DestinationResolver = require("destinations/DestinationResolver");
 import transport = require("transports/transportFactory");
-import rimraf = require("rimraf");
+var rimraf = require("rimraf");
 
 var fail = function fail(message: string, dfd:Q.Deferred<any>): void {
 	throw new Error("Not implemented");
@@ -105,19 +105,21 @@ function begin(config:IConfig, queue: ITaskQueue, tempDir: ITempDir, dfd:Q.Defer
 		copyFiles(config, tempDir).then(
 			function(){
 				console.log("Files copied, removing temporary directory");
-				rimraf(tempDir.dir, function(err){
-					if(err){
+				tempDir.remove().then(
+					function(){
+						success("Operation complete!", dfd);
+					},
+					function(){
 						console.error("Failed to remove temporary directory");	
 					}
-					
-					success("Operation complete!", dfd);
-				});
+				);
 			},
 			function(){
 				fail("Failed to copy files to destination " + config.dest, dfd);
 			}
 		);
 	});
+	console.info("Setup complete, begin processing...")
 	queue.process();
 }
 
@@ -130,9 +132,22 @@ export function run(cfg:any, isConsole?:boolean): Q.IPromise<any>
 	isConsole = isConsole || false;
 	setupFail(isConsole);
 	setupSuccess(isConsole);
-	var config = Config.load(cfg);
-	console.log("loaded config");
-	setup(config, dfd);
+
+	PhantomBrowser.test().then(
+		function(){
+			var config = Config.load(cfg);
+			console.log("loaded config");
+			setup(config, dfd);		
+		},
+		function(version){
+			if(!version){
+				fail("Phantomjs not found.  Is it installed and available in your path?", dfd);
+			}else{
+				fail("Your phantom version appears to be " + version + "1.7 or greater is required", dfd);
+			}
+		}
+	);
+	
 	return dfd.promise;
 }
 

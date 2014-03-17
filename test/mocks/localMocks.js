@@ -166,12 +166,15 @@ exports.getDestDirMock = function () {
 
 exports.getMockConfig = function () {
 
-    var config = { urls: [], widths: [], dest: '', options: { waitTime: 1000, crawl: false}, settings : {template : "default"} };
+    var config = { urls: [], widths: [], dest: '', options: { waitTime: 1000, crawl: false}, settings : {template : "testTemplate1"} };
 
     return {
         load: (function() {
             return jasmine.createSpy("load");
         }()),
+        setOption: function(name, value){
+            config.options[name] = value;
+        },
         getCurrentConfig : function() {
             return config;
         }
@@ -207,6 +210,14 @@ exports.getMockBrowser = function(){
             });
         }
     }
+
+    MockBrowser.test = jasmine.createSpy("test").andCallFake(function(){
+        var dfd = Q.defer();
+        setImmediate(function(){
+            dfd.resolve(true);
+        });
+        return dfd.promise;
+    });
 
     return MockBrowser;
 }

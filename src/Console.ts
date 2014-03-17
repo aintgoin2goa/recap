@@ -55,9 +55,7 @@ function printToScreen(args: string[], color: string): void {
 }
 
 export function info(...args: any[]): void {
-    if (!settings.verbose) {
-        return;
-    }
+    trigger("info", args);
     printToScreen(parseArgs(args), "white");   
 }
 
@@ -78,7 +76,9 @@ export function success(...args: any[]): void {
 
 export function log(...args: any[]): void {
     trigger("log", args);
-    info.apply(this, args);
+    if (settings.verbose) {
+         printToScreen(parseArgs(args), "white"); 
+    }
 }
 
 

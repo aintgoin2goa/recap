@@ -102,11 +102,16 @@ var PhantomBrowser = (function () {
 
     PhantomBrowser.test = function () {
         var dfd = Q.defer();
-        child_process.exec("phantomjs -v", {}, function (err, stdout, stderr) {
+        child_process.exec("phantomjs --version", {}, function (err, stdout, stderr) {
             if (err) {
-                dfd.resolve(false);
+                dfd.reject(false);
             } else {
-                dfd.resolve(true);
+                var version = stdout.toString().split(".");
+                if (parseInt(version[1], 10) > 6) {
+                    dfd.resolve(true);
+                } else {
+                    dfd.reject(stdout);
+                }
             }
         });
         return dfd.promise;
