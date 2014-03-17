@@ -49,7 +49,13 @@ class TaskQueue implements ITaskQueue{
 		}
 
 		task.status = TaskStatus.QUEUED;
-		task.generateScript(this.tempDir);
+		try{
+			task.generateScript(this.tempDir);
+		}catch(e){
+			console.error(e.message);
+			return;
+		}
+		
 		this.urls.push(task.url );
 		this.queue.push(task);
 	}
