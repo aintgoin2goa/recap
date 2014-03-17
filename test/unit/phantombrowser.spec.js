@@ -15,16 +15,33 @@ describe("PhantomBrowser", function(){
 	});
 
 	it("Can check that phantomjs is available", function(done){
+
+		child_processMock.setstdout("1.7.0");
 		PhantomBrowser.test()
 
 		.then(function(){
-			expect(child_processMock.exec).toHaveBeenCalledWith("phantomjs -v", jasmine.any(Object), jasmine.any(Function));
+			expect(child_processMock.exec).toHaveBeenCalledWith("phantomjs --version", jasmine.any(Object), jasmine.any(Function));
+			done();
+		});
+	});
+
+	it("Can will check that phantomjs is 1.7 or greater", function(done){
+		debugger;
+		var version = "1.4.0";
+		child_processMock.setstdout(version);
+		PhantomBrowser.test()
+
+		.then(function(){
+			done(false);
+		}, function(v){
+			expect(v).toEqual(version);
 			done();
 		});
 	});
 
 	it("Can execute phantomjs with a given script", function(){
 		browser = new PhantomBrowser();
+
 		var script = "script.js";
 
 		browser.execute(script);

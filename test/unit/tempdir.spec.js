@@ -23,7 +23,6 @@ describe("TempDir", function () {
 
 
 	it("Can add a new record and return the filename", function (done) {
-		debugger;
 		fsMock.reset();
 		var tempDir = new TempDir();
 

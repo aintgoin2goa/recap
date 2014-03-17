@@ -26,7 +26,7 @@ class TempDir implements ITempDir {
     {
         this.ready = this.createTempDir();
         this.records = []; 
-        process.on("exit", () =>{ this.remove(); });
+        process.on("exit", (code) =>{ this.removeSync(); });
     }
 
     public createRecord(url: string, width: number): string {
@@ -66,6 +66,10 @@ class TempDir implements ITempDir {
             }
         });
         return dfd.promise;
+    }
+
+    public removeSync(): void{
+        rimraf.sync(this.dir);
     }
 
     public listFiles(filter?: string[]): string[] {

@@ -12,8 +12,8 @@ var TempDir = (function () {
         this.extension = ".jpg";
         this.ready = this.createTempDir();
         this.records = [];
-        process.on("exit", function () {
-            _this.remove();
+        process.on("exit", function (code) {
+            _this.removeSync();
         });
     }
     TempDir.prototype.createRecord = function (url, width) {
@@ -56,6 +56,10 @@ var TempDir = (function () {
             }
         });
         return dfd.promise;
+    };
+
+    TempDir.prototype.removeSync = function () {
+        rimraf.sync(this.dir);
     };
 
     TempDir.prototype.listFiles = function (filter) {

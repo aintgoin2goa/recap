@@ -188,10 +188,15 @@ exports.MockChildProcess = MockChildProcess;
 
 exports.getMockChildProcess = function(){
 
+    var stdout = "";
+
     return {
+        setstdout : function(val){
+            stdout = val;
+        },
         exec : jasmine.createSpy("exec").andCallFake(function(cmd, options, callback){
             setImmediate(function(){
-                callback(null, "", "");
+                callback(null, stdout, "");
             });
         }),
         spawn : jasmine.createSpy("spawn").andCallFake(function(cmd, params){

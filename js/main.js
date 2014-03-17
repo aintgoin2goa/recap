@@ -91,12 +91,10 @@ function begin(config, queue, tempDir, dfd) {
         console.log("All tasks complete - begin copying files");
         copyFiles(config, tempDir).then(function () {
             console.log("Files copied, removing temporary directory");
-            rimraf(tempDir.dir, function (err) {
-                if (err) {
-                    console.error("Failed to remove temporary directory");
-                }
-
+            tempDir.remove().then(function () {
                 success("Operation complete!", dfd);
+            }, function () {
+                console.error("Failed to remove temporary directory");
             });
         }, function () {
             fail("Failed to copy files to destination " + config.dest, dfd);
