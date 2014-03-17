@@ -116,8 +116,12 @@ function run(cfg, isConsole) {
         var config = Config.load(cfg);
         console.log("loaded config");
         setup(config, dfd);
-    }, function () {
-        fail("Phantomjs not found.  Is it installed and available in your path?", dfd);
+    }, function (version) {
+        if (!version) {
+            fail("Phantomjs not found.  Is it installed and available in your path?", dfd);
+        } else {
+            fail("Your phantom version appears to be " + version + "1.7 or greater is required", dfd);
+        }
     });
 
     return dfd.promise;

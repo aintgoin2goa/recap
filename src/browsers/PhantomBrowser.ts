@@ -104,11 +104,16 @@ class PhantomBrowser implements IBrowser{
 
 	public static test() : Q.IPromise<boolean> {
 		var dfd = Q.defer<boolean>();
-		child_process.exec("phantomjs -v", {}, function(err, stdout, stderr){
+		child_process.exec("phantomjs --version", {}, function(err, stdout, stderr){
 			if(err){
 				dfd.reject(false);
 			}else{
-				dfd.resolve(true);
+				var version = stdout.toString().split(".");
+				if(parseInt(version[1], 10) > 6){
+					dfd.resolve(true);
+				}else{
+					dfd.reject(stdout);
+				}
 			}
 		});
 		return dfd.promise;
