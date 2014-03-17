@@ -63,8 +63,8 @@ describe("ScriptGenerator", function(){
 	});
 
 	// ignored until refactoring complete
-	xit("Will throw an error if a template cannot be loaded", function(){
-		var templatePath = path.resolve("../tmpl/testTemplate1.tmpl");
+	it("Will throw an error if a template cannot be loaded", function(){
+		var templatePath = path.resolve("./tmpl/testTemplate1.tmpl");
 		var expectedError = "Template not found, path:" + templatePath;
 		var url = "http://www.paul.com";
 		expect(function(){
@@ -72,6 +72,18 @@ describe("ScriptGenerator", function(){
 		}).toThrow(expectedError);
 	});
 
-	it("Will throw an error if a user script cannot be loaded");
+	it("Will throw an error if a user script cannot be loaded", function(){
+		var template = fs.readFileSync(path.resolve("./test/tmpl/testTemplate1.tmpl"), {encoding : "utf8"});
+		fsMock.setReadFileData(template);
+
+		var userScriptPath = path.resolve("./test/scripts/userscript.js");
+		var expectedError = "User script not found, path:" + userScriptPath;
+
+		var url = "http://www.paul.com";
+
+		expect(function(){
+			scriptGenerator.generate({"url" : url}, userScriptPath);
+		}).toThrow(expectedError);
+	});
 
 });

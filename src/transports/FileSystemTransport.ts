@@ -131,14 +131,16 @@ class FileSystemTransport implements ITransport {
     }
 
     private readData(file: string): void{
-        var dataStr: string = fs.readFileSync(file, {encoding:"utf8"});
-        // if undefined, null or empty may as well not bother
-        if(!dataStr){
-            return;
-        }
+        try{
+             var dataStr: string = fs.readFileSync(file, {encoding:"utf8"});
+            // if undefined, null or empty may as well not bother
+            if(!dataStr){
+                return;
+            }
 
-        var data: ITempDirRecord[] = JSON.parse(dataStr);
-        this.to.updateData(data);
+            var data: ITempDirRecord[] = JSON.parse(dataStr);
+            this.to.updateData(data);
+        }catch(e){}
     }
 }
 

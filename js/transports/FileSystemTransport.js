@@ -110,14 +110,17 @@ var FileSystemTransport = (function () {
     };
 
     FileSystemTransport.prototype.readData = function (file) {
-        var dataStr = fs.readFileSync(file, { encoding: "utf8" });
+        try  {
+            var dataStr = fs.readFileSync(file, { encoding: "utf8" });
 
-        if (!dataStr) {
-            return;
+            if (!dataStr) {
+                return;
+            }
+
+            var data = JSON.parse(dataStr);
+            this.to.updateData(data);
+        } catch (e) {
         }
-
-        var data = JSON.parse(dataStr);
-        this.to.updateData(data);
     };
     return FileSystemTransport;
 })();

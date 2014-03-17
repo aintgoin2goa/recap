@@ -172,6 +172,9 @@ exports.getMockConfig = function () {
         load: (function() {
             return jasmine.createSpy("load");
         }()),
+        setOption: function(name, value){
+            config.options[name] = value;
+        },
         getCurrentConfig : function() {
             return config;
         }

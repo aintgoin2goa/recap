@@ -11,6 +11,7 @@ import Handlebars = require("handlebars");
 import _ = require("underscore");
 import config = require("./Config");
 import FileNotFoundError = require("error/FileNotFoundError");
+import installLocation = require("./installLocation");
 
 class ScriptGenerator implements IScriptGenerator{
 
@@ -74,20 +75,16 @@ class ScriptGenerator implements IScriptGenerator{
 	}
 
 	private installLocation(): string{
-		var location: string;
-		try{
-			location = require.resolve("recap");
-			location = location.split("recap")[0] + "recap" + path.sep;
-		}catch(e){
-			var qPath = require.resolve("q");
-			location = qPath.split("node_modules")[0];
-		}
-		return location;
+		return installLocation();
 	}
 
 	private loadUserScript(userScriptPath: string): string {
 		var pth = path.resolve(userScriptPath);
-		return fs.readFileSync(pth, {encoding : "utf8"});
+		try{
+			return fs.readFileSync(pth, {encoding : "utf8"});
+		}catch(e){
+			throw new FileNotFoundError("User script not found, path:" + pth);
+		}
 	}
 
 	private addUserScript(script?: string): void {
