@@ -119,6 +119,7 @@ function begin(config:IConfig, queue: ITaskQueue, tempDir: ITempDir, dfd:Q.Defer
 			}
 		);
 	});
+	console.info("Setup complete, begin processing...")
 	queue.process();
 }
 

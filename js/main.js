@@ -102,6 +102,7 @@ function begin(config, queue, tempDir, dfd) {
             fail("Failed to copy files to destination " + config.dest, dfd);
         });
     });
+    console.info("Setup complete, begin processing...");
     queue.process();
 }
 

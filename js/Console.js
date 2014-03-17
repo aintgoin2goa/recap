@@ -56,9 +56,7 @@ function info() {
     for (var _i = 0; _i < (arguments.length - 0); _i++) {
         args[_i] = arguments[_i + 0];
     }
-    if (!settings.verbose) {
-        return;
-    }
+    trigger("info", args);
     printToScreen(parseArgs(args), "white");
 }
 exports.info = info;
@@ -99,7 +97,9 @@ function log() {
         args[_i] = arguments[_i + 0];
     }
     trigger("log", args);
-    exports.info.apply(this, args);
+    if (settings.verbose) {
+        printToScreen(parseArgs(args), "white");
+    }
 }
 exports.log = log;
 
