@@ -9,7 +9,7 @@ This module is also available as a [Grunt Plugin](https://github.com/aintgoin2go
 Installation
 ---------------
 
-You will need [node > 0.8](http://nodejs.org/) and [PhantomJS > 1.7](http://phantomjs.org/) installed. Windows users will need to make sure that phantomjs is accessible in the PATH.  You should be able to do this:
+You will need [node > 0.8](http://nodejs.org/) and [PhantomJS > 1.7](http://phantomjs.org/) installed. Check that Phantomjs binary  is your $PATH.  You should be able to do this:
 
     phantomjs -v
 	
@@ -43,12 +43,11 @@ The script requires a config.json script to tell it what urls to capture and at 
 	  "dest": "./dest/",
 	  "options" : {
 	  	   "waitTime" : 50, // will pause for this ammout of time before capturing the page
-	  	   "crawl" : true // if true this will activate crawl mode
+	  	   "crawl" : true, // if true this will activate crawl mode
+	  	   "script" : "script.js" // this is a script you can run to perform automation tasks and/or login and stuff like that.  More on this later
 	  }
 	}
 	
-recap can guide you through the process of creating a config file, just type `recap` to begin.
-
 Once you have a config file you can use it by typing
 
     recap [path_to_config]
@@ -105,9 +104,51 @@ In this example all urls have the crawl option set to `true` except contentsmaga
 TroubleShooting
 ------------------
 
-If anything goes wrong, double-check that you defintely have phantomjs installed.  If that's ok then check you have permission to write to location where you're trying to save the files.  You could use sudo, but I wouldn't recommend it.
+If anything goes wrong, double-check that you defintely have phantomjs installed.  If that's ok then check you have permission to write to location where you're trying to save the files.
 	
 There's also a verbose mode which will help you to diagnose errors
 
     recap ./config.json --verbose
+
+
+User Scripts
+----------------
+
+If you need to login or do other stuff before or after capturing a screenshot (open a modal window, for example) then you can include a script.  This will run inside phantomjs so check out the [phantom docs](http://phantomjs.org/documentation/) to see what you can do.
+
+Inside your script you have access to a `recap` object - this has a few methods for hooking your code into various points of the process
+
+	recap.beforeAll, recap.beforeEach, recap.afterEach, recap.afterAll
+
+#### beforeAll
+Called before the url is loaded - this is the one to use if you need to log in first
+
+#### beforeEach
+Called just before the screenhot is taken for each width - use this if you need to open a modal of click on something
+
+#### afterEach
+Called just after the screenshot is taken - not sure what you'd use this for, maybe debugging or something
+
+#### afterAll
+Called after all screenshots are taken
+
+
+Each of these is a property so you hook into it like so:
+
+	recap.beforeAll = function(done){
+		// do login stuff here
+		done();
+	}
+
+Each function is passed the done callback as a parameter.  You need to call this when you're finished, otherwise nothing will happen!
+
+There's also a couple of other methods you can use
+
+	recap.message(title, content)
+
+Sends a message back to the system - this allows you to log stuff out to the screen from inside phantom.  title can be 'warn' (will print out yellow), 'success' (will print green) 'info' and 'log' (this will only print out in verbose mode).  You can also use 'error' but this will cause recap to kill the phantom process.
+
+	recap.capture(name, callback)
+
+Will take a screenshot.  The name will be added to the filename so can differentiate it from the standard screenshots.  You can use this to perform automation, taking screenshots as you go.
 
