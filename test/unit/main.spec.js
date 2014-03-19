@@ -127,7 +127,7 @@ describe("main", function(){
 	it("Will delete the temporary directory once copying is complete", function(){
 		main.run(config);
 
-		waits(10);
+		waits(20);
 
 		runs(function(){
 			var taskQueue = localMocks.getTaskQueueMockInstance(0);

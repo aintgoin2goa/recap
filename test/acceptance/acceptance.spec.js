@@ -20,18 +20,25 @@ describe("Recap", function () {
 
     var timeout = 5 * (60 * 1000);
 
+    var debugLog = fs.createWriteStream("./debug.log");
+
+    var logToConsole = false;
+
     beforeEach(function() {
         
     });
 
     afterEach(function() {
         var dest = path.resolve(config.dest);
-        rimraf(dest, function () { });
+        rimraf.sync(dest);
         config = null;
     });
 
     function log(){
-        //console.log(Array.prototype.slice.apply(arguments));
+        var args = Array.prototype.slice.apply(arguments);
+        var msg = args.join(', ');
+        debugLog.write(msg + "\r\n", "utf8");
+        logToConsole && console.log(msg);
     }
 
     function gethostnameFromUrl(url){

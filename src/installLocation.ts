@@ -3,7 +3,7 @@
 import path = require("path");
 
 function getInstallLocation(): string{
-	return (__dirname.split("recap")[0] + "recap") + path.sep;
+	return __dirname.replace(path.sep + "js", path.sep);
 }
 
 export = getInstallLocation;
